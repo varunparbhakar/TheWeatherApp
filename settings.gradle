@@ -1,15 +1,18 @@
 pluginManagement {
     repositories {
         google()
-        mavenCentral()
+        //mavenCentral()
+        jcenter()
         gradlePluginPortal()
     }
 }
 dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS) //jd. new way
+//    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS) //jd. old way
     repositories {
         google()
-        mavenCentral()
+        //mavenCentral()
+        jcenter()
     }
 }
 rootProject.name = "Weather App"
