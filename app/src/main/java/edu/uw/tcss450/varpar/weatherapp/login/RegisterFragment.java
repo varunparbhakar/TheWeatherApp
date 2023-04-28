@@ -1,17 +1,15 @@
-package edu.uw.tcss450.varpar.weatherapp;
+package edu.uw.tcss450.varpar.weatherapp.login;
 
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentLoginBinding;
 import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentRegisterBinding;
 
 /**
