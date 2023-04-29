@@ -10,6 +10,12 @@
     <string name="hint_fragment_auth_register_lastName">Last Name</string>
     <string name="hint_fragment_auth_register_confirmPassword">Confirm Password</string>
 
+    <string name="profile_fragment_changePassword">Change Password</string>
+    <string name="profile_fragment_oldPassword">Old PW</string>
+    <string name="profile_fragment_newPassword">New PW</string>
+    <string name="profile_fragment_fullName">Name</string>
+    <string name="profile_fragment_username">Username</string>
+
     <!--Activity Names-->
     <string name="title_activity_auth">Main Activity</string>
     <string name="title_activity_home">Home</string>
