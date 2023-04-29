@@ -18,4 +18,8 @@
     <string name="title_activity_chat">Chat</string>
     <string name="title_activity_profile">Profile</string>
 
+    <!-- From UI and Navigation Lab -->
+    <string name="action_link">Full Post</string>
+    <!-- /From UI and Navigation Lab -->
+
 </resources>
