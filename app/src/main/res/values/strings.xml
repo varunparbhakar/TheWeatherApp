@@ -28,4 +28,7 @@
     <string name="chat_card_title">User</string>
     <string name="chat_card_text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi assumenda culpa est facere, iusto nam numquam porro provident sed. Aperiam aut culpa debitis eos eum illo in ipsum iure laboriosam maiores molestiae optio provident recusandae sint, temporibus tenetur unde veniam vitae. Deserunt dolor magnam officia reiciendis sapiente similique?</string>
 
+    <!--Contact-->
+    <string name="button_add_contact_description">Button to navigate to the add a new contact screen.</string>
+
 </resources>

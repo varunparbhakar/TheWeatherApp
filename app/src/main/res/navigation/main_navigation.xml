@@ -5,9 +5,16 @@
     android:id="@+id/main_navigation"
     app:startDestination="@id/mainActivity">
 
-    <activity
-        android:id="@+id/mainActivity"
-        android:name="edu.uw.tcss450.varpar.weatherapp.MainActivity"
-        android:label="activity_main"
-        tools:layout="@layout/activity_main" />
+<!--    <activity-->
+<!--        android:id="@+id/mainActivity"-->
+<!--        android:name="edu.uw.tcss450.varpar.weatherapp.MainActivity"-->
+<!--        android:label="activity_main"-->
+<!--        tools:layout="@layout/activity_main" />-->
+
+    <fragment
+        android:id="@+id/navigation_chat"
+        android:name="edu.uw.tcss450.varpar.weatherapp.chat.ChatListFragment"
+        android:label="fragment_chat_list"
+        tools:layout="@layout/fragment_chat_list" />
+
 </navigation>
