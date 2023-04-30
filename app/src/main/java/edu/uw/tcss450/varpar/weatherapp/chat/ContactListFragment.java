@@ -16,7 +16,7 @@ import edu.uw.tcss450.varpar.weatherapp.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link ContactListFragment#newInstance} factory method to
+ * Use the {@link ContactListFragment} factory method to
  * create an instance of this fragment.
  */
 public class ContactListFragment extends Fragment {
@@ -39,6 +39,13 @@ public class ContactListFragment extends Fragment {
 //                             Bundle savedInstanceState) {
 //        return inflater.inflate(R.layout.fragment_chat_list, container, false);
 //    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_contact_list, container, false);
+    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
