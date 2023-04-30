@@ -44,7 +44,7 @@ private FragmentProfileBinding mBinding;
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mBinding.nameLabel.setText("Chuck Finley");
+        mBinding.nameLabel.setText("Chuck" + "Finley");
         mBinding.usernameLabel.setText("notsamaxe");
         mBinding.emailLabel.setText("chuck@finley.rad");
 
