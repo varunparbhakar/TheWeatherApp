@@ -47,6 +47,7 @@
         android:layout_height="0dp"
         android:orientation="vertical"
         app:layoutManager="LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_contact_search"
         tools:context="edu.uw.tcss450.varpar.weatherapp.contact.ContactListFragment"
         tools:layout_editor_absoluteX="29dp"
