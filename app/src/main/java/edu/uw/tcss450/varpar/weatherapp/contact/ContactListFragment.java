@@ -1,10 +1,11 @@
-package edu.uw.tcss450.varpar.weatherapp.chat;
+package edu.uw.tcss450.varpar.weatherapp.contact;
 
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,9 @@ import android.view.ViewGroup;
 import org.jetbrains.annotations.Nullable;
 
 import edu.uw.tcss450.varpar.weatherapp.R;
+import edu.uw.tcss450.varpar.weatherapp.chat.ChatGenerator;
+import edu.uw.tcss450.varpar.weatherapp.chat.ChatRecyclerViewAdapter;
+import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentContactListBinding;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,7 +34,7 @@ public class ContactListFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mModel = new ViewModelProvider(getActivity()).get(ContactListViewModel.class);
+//        mModel = new ViewModelProvider(getActivity()).get(ContactListViewModel.class);
 //        mModel.connectGet();
     }
 
@@ -52,7 +56,11 @@ public class ContactListFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
 
-//        FragmentContactListBinding binding = FragmentContactListBinding.bind(getView());
+        FragmentContactListBinding binding = FragmentContactListBinding.bind(getView());
+
+        binding.listRoot.setAdapter(
+                new ContactRecyclerViewAdapter(ContactGenerator.getContactList())
+        );
 //
 //        mModel.addContactListObserver(getViewLifecycleOwner(), blogList -> {
 //            if (!blogList.isEmpty()) {

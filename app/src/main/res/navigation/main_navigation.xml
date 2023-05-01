@@ -8,13 +8,13 @@
     <fragment
         android:id="@+id/navigation_chat"
         android:name="edu.uw.tcss450.varpar.weatherapp.chat.ChatListFragment"
-        android:label="fragment_chat_list"
+        android:label="@string/title_activity_chat"
         tools:layout="@layout/fragment_chat_list" />
 
     <fragment
         android:id="@+id/navigation_contacts"
-        android:name="edu.uw.tcss450.varpar.weatherapp.chat.ContactListFragment"
-        android:label="fragment_contact_list"
+        android:name="edu.uw.tcss450.varpar.weatherapp.contact.ContactListFragment"
+        android:label="@string/title_activity_contacts"
         tools:layout="@layout/fragment_contact_list" />
 
 </navigation>

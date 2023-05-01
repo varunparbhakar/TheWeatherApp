@@ -1,4 +1,4 @@
-package edu.uw.tcss450.varpar.weatherapp.chat;
+package edu.uw.tcss450.varpar.weatherapp.contact;
 
 import android.os.Bundle;
 

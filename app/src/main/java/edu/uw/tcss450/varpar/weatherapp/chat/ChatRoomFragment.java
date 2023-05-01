@@ -12,10 +12,10 @@ import edu.uw.tcss450.varpar.weatherapp.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link ChatMessageFragment#newInstance} factory method to
+ * Use the {@link ChatRoomFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ChatMessageFragment extends Fragment {
+public class ChatRoomFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,7 +26,7 @@ public class ChatMessageFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public ChatMessageFragment() {
+    public ChatRoomFragment() {
         // Required empty public constructor
     }
 
@@ -39,8 +39,8 @@ public class ChatMessageFragment extends Fragment {
      * @return A new instance of fragment ChatMessageFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ChatMessageFragment newInstance(String param1, String param2) {
-        ChatMessageFragment fragment = new ChatMessageFragment();
+    public static ChatRoomFragment newInstance(String param1, String param2) {
+        ChatRoomFragment fragment = new ChatRoomFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
