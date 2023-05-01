@@ -6,14 +6,7 @@ android:layout_width="match_parent"
 android:layout_height="match_parent"
 tools:context=".profile.ProfileFragment">
 
-<androidx.constraintlayout.widget.Guideline
-    android:id="@+id/guideline_fifty"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    app:layout_constraintGuide_percent="0.5" />
-
-    <EditText
+    <TextView
         android:id="@+id/email_field"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -22,39 +15,33 @@ tools:context=".profile.ProfileFragment">
         android:autofillHints=""
         android:clickable="false"
         android:ems="10"
-        android:inputType="textEmailAddress"
-        app:layout_constraintBottom_toTopOf="@+id/guideline_fifty"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/email_label" />
+        app:layout_constraintStart_toEndOf="@+id/email_label"
+        app:layout_constraintTop_toTopOf="@+id/email_label" />
 
-    <EditText
+    <TextView
         android:id="@+id/username_field"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="16dp"
         android:autofillHints=""
         android:clickable="false"
         android:ems="10"
-        android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/email_field"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/username_label" />
+        app:layout_constraintStart_toEndOf="@+id/username_label"
+        app:layout_constraintTop_toTopOf="@+id/username_label" />
 
-    <EditText
+    <TextView
         android:id="@+id/name_field"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="16dp"
         android:autofillHints=""
         android:clickable="false"
         android:ems="10"
-        android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/username_field"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/name_label"
         app:layout_constraintTop_toTopOf="@+id/name_label" />
@@ -64,7 +51,6 @@ tools:context=".profile.ProfileFragment">
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="75dp"
         android:layout_marginEnd="8dp"
         android:autofillHints=""
         android:ems="10"
@@ -72,39 +58,35 @@ tools:context=".profile.ProfileFragment">
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/old_password_label"
-        app:layout_constraintTop_toBottomOf="@+id/guideline_fifty" />
+        app:layout_constraintTop_toTopOf="@+id/old_password_label" />
 
     <EditText
         android:id="@+id/new_password_1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         android:autofillHints=""
-        android:editable="true"
         android:ems="10"
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/new_password_label_1"
-        app:layout_constraintTop_toBottomOf="@+id/old_password" />
+        app:layout_constraintTop_toTopOf="@+id/new_password_label_1" />
 
     <EditText
         android:id="@+id/new_password_2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         android:autofillHints=""
-        android:editable="true"
         android:ems="10"
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/new_password_label_2"
-        app:layout_constraintTop_toBottomOf="@+id/new_password_1" />
+        app:layout_constraintTop_toTopOf="@+id/new_password_label_2" />
 
     <Button
         android:id="@+id/button_change_password"
@@ -116,20 +98,19 @@ tools:context=".profile.ProfileFragment">
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/new_password_2" />
 
-    <EditText
+    <TextView
         android:id="@+id/name_label"
         android:layout_width="114dp"
         android:layout_height="44dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="120dp"
         android:clickable="false"
         android:ems="10"
-        android:inputType="text"
         android:text="@string/profile_fragment_fullName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
+    <TextView
         android:id="@+id/username_label"
         android:layout_width="114dp"
         android:layout_height="44dp"
@@ -137,12 +118,11 @@ tools:context=".profile.ProfileFragment">
         android:layout_marginTop="16dp"
         android:clickable="false"
         android:ems="10"
-        android:inputType="text"
         android:text="@string/profile_fragment_username"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/name_label" />
 
-    <EditText
+    <TextView
         android:id="@+id/email_label"
         android:layout_width="114dp"
         android:layout_height="44dp"
@@ -150,12 +130,11 @@ tools:context=".profile.ProfileFragment">
         android:layout_marginTop="16dp"
         android:clickable="false"
         android:ems="10"
-        android:inputType="text"
         android:text="@string/hint_activity_auth_login_email"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/username_label" />
 
-    <EditText
+    <TextView
         android:id="@+id/change_password_label"
         android:layout_width="174dp"
         android:layout_height="44dp"
@@ -163,12 +142,11 @@ tools:context=".profile.ProfileFragment">
         android:layout_marginTop="16dp"
         android:clickable="false"
         android:ems="10"
-        android:inputType="text"
         android:text="@string/profile_fragment_changePassword"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/email_label" />
 
-    <EditText
+    <TextView
         android:id="@+id/old_password_label"
         android:layout_width="114dp"
         android:layout_height="44dp"
@@ -176,12 +154,11 @@ tools:context=".profile.ProfileFragment">
         android:layout_marginTop="16dp"
         android:clickable="false"
         android:ems="10"
-        android:inputType="text"
         android:text="@string/profile_fragment_oldPassword"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/change_password_label" />
 
-    <EditText
+    <TextView
         android:id="@+id/new_password_label_1"
         android:layout_width="114dp"
         android:layout_height="44dp"
@@ -189,12 +166,11 @@ tools:context=".profile.ProfileFragment">
         android:layout_marginTop="16dp"
         android:clickable="false"
         android:ems="10"
-        android:inputType="text"
         android:text="@string/profile_fragment_newPassword"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/old_password_label" />
 
-    <EditText
+    <TextView
         android:id="@+id/new_password_label_2"
         android:layout_width="114dp"
         android:layout_height="44dp"
@@ -202,18 +178,19 @@ tools:context=".profile.ProfileFragment">
         android:layout_marginTop="16dp"
         android:clickable="false"
         android:ems="10"
-        android:inputType="text"
         android:text="@string/profile_fragment_newPassword"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/new_password_label_1" />
 
     <ImageView
         android:id="@+id/profile_icon"
-        android:layout_width="148dp"
-        android:layout_height="140dp"
-        android:layout_marginStart="130dp"
-        android:layout_marginTop="32dp"
+        android:layout_width="91dp"
+        android:layout_height="95dp"
+        android:layout_marginStart="160dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         android:src="@drawable/ic_face_black_24dp"
+        app:layout_constraintBottom_toTopOf="@+id/name_label"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
