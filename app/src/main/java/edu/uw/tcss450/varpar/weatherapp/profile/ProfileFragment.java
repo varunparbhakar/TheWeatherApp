@@ -44,9 +44,9 @@ private FragmentProfileBinding mBinding;
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mBinding.nameLabel.setText("Chuck" + "Finley");
-        mBinding.usernameLabel.setText("notsamaxe");
-        mBinding.emailLabel.setText("chuck@finley.rad");
+        mBinding.nameField.setText("Chuck" + "Finley");
+        mBinding.usernameField.setText("notsamaxe");
+        mBinding.emailField.setText("chuck@finley.rad");
 
         mBinding.buttonChangePassword.setOnClickListener(button -> {
             Log.i("TODO","Change the password if it all works");

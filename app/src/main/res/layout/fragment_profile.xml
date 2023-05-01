@@ -5,7 +5,6 @@ xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 tools:context=".profile.ProfileFragment">
-    <!--android:id="@+id/layout_root"-->
 
 <androidx.constraintlayout.widget.Guideline
     android:id="@+id/guideline_fifty"
@@ -57,7 +56,8 @@ tools:context=".profile.ProfileFragment">
         android:inputType="textPersonName"
         app:layout_constraintBottom_toTopOf="@+id/username_field"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/name_label" />
+        app:layout_constraintStart_toEndOf="@+id/name_label"
+        app:layout_constraintTop_toTopOf="@+id/name_label" />
 
     <EditText
         android:id="@+id/old_password"
@@ -67,7 +67,6 @@ tools:context=".profile.ProfileFragment">
         android:layout_marginTop="75dp"
         android:layout_marginEnd="8dp"
         android:autofillHints=""
-        android:editable="true"
         android:ems="10"
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
