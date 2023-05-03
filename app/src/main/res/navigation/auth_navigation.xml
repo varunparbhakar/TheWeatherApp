@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/registerFragment"
-        android:name="edu.uw.tcss450.varpar.weatherapp.login.RegisterFragment"
+        android:name="edu.uw.tcss450.varpar.weatherapp.auth.register.RegisterFragment"
         android:label="fragment_register"
         tools:layout="@layout/fragment_register" >
         <action
@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
-        android:name="edu.uw.tcss450.varpar.weatherapp.login.LoginFragment"
+        android:name="edu.uw.tcss450.varpar.weatherapp.auth.login.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" >
         <action

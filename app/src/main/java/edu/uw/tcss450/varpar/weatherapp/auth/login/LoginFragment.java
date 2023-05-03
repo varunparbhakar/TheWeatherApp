@@ -1,4 +1,4 @@
-package edu.uw.tcss450.varpar.weatherapp.login;
+package edu.uw.tcss450.varpar.weatherapp.auth.login;
 
 import android.os.Bundle;
 import static edu.uw.tcss450.varpar.weatherapp.util.PasswordValidator.*;
@@ -13,6 +13,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentLoginBinding;
 import edu.uw.tcss450.varpar.weatherapp.util.PasswordValidator;
@@ -54,20 +57,24 @@ public class LoginFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mBinding.buttonRegister.setOnClickListener(button -> {
-                Navigation.findNavController(getView()).navigate(LoginFragmentDirections.actionLoginFragmentToRegisterFragment());
+//                Navigation.findNavController(getView()).navigate(edu.uw.tcss450.varpar.weatherapp.login.LoginFragmentDirections.actionLoginFragmentToRegisterFragment());
 //            Navigation.findNavController(getView()).navigate(edu.uw.tcss450.varpar.weatherapp.LoginFragmentDirections.actionLoginFragmentToRegisterFragment());
+            Navigation.findNavController(getView()).navigate(edu.uw.tcss450.varpar.weatherapp.auth.login.LoginFragmentDirections.actionLoginFragmentToRegisterFragment());
 
-            });
-
-        mBinding.buttonLogin.setOnClickListener(button -> {
-            attemptSignIn();
-            if(mLoginVModel.getmValidLogin()) {
-                Navigation.findNavController(getView()).navigate(
-                        LoginFragmentDirections.actionLoginFragmentToMainActivity2());
-            }
         });
+
+        mLoginVModel.addResponseObserver(
+                getViewLifecycleOwner(),
+                this::observeResponse);
+        mBinding.buttonLogin.setOnClickListener(this::attemptSignIn);
+//        mBinding.buttonLogin.setOnClickListener(button -> {
+//            if(mLoginVModel.getmValidLogin()) {
+//                Navigation.findNavController(getView()).navigate(
+//                        edu.uw.tcss450.varpar.weatherapp.auth.login.LoginFragmentDirections.actionLoginFragmentToMainActivity2());
+//            }
+//        });
     }
-    private void attemptSignIn() {
+    private void attemptSignIn(final View button) {
         validateEmail();
     }
     private void validateEmail() {
@@ -83,13 +90,42 @@ public class LoginFragment extends Fragment {
                 result -> mBinding.etPassword.setError("Please enter a valid Password."));
     }
     private void verifyAuthWithServer() {
-        mLoginVModel.setmValidLogin(true);
 
 
-        //        mSignInModel.connect(
-//                binding.editEmail.getText().toString(),
-//                binding.editPassword.getText().toString());
-//        //This is an Asynchronous call. No statements after should rely on the
-//        //result of connect().
+                mLoginVModel.connect(
+                mBinding.etEmail.getText().toString(),
+                mBinding.etPassword.getText().toString());
+        //This is an Asynchronous call. No statements after should rely on the
+        //result of connect().
+    }
+    private void observeResponse(final JSONObject response) {
+        if (response.length() > 0) {
+            if (response.has("code")) {
+                try {
+                    mBinding.etEmail.setError(
+                            "Error Authenticating: " +
+                                    response.getJSONObject("data").getString("message"));
+                } catch (JSONException e) {
+                    Log.e("JSON Parse Error", e.getMessage());
+                }
+            } else {
+//                try {
+//                    navigateToSuccess(
+//                            binding.editEmail.getText().toString(),
+//                            response.getString("token")
+//                    );
+//                } catch (JSONException e) {
+//                    Log.e("JSON Parse Error", e.getMessage());
+//                }
+                navigateToSuccess();
+            }
+        } else {
+            Log.d("JSON Response", "No Response");
+        }
+
+    }
+    private void navigateToSuccess() {
+        Navigation.findNavController(getView())
+                .navigate(LoginFragmentDirections.actionLoginFragmentToMainActivity2());
     }
 }
