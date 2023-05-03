@@ -1,4 +1,4 @@
-package edu.uw.tcss450.varpar.weatherapp.login;
+package edu.uw.tcss450.varpar.weatherapp.auth.login;
 
 import android.os.Bundle;
 import static edu.uw.tcss450.varpar.weatherapp.util.PasswordValidator.*;
@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,7 +53,7 @@ public class LoginFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mBinding.buttonRegister.setOnClickListener(button -> {
-                Navigation.findNavController(getView()).navigate(LoginFragmentDirections.actionLoginFragmentToRegisterFragment());
+                Navigation.findNavController(getView()).navigate(edu.uw.tcss450.varpar.weatherapp.login.LoginFragmentDirections.actionLoginFragmentToRegisterFragment());
 //            Navigation.findNavController(getView()).navigate(edu.uw.tcss450.varpar.weatherapp.LoginFragmentDirections.actionLoginFragmentToRegisterFragment());
 
             });
@@ -63,7 +62,7 @@ public class LoginFragment extends Fragment {
             attemptSignIn();
             if(mLoginVModel.getmValidLogin()) {
                 Navigation.findNavController(getView()).navigate(
-                        LoginFragmentDirections.actionLoginFragmentToMainActivity2());
+                        edu.uw.tcss450.varpar.weatherapp.login.LoginFragmentDirections.actionLoginFragmentToMainActivity2());
             }
         });
     }

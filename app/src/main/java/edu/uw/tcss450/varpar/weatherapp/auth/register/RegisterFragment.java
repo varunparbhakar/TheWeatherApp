@@ -1,4 +1,4 @@
-package edu.uw.tcss450.varpar.weatherapp.login;
+package edu.uw.tcss450.varpar.weatherapp.auth.register;
 
 import android.os.Bundle;
 
