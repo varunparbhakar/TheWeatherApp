@@ -53,8 +53,9 @@ public class LoginFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mBinding.buttonRegister.setOnClickListener(button -> {
-                Navigation.findNavController(getView()).navigate(edu.uw.tcss450.varpar.weatherapp.login.LoginFragmentDirections.actionLoginFragmentToRegisterFragment());
+//                Navigation.findNavController(getView()).navigate(edu.uw.tcss450.varpar.weatherapp.login.LoginFragmentDirections.actionLoginFragmentToRegisterFragment());
 //            Navigation.findNavController(getView()).navigate(edu.uw.tcss450.varpar.weatherapp.LoginFragmentDirections.actionLoginFragmentToRegisterFragment());
+            Navigation.findNavController(getView()).navigate(edu.uw.tcss450.varpar.weatherapp.auth.login.LoginFragmentDirections.actionLoginFragmentToRegisterFragment());
 
             });
 
@@ -62,7 +63,7 @@ public class LoginFragment extends Fragment {
             attemptSignIn();
             if(mLoginVModel.getmValidLogin()) {
                 Navigation.findNavController(getView()).navigate(
-                        edu.uw.tcss450.varpar.weatherapp.login.LoginFragmentDirections.actionLoginFragmentToMainActivity2());
+                        edu.uw.tcss450.varpar.weatherapp.auth.login.LoginFragmentDirections.actionLoginFragmentToMainActivity2());
             }
         });
     }
