@@ -1,14 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".home.ChatPreviewFragment">
+    android:id="@+id/card_root"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    app:cardCornerRadius="5dp">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_inner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/text_user"
+        app:layout_constraintTop_toTopOf="@+id/text_user">
 
-</FrameLayout>
+        <ImageButton
+            android:id="@+id/chat_user"
+            style="@style/Widget.AppCompat.ImageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="28dp"
+            android:background="@android:drawable/screen_background_light_transparent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_chat_user_black_48dp" />
+
+        <TextView
+            android:id="@+id/text_user"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/chat_card_title"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textStyle="bold"
+            app:autoSizeTextType="uniform"
+            app:layout_constraintTop_toBottomOf="@+id/chat_user"
+            tools:layout_editor_absoluteX="28dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>
