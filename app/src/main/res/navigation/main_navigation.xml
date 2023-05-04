@@ -22,6 +22,11 @@
         android:name="edu.uw.tcss450.varpar.weatherapp.profile.ProfileFragment"
         android:label="@string/title_activity_profile"
         tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/navigation_weather"
+        android:name="edu.uw.tcss450.varpar.weatherapp.weather.WeatherFragment"
+        android:label="Weather"
+        tools:layout="@layout/fragment_weather" />
 
     <fragment
         android:id="@+id/navigation_home"
