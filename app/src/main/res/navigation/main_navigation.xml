@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_navigation"
-    app:startDestination="@id/navigation_chat">
+    app:startDestination="@id/navigation_home">
 
     <fragment
         android:id="@+id/navigation_chat"
@@ -22,5 +22,11 @@
         android:name="edu.uw.tcss450.varpar.weatherapp.profile.ProfileFragment"
         android:label="@string/title_activity_profile"
         tools:layout="@layout/fragment_profile" />
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="edu.uw.tcss450.varpar.weatherapp.home.HomeFragment"
+        android:label="@string/title_activity_home"
+        tools:layout="@layout/fragment_home" />
 
 </navigation>
