@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_root"
+    android:background="@color/themePrimaryDark"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -25,7 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
-        android:src="@drawable/ic_search_black_32"
+        android:src="@drawable/ic_search_32"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/text_chat_search"
         app:layout_constraintTop_toTopOf="@+id/text_chat_search" />
@@ -39,11 +40,12 @@
         app:layoutManager="LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_chat_search"
+        app:layout_constraintVertical_bias="0.0"
         tools:context="edu.uw.tcss450.varpar.weatherapp.chat.ChatListFragment"
-        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteX="0dp"
         tools:listitem="@layout/fragment_chat_card" />
 
-<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+    <!--    <androidx.constraintlayout.widget.ConstraintLayout-->
 <!--        android:id="@+id/layout_wait"-->
 <!--        android:layout_width="match_parent"-->
 <!--        android:layout_height="match_parent"-->

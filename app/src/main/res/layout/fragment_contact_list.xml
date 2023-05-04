@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
-        android:src="@drawable/ic_search_black_32"
+        android:src="@drawable/ic_search_32"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/text_contact_search"
         app:layout_constraintTop_toTopOf="@+id/text_contact_search" />

@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!DOCTYPE resources>
+
 <resources>
+
+    <!-- Theme Colors -->
+    <color name="themePrimaryDark">#040026</color>  <!-- oxford_blue -->
+    <color name="themeSecondaryDark">#6C1FD3</color>    <!-- french_violet -->
+    <color name="themePrimaryOne">#004BC0</color>   <!-- sapphire -->
+    <color name="themeSecondaryOne">#00F3FC</color> <!-- aqua -->
+    <color name="themePrimaryTwo">#D569F6</color>   <!-- heliotrope -->
+    <color name="themeSecondaryTwo">#FFBCFF</color> <!-- mauve -->
+    <color name="themePrimaryThree">#FF8142</color> <!-- orange -->
+    <color name="themeSecondaryThree">#FFDA45</color>   <!-- mustard -->
+    <!-- /Theme Colors -->
+
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>

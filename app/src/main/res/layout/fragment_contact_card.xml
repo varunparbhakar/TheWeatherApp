@@ -20,10 +20,9 @@
             style="@style/Widget.AppCompat.ImageButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:drawable/screen_background_light_transparent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_chat_user_black_48dp" />
+            app:srcCompat="@drawable/ic_chat_user_48dp" />
 
         <TextView
             android:id="@+id/text_user"
