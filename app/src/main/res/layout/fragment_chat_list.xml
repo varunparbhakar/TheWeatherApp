@@ -16,6 +16,10 @@
         android:autofillHints="Name Of Contact"
         android:ems="10"
         android:inputType="textPersonName"
+        android:shadowColor="@color/themeSecondaryThree"
+        android:textColor="@color/themePrimaryThree"
+        android:textColorHighlight="@color/themeSecondaryThree"
+        android:textColorHint="#D1D1D1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:lineHeight="32dp" />
