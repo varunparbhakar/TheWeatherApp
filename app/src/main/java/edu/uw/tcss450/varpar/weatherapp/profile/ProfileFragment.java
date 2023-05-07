@@ -5,11 +5,24 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.nio.charset.Charset;
+import java.util.Objects;
 
 import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentProfileBinding;
 
@@ -69,10 +82,12 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onViewCreated(final @NonNull View view, final @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        UserInfoViewModel model = new ViewModelProvider(getActivity())
+                .get(UserInfoViewModel.class);
 
         mBinding.nameField.setText("Chuck" + " " + "Finley");
         mBinding.usernameField.setText("notsamaxe");
-        mBinding.emailField.setText("chuck@finley.rad");
+        mBinding.emailField.setText(model.getEmail());
 
         mBinding.buttonChangePassword.setOnClickListener(button -> {
             Log.i("TODO", "Change the password if it all works");
