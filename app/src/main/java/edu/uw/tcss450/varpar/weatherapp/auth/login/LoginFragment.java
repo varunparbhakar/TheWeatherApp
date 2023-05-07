@@ -109,23 +109,24 @@ public class LoginFragment extends Fragment {
                     Log.e("JSON Parse Error", e.getMessage());
                 }
             } else {
-//                try {
-//                    navigateToSuccess(
-//                            binding.editEmail.getText().toString(),
-//                            response.getString("token")
-//                    );
-//                } catch (JSONException e) {
-//                    Log.e("JSON Parse Error", e.getMessage());
-//                }
-                navigateToSuccess();
+                try {
+                    navigateToSuccess(
+                            mBinding.etEmail.getText().toString(),
+                            response.getString("token")
+                    );
+                } catch (JSONException e) {
+                    Log.e("JSON Parse Error", e.getMessage());
+                }
+
             }
         } else {
             Log.d("JSON Response", "No Response");
         }
 
     }
-    private void navigateToSuccess() {
+    private void navigateToSuccess(final String email, final String jwt) {
+
         Navigation.findNavController(getView())
-                .navigate(LoginFragmentDirections.actionLoginFragmentToMainActivity2());
+                .navigate(LoginFragmentDirections.actionLoginFragmentToMainActivity2(email, jwt));
     }
 }
