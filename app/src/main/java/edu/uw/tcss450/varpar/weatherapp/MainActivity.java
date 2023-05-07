@@ -1,6 +1,7 @@
 package edu.uw.tcss450.varpar.weatherapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -11,6 +12,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import edu.uw.tcss450.varpar.weatherapp.profile.UserInfoViewModel;
 
 /**
  * Activity that holds all the main content for the app.
@@ -31,6 +34,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        //Importing Arguments
+        MainActivityArgs args = MainActivityArgs.fromBundle(getIntent().getExtras());
+        new ViewModelProvider(this,
+                new UserInfoViewModel.UserInfoViewModelFactory(args.getEmail(), args.getJwt())
+        ).get(UserInfoViewModel.class);
 
         //this stuff works with binding existing fragment to nav
         BottomNavigationView navView = findViewById(R.id.nav_view);
