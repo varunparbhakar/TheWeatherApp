@@ -6,8 +6,7 @@ import java.util.function.Function;
 import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 
-public interface PasswordValidator
-        extends Function<String, Optional<PasswordValidator.ValidationResult>> {
+public interface PasswordValidator extends Function<String, Optional<PasswordValidator.ValidationResult>> {
 
     /**
      * Returns a validator that when applied will validate the length of the String as greater

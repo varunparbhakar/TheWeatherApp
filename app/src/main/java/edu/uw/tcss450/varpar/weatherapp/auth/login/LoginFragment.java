@@ -29,7 +29,7 @@ public class LoginFragment extends Fragment {
     private FragmentLoginBinding mBinding;
     private LoginViewModel mLoginVModel;
 
-    private PasswordValidator mEmailValidator = checkPwdLength(4)
+    private PasswordValidator mEmailValidator = checkPwdLength(2)
             .and(checkExcludeWhiteSpace())
             .and(checkPwdSpecialChar("@"));
     private PasswordValidator mPassWordValidator = checkPwdLength(6)
