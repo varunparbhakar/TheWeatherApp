@@ -1,6 +1,9 @@
 package edu.uw.tcss450.varpar.weatherapp.profile;
 
+import android.app.Application;
+
 import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -8,7 +11,6 @@ public class UserInfoViewModel extends ViewModel {
 
     private final String mEmail;
     private final String mJwt;
-
     private UserInfoViewModel(String email, String jwt) {
         mEmail = email;
         mJwt = jwt;
