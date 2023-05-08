@@ -73,6 +73,15 @@ public class LoginFragment extends Fragment {
 //                        edu.uw.tcss450.varpar.weatherapp.auth.login.LoginFragmentDirections.actionLoginFragmentToMainActivity2());
 //            }
 //        });
+
+        autoLogin(); //REMOVE WHEN DONE
+    }
+    private void autoLogin() {
+        //EASE OF LOGGIN IN
+        mBinding.etEmail.setText("mom@gmail.com");
+        mBinding.etPassword.setText("Test123!");
+        attemptSignIn(mBinding.buttonLogin);
+        //EASE OF LOGGING IN
     }
     private void attemptSignIn(final View button) {
         validateEmail();
