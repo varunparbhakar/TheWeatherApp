@@ -8,7 +8,7 @@
     <color name="themePrimaryDark">#040026</color>  <!-- oxford_blue -->
     <color name="themeSecondaryDark">#6C1FD3</color>    <!-- french_violet -->
     <color name="themePrimaryOne">#004BC0</color>   <!-- sapphire -->
-    <color name="themeSecondaryOne">#00F3FC</color> <!-- aqua -->
+    <color name="themeSecondaryOne">#00A3AC</color> <!-- aqua -->
     <color name="themePrimaryTwo">#D569F6</color>   <!-- heliotrope -->
     <color name="themeSecondaryTwo">#FFBCFF</color> <!-- mauve -->
     <color name="themePrimaryThree">#FF8142</color> <!-- orange -->
