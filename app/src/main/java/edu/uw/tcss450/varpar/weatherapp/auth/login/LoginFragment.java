@@ -22,8 +22,6 @@ import edu.uw.tcss450.varpar.weatherapp.util.PasswordValidator;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link LoginFragment#newInstance} factory method to
- * create an instance of this fragment.
  */
 public class LoginFragment extends Fragment {
     private FragmentLoginBinding mBinding;

@@ -33,14 +33,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
 
         //Importing Arguments
         MainActivityArgs args = MainActivityArgs.fromBundle(getIntent().getExtras());
         new ViewModelProvider(this,
-                new UserInfoViewModel.UserInfoViewModelFactory(args.getEmail(), args.getJwt())
+                new UserInfoViewModel.UserInfoViewModelFactory(getApplication(), args.getEmail(), args.getJwt())
         ).get(UserInfoViewModel.class);
+
+        setContentView(R.layout.activity_main);
 
         //this stuff works with binding existing fragment to nav
         BottomNavigationView navView = findViewById(R.id.nav_view);

@@ -34,7 +34,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        UserInfoViewModel model = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
+        UserInfoViewModel model = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
 //        FragmentHomeBinding.bind(getView()).textGreeting.setText("TESTING TESTING TESTING");
 //        mBinding.textGreeting.setText("Welcome " + model.getEmail());
         mBinding.textGreeting.setText("Welcome " + "USERNAME_VARIABLE");

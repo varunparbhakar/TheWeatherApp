@@ -57,7 +57,6 @@ public class RegisterFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mRegisterModel = new ViewModelProvider(getActivity())
                 .get(RegisterViewModel.class);
-
     }
 
     @Override
