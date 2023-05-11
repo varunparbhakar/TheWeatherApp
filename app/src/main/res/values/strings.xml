@@ -22,6 +22,7 @@
     <string name="title_activity_weather">Weather</string>
     <string name="title_activity_contacts">Contacts</string>
     <string name="title_activity_chat">Chat</string>
+    <string name="title_fragment_chat_room">Chat</string>
     <string name="title_activity_profile">Profile</string>
 
     <!--Chat-->

@@ -12,8 +12,8 @@
         android:id="@+id/layout_inner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/text_user"
-        app:layout_constraintTop_toTopOf="@+id/text_user">
+        app:layout_constraintBottom_toTopOf="@+id/text_contact_user"
+        app:layout_constraintTop_toTopOf="@+id/text_contact_user">
 
         <ImageButton
             android:id="@+id/chat_user"
@@ -27,7 +27,7 @@
             app:srcCompat="@drawable/ic_chat_user_black_48dp" />
 
         <TextView
-            android:id="@+id/text_user"
+            android:id="@+id/text_contact_user"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/chat_card_title"

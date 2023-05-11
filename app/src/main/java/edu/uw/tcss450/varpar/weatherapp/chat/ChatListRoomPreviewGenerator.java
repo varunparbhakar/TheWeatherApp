@@ -3,32 +3,30 @@ package edu.uw.tcss450.varpar.weatherapp.chat;
 import java.util.Arrays;
 import java.util.List;
 
-import edu.uw.tcss450.varpar.weatherapp.R;
+public class ChatListRoomPreviewGenerator {
 
-public class ChatGenerator {
-
-    private static final ChatMessage[] CHATS;
+    private static final ChatListRoomPreview[] CHATS;
     public static final int COUNT = 20;
 
 
     static {
-        CHATS = new ChatMessage[COUNT];
+        CHATS = new ChatListRoomPreview[COUNT];
         for (int i = 0; i < CHATS.length; i++) {
-            CHATS[i] = new ChatMessage
+            CHATS[i] = new ChatListRoomPreview
                     .Builder("User_" + i, "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et.")
                     .build();
         }
     }
 
-    public static List<ChatMessage> getChatList() {
+    public static List<ChatListRoomPreview> getChatList() {
         return Arrays.asList(CHATS);
     }
 
-    public static ChatMessage[] getChats() {
+    public static ChatListRoomPreview[] getChats() {
         return Arrays.copyOf(CHATS, CHATS.length);
     }
 
-    private ChatGenerator() { }
+    private ChatListRoomPreviewGenerator() { }
 
 
 

@@ -1,32 +1,26 @@
 package edu.uw.tcss450.varpar.weatherapp.chat;
 
-import android.graphics.drawable.Icon;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import edu.uw.tcss450.varpar.weatherapp.R;
-import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentChatCardBinding;
+import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentChatRoomMessageCardBinding;
 
-public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerViewAdapter.ChatViewHolder> {
+public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRecyclerViewAdapter.ChatRoomViewHolder> {
 
     //Store all of the blogs to present
-    private final List<ChatMessage> mChats;
+    private final List<ChatListRoomPreview> mChats;
 
 //    //Store the expanded state for each List item, true -> expanded, false -> not
 //    private final Map<ChatMessage, Boolean> mExpandedFlags;
 
-    public ChatRecyclerViewAdapter(List<ChatMessage> items) {
+    public ChatRoomRecyclerViewAdapter(List<ChatListRoomPreview> items) {
         this.mChats = items;
 //        mExpandedFlags = mChats.stream()
 //                .collect(Collectors.toMap(Function.identity(), blog -> false));
@@ -35,14 +29,14 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
 
     @NonNull
     @Override
-    public ChatViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ChatViewHolder(LayoutInflater
+    public ChatRoomViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new ChatRoomViewHolder(LayoutInflater
                 .from(parent.getContext())
-                .inflate(R.layout.fragment_chat_card, parent, false));
+                .inflate(R.layout.fragment_chat_list_card, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ChatViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ChatRoomViewHolder holder, int position) {
         holder.setChat(mChats.get(position));
     }
 
@@ -55,15 +49,15 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
      * Objects from this class represent an Individual row View from the List
      * of rows in the Chat Recycler View.
      */
-    public class ChatViewHolder extends RecyclerView.ViewHolder {
+    public class ChatRoomViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public FragmentChatCardBinding binding;
-        private ChatMessage mChat;
+        public FragmentChatRoomMessageCardBinding binding;
+        private ChatListRoomPreview mChat;
 
-        public ChatViewHolder(View view) {
+        public ChatRoomViewHolder(View view) {
             super(view);
             mView = view;
-            binding = FragmentChatCardBinding.bind(view);
+            binding = FragmentChatRoomMessageCardBinding.bind(view);
 //            binding.buittonMore.setOnClickListener(this::handleMoreOrLess);
         }
 
@@ -97,15 +91,14 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
 //            }
 //        }
 
-        void setChat(final ChatMessage chat) {
+        void setChat(final ChatListRoomPreview chat) {
             mChat = chat;
 //            binding.buttonFullPost.setOnClickListener(view -> {
 //                Navigation.findNavController(mView).navigate(
 //                        ChatListFragmentDirections
 //                                .actionNavigationChatsToChatMessageFragment(blog));
 //            });
-            binding.textUser.setText(chat.getUser());
-            binding.textMessage.setText(chat.getMessage());
+            binding.textChatRoomMessage.setText(chat.getUser());
             //Use methods in the HTML class to format the HTML found in the text
 //            final String preview =  Html.fromHtml(
 //                            chat.getTeaser(),
