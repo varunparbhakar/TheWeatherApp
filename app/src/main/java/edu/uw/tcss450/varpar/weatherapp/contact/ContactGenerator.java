@@ -8,8 +8,7 @@ import edu.uw.tcss450.varpar.weatherapp.contact.Contact;
 public class ContactGenerator {
 
     private static final Contact[] CONTACTS;
-    public static final int COUNT = 4;
-
+    public static final int COUNT = 20;
 
     static {
         CONTACTS = new Contact[COUNT];

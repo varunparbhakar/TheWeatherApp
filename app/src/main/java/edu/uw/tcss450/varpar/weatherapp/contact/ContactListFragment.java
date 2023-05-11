@@ -4,10 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +12,6 @@ import android.view.ViewGroup;
 import org.jetbrains.annotations.Nullable;
 
 import edu.uw.tcss450.varpar.weatherapp.R;
-import edu.uw.tcss450.varpar.weatherapp.chat.ChatGenerator;
-import edu.uw.tcss450.varpar.weatherapp.chat.ChatRecyclerViewAdapter;
 import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentContactListBinding;
 
 /**
@@ -63,29 +58,5 @@ public class ContactListFragment extends Fragment {
         myContactAdapter = new ContactRecyclerViewAdapter(ContactGenerator.getContactList());
         binding.listRoot.setAdapter(myContactAdapter);
 
-        //This code causes a crash!!!!!
-//        binding.buttonAddContact.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                myContactAdapter.addContact(new Contact.Builder("Varun").build());
-//                myContactAdapter.notifyItemInserted(myContactAdapter.getItemCount() - 1);
-//            }
-//        });
-
-
-
-//        int position = myContactAdapter.getItemCount() - 1;
-//        myContactAdapter.notifyItemInserted(position);
-
-
-
-//        mModel.addContactListObserver(getViewLifecycleOwner(), blogList -> {
-//            if (!blogList.isEmpty()) {
-//                binding.listRoot.setAdapter(
-//                        new ContactRecyclerViewAdapter(blogList)
-//                );
-//                binding.layoutWait.setVisibility(View.GONE);
-//            }
-//        });
     }
 }
