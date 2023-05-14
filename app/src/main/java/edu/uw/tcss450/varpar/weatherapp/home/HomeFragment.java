@@ -38,7 +38,7 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         UserInfoViewModel model = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
-        Log.i("SQL_LOG", model.getJSON().toString());
+//        Log.i("SQL_LOG", model.getJSON().toString());
         mBinding.textGreeting.setText("NO WELCOME " + model.getInfoJson("firstname"));
 
     }

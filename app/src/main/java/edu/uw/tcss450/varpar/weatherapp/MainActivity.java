@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         UserInfoViewModel model = new ViewModelProvider(this).get(UserInfoViewModel.class);
         try {
             model.setJSON(new JSONObject(args.getJson()));
+            Log.e("help",args.getJson());
         } catch (JSONException e) {
             Log.i("CONVERTING ERROR", "onCreate: while converting from string back into the json object there was an error ");
             throw new RuntimeException(e);
