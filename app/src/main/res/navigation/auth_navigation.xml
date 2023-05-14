@@ -32,10 +32,7 @@
         android:label="activity_main"
         tools:layout="@layout/activity_main" >
         <argument
-            android:name="email"
-            app:argType="string" />
-        <argument
-            android:name="jwt"
+            android:name="json"
             app:argType="string" />
     </activity>
 </navigation>

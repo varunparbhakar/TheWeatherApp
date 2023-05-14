@@ -63,7 +63,7 @@ public class ContactListFragment extends Fragment {
         myContactAdapter = new ContactRecyclerViewAdapter(ContactGenerator.getContactList());
         binding.listRoot.setAdapter(myContactAdapter);
 
-        //This code causes a crash!!!!!
+//        //This code causes a crash!!!!!
 //        binding.buttonAddContact.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {

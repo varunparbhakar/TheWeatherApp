@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import edu.uw.tcss450.varpar.weatherapp.R;
+
 public class RegisterViewModel extends AndroidViewModel {
 
     private MutableLiveData<JSONObject> mResponse;
@@ -63,7 +65,7 @@ public class RegisterViewModel extends AndroidViewModel {
                         final String last,
                         final String email,
                         final String password) {
-        String url = "https://theweatherapp.herokuapp.com/auth";
+        String url = getApplication().getResources().getString(R.string.url)+"auth";
         JSONObject body = new JSONObject();
         try {
             body.put("first", first);
