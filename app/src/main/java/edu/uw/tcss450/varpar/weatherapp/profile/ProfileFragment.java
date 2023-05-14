@@ -14,7 +14,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
@@ -77,7 +76,7 @@ public class ProfileFragment extends Fragment {
      * @return view root.
      */
     @Override
-    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
+    public View onCreateView(@NonNull final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mBinding = FragmentProfileBinding.inflate(inflater);
@@ -96,7 +95,6 @@ public class ProfileFragment extends Fragment {
         mModel = new ViewModelProvider(getActivity())
                 .get(UserInfoViewModel.class);
 
-        //TODO preventing firing of old event
         mModel.removeResponseObserver(this::observeResponse);
         mModel.addResponseObserver(getViewLifecycleOwner(),
                 this::observeResponse);
@@ -106,9 +104,7 @@ public class ProfileFragment extends Fragment {
         mBinding.usernameField.setText(mModel.getUsername());
         mBinding.emailField.setText(mModel.getEmail());
 
-        mBinding.buttonChangePassword.setOnClickListener(button -> {
-            this.validatePassword();
-        });
+        mBinding.buttonChangePassword.setOnClickListener(button -> this.validatePassword());
     }
 
     /**
@@ -134,13 +130,17 @@ public class ProfileFragment extends Fragment {
                 });
     }
 
+    /**
+     * Observe network responses from UserInfoViewModel.
+     * These responses are all related to password changing.
+     * @param response network response packaged as JSON.
+     */
     private void observeResponse(final JSONObject response) {
         if (response.length() > 0) {
             if (response.has("code")) {
                 try {
-                    mBinding.newPassword1.setError(
-                            "Error Authenticating: " +
-                                    response.getJSONObject("data").getString("message"));
+                    mBinding.newPassword1.setError("Error Authenticating: "
+                            + response.getJSONObject("data").getString("message"));
                 } catch (JSONException e) {
                     Log.e("JSON Parse Error", e.getMessage());
                     createAlertDialogue(getText(R.string.profile_fragment_serverError).toString());
@@ -157,8 +157,7 @@ public class ProfileFragment extends Fragment {
                     mBinding.newPassword1.setText("");
                     mBinding.newPassword2.setText("");
                     mBinding.oldPassword.setText("");
-                }
-                catch (JSONException e) {
+                } catch (JSONException e) {
                     Log.e("JSON Parse Error in ProfileFrag.observeResponse: ", e.getMessage());
                     createAlertDialogue(getText(R.string.profile_fragment_serverError).toString());
                 }
@@ -189,5 +188,4 @@ public class ProfileFragment extends Fragment {
         AlertDialog alert11 = builder1.create();
         alert11.show();
     }
-
 }

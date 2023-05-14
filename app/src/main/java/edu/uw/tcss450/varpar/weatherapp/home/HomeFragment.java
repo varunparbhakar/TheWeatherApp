@@ -7,18 +7,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.json.JSONException;
-
-import java.util.Objects;
-
 import edu.uw.tcss450.varpar.weatherapp.R;
 import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentHomeBinding;
-import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentLoginBinding;
 import edu.uw.tcss450.varpar.weatherapp.profile.UserInfoViewModel;
 
 /**
@@ -27,7 +21,7 @@ import edu.uw.tcss450.varpar.weatherapp.profile.UserInfoViewModel;
 public class HomeFragment extends Fragment {
     FragmentHomeBinding mBinding;
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mBinding = FragmentHomeBinding.inflate(inflater, container, false);
@@ -38,8 +32,7 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         UserInfoViewModel model = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
-//        Log.i("SQL_LOG", model.getJSON().toString());
-        mBinding.textGreeting.setText("NO WELCOME " + model.getInfoJson("firstname"));
-
+        String welcomeText = getText(R.string.home_fragment_welcome) + " " + model.getFirstName();
+        mBinding.textGreeting.setText(welcomeText);
     }
 }
