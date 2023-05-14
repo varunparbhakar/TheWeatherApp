@@ -1,6 +1,7 @@
 package edu.uw.tcss450.varpar.weatherapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -8,10 +9,14 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import edu.uw.tcss450.varpar.weatherapp.profile.UserInfoViewModel;
 
@@ -37,10 +42,21 @@ public class MainActivity extends AppCompatActivity {
 
         //Importing Arguments
         MainActivityArgs args = MainActivityArgs.fromBundle(getIntent().getExtras());
-        new ViewModelProvider(this,
-                new UserInfoViewModel.UserInfoViewModelFactory(args.getEmail(), args.getJwt())
-        ).get(UserInfoViewModel.class);
-
+//        new ViewModelProvider(this, new UserInfoViewModel(getApplication(), args.getEmail(), args.getJwt())
+//        ).get(UserInfoViewModel.class);
+        UserInfoViewModel model = new ViewModelProvider(this).get(UserInfoViewModel.class);
+        try {
+            model.setJSON(new JSONObject(args.getJson()));
+        } catch (JSONException e) {
+            Log.i("CONVERTING ERROR", "onCreate: while converting from string back into the json object there was an error ");
+            throw new RuntimeException(e);
+        }
+        try {
+            model.setJSON(new JSONObject(args.getJson()));
+        } catch (JSONException e) {
+            Log.d("Parsing", "Parsing String into JSON " + args.getJson());
+            throw new RuntimeException(e);
+        }
 
         setContentView(R.layout.activity_main);
         //this stuff works with binding existing fragment to nav

@@ -32,4 +32,7 @@
     <!--Contact-->
     <string name="button_add_contact_description">Button to navigate to the add a new contact screen.</string>
 
+    <string name="url">http://10.0.0.67:5000/</string>
+    <!--    <string name="url">https://theweatherapp.herokuapp.com/</string>-->
+
 </resources>

@@ -18,6 +18,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentLoginBinding;
+import edu.uw.tcss450.varpar.weatherapp.profile.UserInfoViewModel;
 import edu.uw.tcss450.varpar.weatherapp.util.PasswordValidator;
 
 /**
@@ -28,6 +29,7 @@ import edu.uw.tcss450.varpar.weatherapp.util.PasswordValidator;
 public class LoginFragment extends Fragment {
     private FragmentLoginBinding mBinding;
     private LoginViewModel mLoginVModel;
+    private UserInfoViewModel model;
 
     private PasswordValidator mEmailValidator = checkPwdLength(2)
             .and(checkExcludeWhiteSpace())
@@ -65,7 +67,11 @@ public class LoginFragment extends Fragment {
 
         mLoginVModel.addResponseObserver(
                 getViewLifecycleOwner(),
-                this::observeResponse);
+                this::loginResponseObserver);
+
+
+
+
         mBinding.buttonLogin.setOnClickListener(this::attemptSignIn);
 //        mBinding.buttonLogin.setOnClickListener(button -> {
 //            if(mLoginVModel.getmValidLogin()) {
@@ -104,10 +110,11 @@ public class LoginFragment extends Fragment {
                 mLoginVModel.connect(
                 mBinding.etEmail.getText().toString(),
                 mBinding.etPassword.getText().toString());
+
         //This is an Asynchronous call. No statements after should rely on the
         //result of connect().
     }
-    private void observeResponse(final JSONObject response) {
+    private void loginResponseObserver(final JSONObject response) {
         if (response.length() > 0) {
             if (response.has("code")) {
                 try {
@@ -115,27 +122,19 @@ public class LoginFragment extends Fragment {
                             "Error Authenticating: " +
                                     response.getJSONObject("data").getString("message"));
                 } catch (JSONException e) {
-                    Log.e("JSON Parse Error", e.getMessage());
+                    Log.e("JSON Parse Error in login response observer", e.getMessage());
                 }
             } else {
-                try {
-                    navigateToSuccess(
-                            mBinding.etEmail.getText().toString(),
-                            response.getString("token")
-                    );
-                } catch (JSONException e) {
-                    Log.e("JSON Parse Error", e.getMessage());
-                }
+                //Taking the user's json and passing to the other activity
+                navigateToSuccess(response.toString());
 
             }
         } else {
-            Log.d("JSON Response", "No Response");
+            Log.d("JSON Response in login response observer", "No Response");
         }
 
     }
-    private void navigateToSuccess(final String email, final String jwt) {
-
-        Navigation.findNavController(getView())
-                .navigate(LoginFragmentDirections.actionLoginFragmentToMainActivity2(email, jwt));
+    private void navigateToSuccess(final String json) {
+        Navigation.findNavController(getView()).navigate(LoginFragmentDirections.actionLoginFragmentToMainActivity2(json));
     }
 }
