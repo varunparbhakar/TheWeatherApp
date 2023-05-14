@@ -48,7 +48,13 @@ public class UserInfoViewModel extends AndroidViewModel {
 
     public void addResponseObserver(@NonNull LifecycleOwner owner,
                                     @NonNull Observer<? super JSONObject> observer) {
+        mResponse = new MutableLiveData<>(); //TODO preventing firing of old event
         mResponse.observe(owner, observer);
+    }
+
+    //TODO preventing firing of old event
+    public void removeResponseObserver(@NonNull Observer<? super JSONObject> observer) {
+        mResponse.removeObserver(observer);
     }
 
     public String getEmail() {

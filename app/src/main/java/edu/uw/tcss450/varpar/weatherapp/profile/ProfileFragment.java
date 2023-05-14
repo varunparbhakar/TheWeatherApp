@@ -14,6 +14,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
@@ -94,6 +95,8 @@ public class ProfileFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         mModel = new ViewModelProvider(getActivity())
                 .get(UserInfoViewModel.class);
+        //TODO preventing firing of old event
+        mModel.removeResponseObserver(this::observeResponse);
         mModel.addResponseObserver(getViewLifecycleOwner(),
                 this::observeResponse);
 
@@ -131,6 +134,9 @@ public class ProfileFragment extends Fragment {
     }
 
     private void observeResponse(final JSONObject response) {
+//        if (getViewLifecycleOwner().getLifecycle().getCurrentState()== Lifecycle.State.RESUMED) {
+//            return;
+//        }
         if (response.length() > 0) {
             if (response.has("code")) {
                 try {
