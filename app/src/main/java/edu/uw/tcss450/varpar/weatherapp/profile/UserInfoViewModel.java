@@ -16,7 +16,6 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -129,48 +128,19 @@ public class UserInfoViewModel extends AndroidViewModel {
                 .addToRequestQueue(request);
     }
 
-    public void connectValidatePassword(final String email, final String password) {
-        String url = "https://theweatherapp.herokuapp.com/auth";
-        Request request = new JsonObjectRequest(
-                Request.Method.GET,
-                url,
-                null, //no body for this get request
-                mResponse::setValue, //TODO let fragment know success
-                this::handleError) {
-            @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                // add headers <key,value>
-                String credentials = email + ":" + password;
-                String auth = "Basic "
-                        + Base64.encodeToString(credentials.getBytes(),
-                        Base64.NO_WRAP);
-                headers.put("Authorization", auth);
-                return headers;
-            }
-        };
-        request.setRetryPolicy(new DefaultRetryPolicy(
-                10_000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
-        //Instantiate the RequestQueue and add the request to the queue
-        RequestQueueSingleton.getInstance(getApplication().getApplicationContext())
-                .addToRequestQueue(request);
-    }
-
-    public void connectPostPassword(final String newPassword) {
-        String url = "https://theweatherapp.herokuapp.com/info"; //TODO wrong, what creds
+    public void connectValidatePassword(final String oldPassword, final String newPassword) {
+        String url = "https://theweatherapp.herokuapp.com/infotemp"; //TODO wrong, what creds
 
         JSONObject body = new JSONObject();
         try {
-            body.put("password", newPassword);
+            body.put("oldpassword", oldPassword);
+            body.put("newpassword", newPassword);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         Request request = new JsonObjectRequest(
-                Request.Method.POST,
+                Request.Method.PUT,
                 url,
                 body, //JSON body for this get request
                 mResponse::setValue, //TODO change to let user know success

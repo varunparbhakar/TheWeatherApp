@@ -8,6 +8,7 @@ import static edu.uw.tcss450.varpar.weatherapp.util.PasswordValidator.checkPwdLo
 import static edu.uw.tcss450.varpar.weatherapp.util.PasswordValidator.checkPwdSpecialChar;
 import static edu.uw.tcss450.varpar.weatherapp.util.PasswordValidator.checkPwdUpperCase;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -20,6 +21,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,7 +38,7 @@ public class RegisterFragment extends Fragment {
     private FragmentRegisterBinding mBinding;
     private RegisterViewModel mRegisterModel;
 
-    private PasswordValidator mNameValidator = checkPwdLength(1);
+    private PasswordValidator mNameValidator = checkPwdLength(0);
 
     private PasswordValidator mEmailValidator = checkPwdLength(2)
             .and(checkExcludeWhiteSpace())
@@ -70,9 +73,52 @@ public class RegisterFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mBinding.etFirstName.requestFocus();
         mRegisterModel.addResponseObserver(getViewLifecycleOwner(),
                 this::observeResponse);
         mBinding.buttonRegister.setOnClickListener(this::attemptRegister);
+        mBinding.buttomNameHint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mBinding.etFirstName.requestFocus();
+                AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(getContext());
+                dlgAlert.setMessage("- You name can has to be at least 1 character");
+                dlgAlert.setTitle("Name Requirements");
+                dlgAlert.setPositiveButton("OK", null);
+                dlgAlert.setCancelable(true);
+                dlgAlert.create().show();
+            }
+        });
+        mBinding.buttonEmailHint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mBinding.etEmailText.requestFocus();
+                AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(getContext());
+                dlgAlert.setMessage("- Email should have at least 2 character" +
+                        "\n- Email needs to include '@'");
+                dlgAlert.setTitle("Email Requirements");
+                dlgAlert.setPositiveButton("OK", null);
+                dlgAlert.setCancelable(true);
+                dlgAlert.create().show();
+            }
+        });
+
+        mBinding.buttonPasswordHint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mBinding.etPassword.requestFocus();
+                AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(getContext());
+                dlgAlert.setMessage("- Email should have at least 7 character" +
+                        "\n- Required a special character (@,#,$,%,&,*,!,?)" +
+                        "\n- Required a single digit" +
+                        "\n- Required at least 1 upper case and lower case letters");
+                dlgAlert.setTitle("Password Requirements");
+                dlgAlert.setPositiveButton("OK", null);
+                dlgAlert.setCancelable(true);
+                dlgAlert.create().show();
+            }
+        });
+
     }
     private void attemptRegister(final View button) {
         validateFirst();
@@ -81,13 +127,27 @@ public class RegisterFragment extends Fragment {
         mNameValidator.processResult(
                 mNameValidator.apply(mBinding.etFirstName.getText().toString().trim()),
                 this::validateLast,
-                result -> mBinding.etFirstName.setError("Please enter a first name."));
+                result -> {
+                    if(mBinding.etFirstName.getText().toString().length() < 1) {
+                        mBinding.etFirstName.setError("Name has to be at least 1 character");
+                    } else {
+                        mBinding.etFirstName.setError("Enter a valid name.");
+                    }
+                }
+        );
     }
     private void validateLast() {
         mNameValidator.processResult(
                 mNameValidator.apply(mBinding.etLastName.getText().toString().trim()),
                 this::validateEmail,
-                result -> mBinding.etLastName.setError("Please enter a last name."));
+                result -> {
+                    if(mBinding.etLastName.getText().toString().length() < 1) {
+                        mBinding.etLastName.setError("Name has to be at least 1 character");
+                    } else {
+                        mBinding.etLastName.setError("Enter a valid name.");
+                    }
+                }
+        );
     }
     private void validateEmail() {
         mEmailValidator.processResult(
@@ -109,7 +169,11 @@ public class RegisterFragment extends Fragment {
         mPassWordValidator.processResult(
                 mPassWordValidator.apply(mBinding.etPassword.getText().toString()),
                 this::verifyAuthWithServer,
-                result -> mBinding.etPassword.setError("Please enter a valid Password."));
+                result -> {
+                    mBinding.etPassword.setError("Please enter a valid Password.");
+
+
+                });
     }
     private void verifyAuthWithServer() {
         mRegisterModel.connect(

@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import edu.uw.tcss450.varpar.weatherapp.R;
 import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentProfileBinding;
 import edu.uw.tcss450.varpar.weatherapp.util.PasswordValidator;
 
@@ -105,22 +106,23 @@ public class ProfileFragment extends Fragment {
         });
     }
 
+    /**
+     * Functionality for user to change password.
+     * Checks if new password is valid, and verifies old password with server.
+     */
     private void validatePassword() {
-        //is old pw correct TODO wrong
-        mModel.connectValidatePassword(mModel.getEmail(),mBinding.oldPassword.getText().toString().trim());
-
-        //do new pw match
         if (!mBinding.newPassword1.getText().toString().trim()
                 .equals(mBinding.newPassword2.getText().toString().trim())) {
-            mBinding.newPassword1.setText("Passwords do not match!");
+            mBinding.newPassword1.setError(getText(R.string.profile_fragment_passwordNoMatch));
             return;
         }
 
         //is new pw valid, then go
         mPasswordValidator.processResult(
-                mPasswordValidator.apply(mBinding.newPassword2.getText().toString()),
-                () -> mModel.connectPostPassword(mBinding.newPassword2.getText().toString().trim()),
-                result -> mBinding.newPassword1.setError("Please enter a valid Password."));
+                mPasswordValidator.apply(mBinding.newPassword1.getText().toString()),
+                () -> mModel.connectValidatePassword(mBinding.oldPassword.getText().toString().trim(),
+                        mBinding.newPassword1.getText().toString().trim()),
+                result -> mBinding.newPassword1.setError(getText(R.string.profile_fragment_passwordWeak)));
     }
 
     private void observeResponse(final JSONObject response) {
@@ -134,7 +136,14 @@ public class ProfileFragment extends Fragment {
                     Log.e("JSON Parse Error", e.getMessage());
                 }
             } else {
-                //TODO identify different password steps
+                //TODO this is success
+                try {
+                    mBinding.newPassword1.setText(response.getString("message"));
+                    mBinding.newPassword2.setText("");
+                    mBinding.oldPassword.setText("");
+                } catch (JSONException e) {
+                    Log.e("JSON Parse Error in ProfileFrag.observeResponse: ", e.getMessage());
+                }
             }
         } else {
             Log.d("JSON Response", "No Response");

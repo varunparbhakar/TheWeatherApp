@@ -47,6 +47,15 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
     }
 
     /**
+     * Adding a contact to the contact list
+     * @param myContact
+     * @return
+     */
+    public boolean addContact(Contact myContact){
+        return mContacts.add(myContact);
+    }
+
+    /**
      * Objects from this class represent an Individual row View from the List
      * of rows in the Contact Recycler View.
      */
