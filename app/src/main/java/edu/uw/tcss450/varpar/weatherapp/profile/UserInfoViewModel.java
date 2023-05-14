@@ -49,6 +49,13 @@ public class UserInfoViewModel extends AndroidViewModel {
         mResponse.setValue(json);
 
     }
+
+    /**
+     * For this method we take the json object and ask of a key, this method
+     * will then take the key and return the corresponding value
+     * @param key
+     * @return
+     */
     public String getInfoJson(String key) {
         String info = "";
         try {
