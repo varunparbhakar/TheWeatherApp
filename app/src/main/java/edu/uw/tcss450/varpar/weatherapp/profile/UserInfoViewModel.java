@@ -1,7 +1,6 @@
 package edu.uw.tcss450.varpar.weatherapp.profile;
 
 import android.app.Application;
-import android.util.Base64;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -21,8 +20,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
 import java.util.Objects;
 
 import edu.uw.tcss450.varpar.weatherapp.io.RequestQueueSingleton;
@@ -44,7 +42,8 @@ public class UserInfoViewModel extends AndroidViewModel {
         mResponse = new MutableLiveData<>();
         mResponse.setValue(new JSONObject());
 
-        this.connectGetUserData();
+//        this.connectGetUserData();
+        this.connectPostUserData();
     }
 
     public void addResponseObserver(@NonNull LifecycleOwner owner,
@@ -74,11 +73,17 @@ public class UserInfoViewModel extends AndroidViewModel {
 
     private void setUserData(final JSONObject result) {
         try {
-            mFirstName = result.get("first").toString();
-            mLastName = result.get("last").toString();
+            mFirstName = result.get("firstname").toString();
+            mLastName = result.get("lastname").toString();
             mUsername = result.get("username").toString();
+            mResponse.setValue(new JSONObject("{" +
+                    "message:\"" + "PUT SUCCESS" +
+                    "\"}"));
         } catch (JSONException e) {
             Log.e("JSON Parse", "Unable to parse JSON Fields");
+            Log.e("JSON Parse", e.getMessage());
+            Log.e("JSON Parse", e.toString());
+            Log.e("JSON Parse", Arrays.toString(e.getStackTrace()));
         }
     }
 
@@ -115,6 +120,34 @@ public class UserInfoViewModel extends AndroidViewModel {
                 Request.Method.GET, //HTTP method
                 url, //URL to go to
                 null, //body, but no body in this request
+                this::setUserData, //what to do on success
+                this::handleError); //what to do on error
+
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                10_000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        //Instantiate the RequestQueue and add the request to the Queue
+        RequestQueueSingleton.getInstance(getApplication().getApplicationContext())
+                .addToRequestQueue(request);
+    }
+
+    /* POST request. */
+    public void connectPostUserData() {
+        String url = "https://theweatherapp.herokuapp.com/info";
+
+        JSONObject body = new JSONObject();
+        try {
+            body.put("email", this.mEmail);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Request request = new JsonObjectRequest(
+                Request.Method.POST, //HTTP method
+                url, //URL to go to
+                body, //body, but no body in this request
                 this::setUserData, //what to do on success
                 this::handleError); //what to do on error
 

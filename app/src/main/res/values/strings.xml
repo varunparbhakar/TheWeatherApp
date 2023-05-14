@@ -33,6 +33,8 @@
     <string name="profile_fragment_username">Username</string>
     <string name="profile_fragment_passwordNoMatch">Passwords do not match!</string>
     <string name="profile_fragment_passwordWeak">Must be at least 8 chars long, and contain uppercase, lowercase, number, and symbol.</string>
+    <string name="profile_fragment_serverError">Unknown server error, please try again later</string>
+    <string name="profile_fragment_passwordSuccess">Password successfully changed!</string>
 
 
 </resources>
