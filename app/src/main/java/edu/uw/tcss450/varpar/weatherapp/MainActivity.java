@@ -1,16 +1,23 @@
 package edu.uw.tcss450.varpar.weatherapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import edu.uw.tcss450.varpar.weatherapp.profile.UserInfoViewModel;
 
 /**
  * Activity that holds all the main content for the app.
@@ -30,6 +37,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Importing Arguments
+        MainActivityArgs args = MainActivityArgs.fromBundle(getIntent().getExtras());
+        UserInfoViewModel model = new ViewModelProvider(this).get(UserInfoViewModel.class);
+        try {
+            model.setJSON(new JSONObject(args.getJson()));
+        } catch (JSONException e) {
+            Log.i("CONVERTING ERROR", "onCreate: while converting from string back into the json object there was an error ");
+            throw new RuntimeException(e);
+        }
+
         setContentView(R.layout.activity_main);
 
         //this stuff works with binding existing fragment to nav
@@ -42,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
-
     }
 
     /**

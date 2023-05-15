@@ -10,7 +10,6 @@ public class ContactGenerator {
     private static final Contact[] CONTACTS;
     public static final int COUNT = 20;
 
-
     static {
         CONTACTS = new Contact[COUNT];
         for (int i = 0; i < CONTACTS.length; i++) {

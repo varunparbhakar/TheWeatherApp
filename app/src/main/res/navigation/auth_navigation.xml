@@ -30,5 +30,9 @@
         android:id="@+id/mainActivity"
         android:name="edu.uw.tcss450.varpar.weatherapp.MainActivity"
         android:label="activity_main"
-        tools:layout="@layout/activity_main" />
+        tools:layout="@layout/activity_main" >
+        <argument
+            android:name="json"
+            app:argType="string" />
+    </activity>
 </navigation>

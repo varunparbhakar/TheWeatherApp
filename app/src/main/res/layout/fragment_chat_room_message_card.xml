@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
+    android:background="@color/colorPrimaryDark"
     app:cardCornerRadius="5dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,27 +16,18 @@
         app:layout_constraintBottom_toTopOf="@+id/text_contact_user"
         app:layout_constraintTop_toTopOf="@+id/text_contact_user">
 
-        <ImageButton
-            android:id="@+id/contact_user"
-            style="@style/Widget.AppCompat.ImageButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:drawable/screen_background_light_transparent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_chat_user_black_48dp" />
-
         <TextView
-            android:id="@+id/text_contact_user"
+            android:id="@+id/text_chat_room_message"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/chat_card_title"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textStyle="bold"
+            android:background="@drawable/rounded_corner"
+            android:padding="16dp"
+            android:text="@string/chat_card_text"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textStyle="normal"
             app:autoSizeTextType="uniform"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/contact_user"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -41,7 +41,7 @@
         app:layout_constraintTop_toBottomOf="@+id/text_chat_search"
         tools:context="edu.uw.tcss450.varpar.weatherapp.chat.ChatListFragment"
         tools:layout_editor_absoluteX="16dp"
-        tools:listitem="@layout/fragment_chat_card" />
+        tools:listitem="@layout/fragment_chat_list_card" />
 
 <!--    <androidx.constraintlayout.widget.ConstraintLayout-->
 <!--        android:id="@+id/layout_wait"-->

@@ -1,73 +1,69 @@
-package edu.uw.tcss450.varpar.weatherapp.contact;
+package edu.uw.tcss450.varpar.weatherapp.chat;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
 import edu.uw.tcss450.varpar.weatherapp.R;
-import edu.uw.tcss450.varpar.weatherapp.contact.Contact;
-import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentContactCardBinding;
+import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentChatListCardBinding;
 
-public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecyclerViewAdapter.ContactViewHolder> {
+public class ChatListRecyclerViewAdapter extends RecyclerView.Adapter<ChatListRecyclerViewAdapter.ChatListViewHolder> {
 
     //Store all of the blogs to present
-    private final List<Contact> mContacts;
+    private final List<ChatListRecyclerItem> mChats;
 
 //    //Store the expanded state for each List item, true -> expanded, false -> not
-//    private final Map<Contact, Boolean> mExpandedFlags;
+//    private final Map<ChatMessage, Boolean> mExpandedFlags;
 
-    public ContactRecyclerViewAdapter(List<Contact> items) {
-        this.mContacts = items;
-//        mExpandedFlags = mContacts.stream()
+    public ChatListRecyclerViewAdapter(List<ChatListRecyclerItem> items) {
+        this.mChats = items;
+//        mExpandedFlags = mChats.stream()
 //                .collect(Collectors.toMap(Function.identity(), blog -> false));
 
     }
 
     @NonNull
     @Override
-    public ContactViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ContactViewHolder(LayoutInflater
+    public ChatListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new ChatListViewHolder(LayoutInflater
                 .from(parent.getContext())
-                .inflate(R.layout.fragment_contact_card, parent, false));
+                .inflate(R.layout.fragment_chat_list_card, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ContactViewHolder holder, int position) {
-        holder.setContact(mContacts.get(position));
+    public void onBindViewHolder(@NonNull ChatListViewHolder holder, int position) {
+        holder.setChat(mChats.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return mContacts.size();
-    }
-
-    /**
-     * Adding a contact to the contact list
-     * @param myContact
-     * @return
-     */
-    public boolean addContact(Contact myContact){
-        return mContacts.add(myContact);
+        return mChats.size();
     }
 
     /**
      * Objects from this class represent an Individual row View from the List
-     * of rows in the Contact Recycler View.
+     * of rows in the Chat Recycler View.
      */
-    public class ContactViewHolder extends RecyclerView.ViewHolder {
+    public class ChatListViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public FragmentContactCardBinding binding;
-        private Contact mContact;
+        public FragmentChatListCardBinding binding;
+        private ChatListRecyclerItem mChat;
 
-        public ContactViewHolder(View view) {
+        public ChatListViewHolder(View view) {
             super(view);
             mView = view;
-            binding = FragmentContactCardBinding.bind(view);
+            binding = FragmentChatListCardBinding.bind(view);
+//            binding.layoutInner.setOnClickListener(
+//                    card -> Navigation.findNavController(view).navigate(
+//                                    ChatListFragmentDirections.actionNavigationChatToChatRoom()
+//                            )
+//            );
 //            binding.buittonMore.setOnClickListener(this::handleMoreOrLess);
         }
 
@@ -79,14 +75,14 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
 //         * @param button the button that was clicked
 //         */
 //        private void handleMoreOrLess(final View button) {
-//            mExpandedFlags.put(mContact, !mExpandedFlags.get(mContact));
+//            mExpandedFlags.put(mChat, !mExpandedFlags.get(mChat));
 //        }
 
 //        /**
 //         * Helper used to determine if the preview should be displayed or not.
 //         */
 //        private void displayPreview() {
-//            if (mExpandedFlags.get(mContact)) {
+//            if (mExpandedFlags.get(mChat)) {
 //                binding.textPreview.setVisibility(View.VISIBLE);
 //                binding.buittonMore.setImageIcon(
 //                        Icon.createWithResource(
@@ -101,17 +97,24 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
 //            }
 //        }
 
-        void setContact(final Contact contact) {
-            mContact = contact;
+        void setChat(final ChatListRecyclerItem chat) {
+            mChat = chat;
 //            binding.buttonFullPost.setOnClickListener(view -> {
 //                Navigation.findNavController(mView).navigate(
-//                        ContactListFragmentDirections
-//                                .ContactFragment(blog));
+//                        ChatListFragmentDirections
+//                                .actionNavigationChatsToChatMessageFragment(blog));
 //            });
-            binding.textContactUser.setText(contact.getUser());
+            binding.textChatUser.setText(chat.getUser());
+            binding.textChatMessage.setText(chat.getMessage());
+            binding.layoutInner.setOnClickListener(
+                    card -> {
+                        Navigation.findNavController(mView).navigate(
+                            ChatListFragmentDirections.actionNavigationChatToChatRoom());
+                    }
+            );
             //Use methods in the HTML class to format the HTML found in the text
 //            final String preview =  Html.fromHtml(
-//                            contact.getTeaser(),
+//                            chat.getTeaser(),
 //                            Html.FROM_HTML_MODE_COMPACT)
 //                    .toString().substring(0,100) //just a preview of the teaser
 //                    + "...";

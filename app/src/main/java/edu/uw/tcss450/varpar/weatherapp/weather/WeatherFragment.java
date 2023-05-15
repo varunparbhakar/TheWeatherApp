@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -33,9 +32,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import edu.uw.tcss450.varpar.weatherapp.R;
-import edu.uw.tcss450.varpar.weatherapp.chat.ChatGenerator;
-import edu.uw.tcss450.varpar.weatherapp.chat.ChatRecyclerViewAdapter;
-import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentWeatherBinding;
 
 public class WeatherFragment extends Fragment {
 
