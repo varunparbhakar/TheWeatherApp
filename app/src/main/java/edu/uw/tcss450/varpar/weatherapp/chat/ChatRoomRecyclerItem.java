@@ -6,13 +6,12 @@ import java.io.Serializable;
  * Class to encapsulate a chat message from a contact.
  *
  * @author Nathan Brown
- * @version 4/30/2023
+ * @version 5/10/2023
  */
-public class ChatListRoomPreview implements Serializable {
-
-    //    private final String mTimestamp;
-    private final String mUser;
+public class ChatRoomRecyclerItem implements Serializable {
     private final String mMessage;
+
+    private final String mUser;
 
     /**
      * Helper class for building messages.
@@ -20,35 +19,29 @@ public class ChatListRoomPreview implements Serializable {
      * @author Charles Bryan
      */
     public static class Builder {
-
-        private final String mUser;
         private final String mMessage;
 
+        private final String mUser;
 
         /**
          * Constructs a new Builder.
          *
-         * @param user the sender of the ChatMessage
          * @param message the message string sent by the user in the ChatMessage
          */
-        public Builder(String user, String message) {
-            this.mUser = user;
+        public Builder(String message, String user) {
             this.mMessage = message;
+            this.mUser = user;
         }
 
-        public ChatListRoomPreview build() {
-            return new ChatListRoomPreview(this);
+        public ChatRoomRecyclerItem build() {
+            return new ChatRoomRecyclerItem(this);
         }
 
     }
 
-    private ChatListRoomPreview(final Builder builder) {
-        this.mUser = builder.mUser;
+    private ChatRoomRecyclerItem(final Builder builder) {
         this.mMessage = builder.mMessage;
-    }
-
-    public String getUser() {
-        return mUser;
+        this.mUser = builder.mUser;
     }
 
     public String getMessage() {

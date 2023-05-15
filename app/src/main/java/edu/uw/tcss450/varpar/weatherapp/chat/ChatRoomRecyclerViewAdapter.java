@@ -15,12 +15,12 @@ import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentChatRoomMessageCardB
 public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRecyclerViewAdapter.ChatRoomViewHolder> {
 
     //Store all of the blogs to present
-    private final List<ChatListRoomPreview> mChats;
+    private final List<ChatRoomRecyclerItem> mChats;
 
 //    //Store the expanded state for each List item, true -> expanded, false -> not
 //    private final Map<ChatMessage, Boolean> mExpandedFlags;
 
-    public ChatRoomRecyclerViewAdapter(List<ChatListRoomPreview> items) {
+    public ChatRoomRecyclerViewAdapter(List<ChatRoomRecyclerItem> items) {
         this.mChats = items;
 //        mExpandedFlags = mChats.stream()
 //                .collect(Collectors.toMap(Function.identity(), blog -> false));
@@ -32,7 +32,7 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
     public ChatRoomViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new ChatRoomViewHolder(LayoutInflater
                 .from(parent.getContext())
-                .inflate(R.layout.fragment_chat_list_card, parent, false));
+                .inflate(R.layout.fragment_chat_room_message_card, parent, false));
     }
 
     @Override
@@ -52,7 +52,7 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
     public class ChatRoomViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public FragmentChatRoomMessageCardBinding binding;
-        private ChatListRoomPreview mChat;
+        private ChatRoomRecyclerItem mChat;
 
         public ChatRoomViewHolder(View view) {
             super(view);
@@ -91,14 +91,15 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
 //            }
 //        }
 
-        void setChat(final ChatListRoomPreview chat) {
+        void setChat(final ChatRoomRecyclerItem chat) {
             mChat = chat;
+            binding.textChatRoomMessage.setText(chat.getMessage());
+
 //            binding.buttonFullPost.setOnClickListener(view -> {
 //                Navigation.findNavController(mView).navigate(
 //                        ChatListFragmentDirections
 //                                .actionNavigationChatsToChatMessageFragment(blog));
 //            });
-            binding.textChatRoomMessage.setText(chat.getUser());
             //Use methods in the HTML class to format the HTML found in the text
 //            final String preview =  Html.fromHtml(
 //                            chat.getTeaser(),
