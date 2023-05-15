@@ -15,8 +15,6 @@ import android.view.ViewGroup;
 import org.jetbrains.annotations.Nullable;
 
 import edu.uw.tcss450.varpar.weatherapp.R;
-import edu.uw.tcss450.varpar.weatherapp.chat.ChatGenerator;
-import edu.uw.tcss450.varpar.weatherapp.chat.ChatRecyclerViewAdapter;
 import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentContactListBinding;
 
 /**
