@@ -1,7 +1,15 @@
 package edu.uw.tcss450.varpar.weatherapp.weather;
 
+import static androidx.core.content.ContextCompat.getSystemService;
+
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +22,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,8 +39,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
+//import edu.uw.tcss450.varpar.weatherapp.AndroidManifest;
 import edu.uw.tcss450.varpar.weatherapp.R;
 import edu.uw.tcss450.varpar.weatherapp.chat.ChatGenerator;
 import edu.uw.tcss450.varpar.weatherapp.chat.ChatRecyclerViewAdapter;
@@ -42,45 +55,65 @@ public class WeatherFragment extends Fragment {
     private RelativeLayout homeRL;
     private ProgressBar loadingPB;
     private TextView cityNameTV, tempTV, conditionTV;
-    private RecyclerView weatherRV;
+    private RecyclerView weatherRV, hourlyRV;
     private TextInputEditText cityEDT;
     private ImageView backIV, iconIV, searchIV;
     private ArrayList<WeatherRVModel> weatherRVModelArrayList;
     private WeatherRVAdapter weatherRVAdapter;
+    private ArrayList<WeatherRVModel> weatherRVHourlyArrayList;
+    private WeatherRVHourly weatherRVHourlyAdapter;
     private LocationManager locationManager;
     private int PERMISSION_CODE = 1;
-    private String cityName;
+    private String zipCode;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-
-        //setContentView(R.layout.activity_main);
-//        homeRL = findViewByID(R.id.idRLHome);
-//        loadingPB = findViewByID(R.id.idPBLoading);
-//        cityNameTV = findViewByID(R.id.idTVCityName);
-//        tempTV = findViewByID(R.id.idTVTemp);
-//        conditionTV = findViewByID(R.id.idTVCondition);
-//        weatherRV = findViewByID(R.id.idRVWeather);
-//        cityEDT = findViewByID(R.id.idEDTCity);
-//        backIV = findViewByID(R.id.idIVBack);
-//        iconIV = findViewByID(R.id.idIVIcon);
-//        searchIV = findViewByID(R.id.idIVSearch);
+//        //getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+//
+//        //getActivity().setContentView(R.layout.activity_main);
+//        homeRL = getView().findViewById(R.id.idRLHome);
+//        loadingPB = getView().findViewById(R.id.idPBLoading);
+//        cityNameTV = getView().findViewById(R.id.idTVCityName);
+//        tempTV = getView().findViewById(R.id.idTVTemp);
+//        conditionTV = getView().findViewById(R.id.idTVCondition);
+//        weatherRV = getView().findViewById(R.id.idRVWeather);
+//        hourlyRV = getView().findViewById(R.id.idRVHourlyWeather);
+//        cityEDT = getView().findViewById(R.id.idEDTCity);
+//        backIV = getView().findViewById(R.id.idIVBack);
+//        iconIV = getView().findViewById(R.id.idIVIcon);
+//        searchIV = getView().findViewById(R.id.idIVSearch);
 //        weatherRVModelArrayList = new ArrayList<>();
 //        weatherRVAdapter = new WeatherRVAdapter(getActivity(), weatherRVModelArrayList);
-//        weatherRV.setAdapter(weatherRVAdapter);
-
-//        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-//        //locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(WeatherFragment.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_CODE);
-//        }
 //
-//        Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-//        cityName = getCityName(location.getLongitude(), location.getLatitude());
-//        getWeatherInfo(cityName); //TODO: access_location should be in an activity
+//        weatherRVHourlyArrayList = new ArrayList<>();
+//        weatherRVHourlyAdapter = new WeatherRVHourly(getActivity(), weatherRVHourlyArrayList);
+//
+//        weatherRV.setAdapter(weatherRVAdapter); //this is the RV for daily weather
+//        hourlyRV.setAdapter(weatherRVHourlyAdapter); //RV for hourly
+//
+//        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+//        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+////        if (getActivity().checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+////            requestPermissions( new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_CODE);
+////        }
+////
+////        Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+////        zipCode = getCityName(location.getLongitude(), location.getLatitude());
+////        getWeatherInfo(zipCode);
+//        searchIV.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                String city = cityEDT.getText().toString();
+//                if(city.isEmpty()) {
+//                    Toast.makeText(getActivity(), "AYOOO BRO TYPE SOMETHING FIRST GAWD", Toast.LENGTH_SHORT).show();
+//                } else {
+//                    cityNameTV.setText(zipCode);
+//                    getWeatherInfo(city);
+//                }
+//            }
+//        });
 
     }
 
@@ -99,14 +132,30 @@ public class WeatherFragment extends Fragment {
         tempTV = getView().findViewById(R.id.idTVTemp);
         conditionTV = getView().findViewById(R.id.idTVCondition);
         weatherRV = getView().findViewById(R.id.idRVWeather);
+        hourlyRV = getView().findViewById(R.id.idRVHourlyWeather);
         cityEDT = getView().findViewById(R.id.idEDTCity);
         backIV = getView().findViewById(R.id.idIVBack);
         iconIV = getView().findViewById(R.id.idIVIcon);
         searchIV = getView().findViewById(R.id.idIVSearch);
         weatherRVModelArrayList = new ArrayList<>();
         weatherRVAdapter = new WeatherRVAdapter(getActivity(), weatherRVModelArrayList);
-        weatherRV.setAdapter(weatherRVAdapter);
 
+        weatherRVHourlyArrayList = new ArrayList<>();
+        weatherRVHourlyAdapter = new WeatherRVHourly(getActivity(), weatherRVHourlyArrayList);
+
+        weatherRV.setAdapter(weatherRVAdapter); //this is the RV for daily weather
+        hourlyRV.setAdapter(weatherRVHourlyAdapter); //RV for hourly
+
+        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+//        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_CODE);
+//        }
+//
+//        Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+//        zipCode = getCityName(location.getLongitude(), location.getLatitude());
+//        getWeatherInfo(zipCode); //this is all to get current location so the app displays it when opned
+//
         searchIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -114,11 +163,13 @@ public class WeatherFragment extends Fragment {
                 if(city.isEmpty()) {
                     Toast.makeText(getActivity(), "AYOOO BRO TYPE SOMETHING FIRST GAWD", Toast.LENGTH_SHORT).show();
                 } else {
-                    cityNameTV.setText(cityName);
+                    cityNameTV.setText(zipCode);
                     getWeatherInfo(city);
                 }
             }
         });
+        weatherRVModelArrayList.clear();
+        weatherRVHourlyArrayList.clear();
 
         for(int i = 0;i < 5; i++) {
             String time = "time";
@@ -129,11 +180,20 @@ public class WeatherFragment extends Fragment {
         }
         weatherRVAdapter.notifyDataSetChanged();
 
+        for(int i = 0;i < 24; i++) {
+            String time = "time";
+            String temper = "temp_c";
+            String img = "@mipmap/ic_launcher";
+            String wind = "wind_kph";
+            weatherRVHourlyArrayList.add(new WeatherRVModel(time, temper, img, wind));
+        }
+        weatherRVHourlyAdapter.notifyDataSetChanged();
+
     }
 
-    //    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        @Override
+//    public void registerForActivityResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.registerForActivityResult(requestCode, permissions, grantResults);
 //        if(requestCode==PERMISSION_CODE){
 //
 //        }
@@ -141,29 +201,29 @@ public class WeatherFragment extends Fragment {
 
     private String getCityName(double longitude, double latitide) {
         String cityName = "Tacoma";
-//        Geocoder gcd = new Geocoder(getBaseContext(), Locale.getDefault());
-//        try {
-//            List<Address> addressList = gcd.getFromLocation(latitide,longitude,10);
-//            for(Address adr : addressList) {
-//                if(adr!=null) {
-//                    String city = adr.getLocality();
-//                    if(city!=null && !city.equals("")) {
-//                        cityName = city;
-//                    } else {
-//                        Log.d("Tag", "City not found");
-//                        Toast.makeText(getActivity(),"User city not found...", Toast.LENGTH_SHORT).show();
-//                    }
-//                }
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        Geocoder gcd = new Geocoder(getActivity().getBaseContext(), Locale.getDefault());
+        try {
+            List<Address> addressList = gcd.getFromLocation(latitide,longitude,10);
+            for(Address adr : addressList) {
+                if(adr!=null) {
+                    String city = adr.getLocality();
+                    if(city!=null && !city.equals("")) {
+                        cityName = city;
+                    } else {
+                        Log.d("Tag", "City not found");
+                        Toast.makeText(getActivity(),"User city not found...", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return cityName;
     }
 
-    private void getWeatherInfo(String cityName) {
-        String URL = "https://api.weatherbit.io/v2.0/current?cities=" + cityName  + "&key=3f9754187e0b4f37b78c04f495a6cdfb";
-        cityNameTV.setText(cityName);
+    private void getWeatherInfo(String zipCode) {
+        String URL = "http://api.weatherapi.com/v1/forecast.json?key=9953bd3e0e9448fba21212344231405 &q=" + zipCode + "&days=5&aqi=no&alerts=no";
+        //cityNameTV.setText(zipCode);
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, URL, null, new Response.Listener<JSONObject>() {
@@ -172,13 +232,16 @@ public class WeatherFragment extends Fragment {
                 loadingPB.setVisibility(View.GONE);
                 homeRL.setVisibility(View.VISIBLE);
                 weatherRVModelArrayList.clear();
+                weatherRVHourlyArrayList.clear(); //do the same for hourly data
 
                 try {
-                    String temp = response.getJSONObject("data").getString("temp");
-                    tempTV.setText(temp+"°C");
-                    int isDay = response.getJSONObject("data").getInt("is_day");
-                    String condition = response.getJSONObject("data").getJSONObject("weather").getString("text");
-                    String conditionIcon = response.getJSONObject("data").getJSONObject("weather").getString("icon");
+                    String cityName = response.getJSONObject("location").getString("name");
+                    cityNameTV.setText(cityName);
+                    String temp = response.getJSONObject("current").getString("temp_f");
+                    tempTV.setText(temp+"°F");
+                    int isDay = response.getJSONObject("current").getInt("is_day");
+                    String condition = response.getJSONObject("current").getJSONObject("condition").getString("text");
+                    String conditionIcon = response.getJSONObject("current").getJSONObject("condition").getString("icon");
                     Picasso.get().load("http:".concat(conditionIcon)).into(iconIV);
                     conditionTV.setText(condition);
                     if(isDay==1){
@@ -191,13 +254,28 @@ public class WeatherFragment extends Fragment {
                     JSONObject forecast0 = forecastObj.getJSONArray("forecastday").getJSONObject(0);
                     JSONArray hourArray = forecast0.getJSONArray("hour");
 
-                    for(int i = 0;i < 5; i++) {
+                    for(int i = 0;i < 23; i++) {
                         JSONObject hourObj = hourArray.getJSONObject(i);
                         String time = hourObj.getString("time");
-                        String temper = hourObj.getString("temp_c");
+                        String temper = hourObj.getString("temp_f");
                         String img = hourObj.getJSONObject("condition").getString("icon");
-                        String wind = hourObj.getString("wind_kph");
-                        weatherRVModelArrayList.add(new WeatherRVModel(time, temper, img, wind));
+                        String cond = hourObj.getJSONObject("condition").getString("text");
+                        weatherRVHourlyArrayList.add(new WeatherRVModel(time, temper, img, cond));
+                    }
+                    weatherRVHourlyAdapter.notifyDataSetChanged();
+
+                    int day = 1;
+                    JSONArray forecastArray = forecastObj.getJSONArray("forecastday");
+
+                    for(int i = 0;i < 5; i++) {
+                        JSONObject forecastDayObj = forecastArray.getJSONObject(i);
+                        JSONObject dayObj = forecastDayObj.getJSONObject("day");
+                        String date = forecastDayObj.getString("date");
+                        String temper = dayObj.getString("maxtemp_f");
+                        String img = dayObj.getJSONObject("condition").getString("icon");
+                        String cond = dayObj.getJSONObject("condition").getString("text");
+                        weatherRVModelArrayList.add(new WeatherRVModel(date, temper, img, cond));
+                        //day++;
                     }
                     weatherRVAdapter.notifyDataSetChanged();
 
