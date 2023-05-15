@@ -12,18 +12,14 @@
         tools:layout="@layout/fragment_chat_list" >
         <action
             android:id="@+id/action_navigation_chat_to_chat_room"
-            app:destination="@id/navigation_chat_room" />
+            app:destination="@id/chat_room" />
     </fragment>
 
     <fragment
         android:id="@+id/navigation_contacts"
         android:name="edu.uw.tcss450.varpar.weatherapp.contact.ContactListFragment"
         android:label="@string/title_activity_contacts"
-        tools:layout="@layout/fragment_contact_list" >
-        <action
-            android:id="@+id/action_navigation_contacts_to_chat_room"
-            app:destination="@id/navigation_chat_room" />
-    </fragment>
+        tools:layout="@layout/fragment_contact_list" />
 
     <fragment
         android:id="@+id/navigation_profile"
@@ -43,7 +39,7 @@
         android:label="@string/title_activity_home"
         tools:layout="@layout/fragment_home" />
     <fragment
-        android:id="@+id/navigation_chat_room"
+        android:id="@+id/chat_room"
         android:name="edu.uw.tcss450.varpar.weatherapp.chat.ChatRoomFragment"
         android:label="@string/title_fragment_chat_room" />
 

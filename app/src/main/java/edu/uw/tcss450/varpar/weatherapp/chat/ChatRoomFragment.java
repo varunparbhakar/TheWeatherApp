@@ -12,11 +12,15 @@ import android.view.ViewGroup;
 import org.jetbrains.annotations.Nullable;
 
 import edu.uw.tcss450.varpar.weatherapp.R;
+import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentChatRoomBinding;
 import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentContactListBinding;
 
 public class ChatRoomFragment extends Fragment {
 
     private ChatRoomRecyclerViewAdapter myContactAdapter;
+
+    private int chatRoomID;
+    private String chatRoomUser;
 
     public ChatRoomFragment() {
         // Required empty public constructor
@@ -38,9 +42,9 @@ public class ChatRoomFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
 
-        FragmentContactListBinding binding = FragmentContactListBinding.bind(getView());
+        FragmentChatRoomBinding binding = FragmentChatRoomBinding.bind(getView());
         binding.listRoot.setAdapter(
-                new ChatListRecyclerViewAdapter(ChatListRoomPreviewGenerator.getChatList())
+                new ChatRoomRecyclerViewAdapter(ChatRoomMessageGenerator.getChatRoomMessagesAsList())
         );
     }
 }
