@@ -14,16 +14,11 @@
         layout="@layout/fragment_chat_preview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:layout_editor_absoluteX="216dp"
-        tools:layout_editor_absoluteY="412dp" />
-
-    <include
-        android:id="@+id/my_chat_preview"
-        layout="@layout/fragment_chat_preview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:layout_editor_absoluteX="277dp"
-        tools:layout_editor_absoluteY="412dp" />
+        android:layout_marginTop="52dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <TextView
         android:id="@+id/text_greeting"
@@ -35,35 +30,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <include
-        android:id="@+id/my_chat_preview"
-        layout="@layout/fragment_chat_preview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:layout_editor_absoluteX="43dp"
-        tools:layout_editor_absoluteY="412dp" />
-
-    <include
-        android:id="@+id/my_chat_preview"
-        layout="@layout/fragment_chat_preview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:layout_editor_absoluteX="156dp"
-        tools:layout_editor_absoluteY="412dp" />
-
-    <include
-        android:id="@+id/my_chat_preview"
-        layout="@layout/fragment_chat_preview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:layout_editor_absoluteX="99dp"
-        tools:layout_editor_absoluteY="412dp" />
-
     <LinearLayout
         android:id="@+id/weather_info"
         android:layout_width="117dp"
         android:layout_height="86dp"
-        android:layout_marginTop="92dp"
+        android:layout_marginTop="156dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -109,22 +80,11 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="140dp"
         android:text="Chat Preview"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/weather_info" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="172dp"
-        android:text="Friends List"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
