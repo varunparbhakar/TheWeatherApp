@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import edu.uw.tcss450.varpar.weatherapp.R;
 import edu.uw.tcss450.varpar.weatherapp.io.RequestQueueSingleton;
 
 public class LoginViewModel extends AndroidViewModel {
@@ -39,31 +40,8 @@ public class LoginViewModel extends AndroidViewModel {
                                     @NonNull Observer<? super JSONObject> observer) {
         mResponse.observe(owner, observer);
     }
-    private void handleError(final VolleyError error) {
-        if (Objects.isNull(error.networkResponse)) {
-            try {
-                mResponse.setValue(new JSONObject("{" +
-                        "error:\"" + error.getMessage() +
-                        "\"}"));
-            } catch (JSONException e) {
-                Log.e("JSON PARSE", "JSON Parse Error in handleError");
-            }
-        }
-        else {
-            String data = new String(error.networkResponse.data, Charset.defaultCharset())
-                    .replace('\"', '\'');
-            try {
-                JSONObject response = new JSONObject();
-                response.put("code", error.networkResponse.statusCode);
-                response.put("data", new JSONObject(data));
-                mResponse.setValue(response);
-            } catch (JSONException e) {
-                Log.e("JSON PARSE", "JSON Parse Error in handleError");
-            }
-        }
-    }
     public void connect(final String email, final String password) {
-        String url = "https://theweatherapp.herokuapp.com/auth";
+        String url = getApplication().getResources().getString(R.string.url)+"auth";
         Request request = new JsonObjectRequest(
                 Request.Method.GET,
                 url,
@@ -89,6 +67,29 @@ public class LoginViewModel extends AndroidViewModel {
         //Instantiate the RequestQueue and add the request to the queue
         RequestQueueSingleton.getInstance(getApplication().getApplicationContext())
                 .addToRequestQueue(request);
+    }
+    private void handleError(final VolleyError error) {
+        if (Objects.isNull(error.networkResponse)) {
+            try {
+                mResponse.setValue(new JSONObject("{" +
+                        "error:\"" + error.getMessage() +
+                        "\"}"));
+            } catch (JSONException e) {
+                Log.e("JSON PARSE", "JSON Parse Error in handleError");
+            }
+        }
+        else {
+            String data = new String(error.networkResponse.data, Charset.defaultCharset())
+                    .replace('\"', '\'');
+            try {
+                JSONObject response = new JSONObject();
+                response.put("code", error.networkResponse.statusCode);
+                response.put("data", new JSONObject(data));
+                mResponse.setValue(response);
+            } catch (JSONException e) {
+                Log.e("JSON PARSE", "JSON Parse Error in handleError");
+            }
+        }
     }
     public boolean getmValidLogin() {
         return mValidLogin.getValue();

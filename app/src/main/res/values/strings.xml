@@ -10,12 +10,6 @@
     <string name="hint_fragment_auth_register_lastName">Last Name</string>
     <string name="hint_fragment_auth_register_confirmPassword">Confirm Password</string>
 
-    <string name="profile_fragment_changePassword">Change Password</string>
-    <string name="profile_fragment_oldPassword">Old PW</string>
-    <string name="profile_fragment_newPassword">New PW</string>
-    <string name="profile_fragment_fullName">Name</string>
-    <string name="profile_fragment_username">Username</string>
-
     <!--Activity Names-->
     <string name="title_activity_auth">Main Activity</string>
     <string name="title_activity_home">Home</string>
@@ -25,11 +19,28 @@
     <string name="title_fragment_chat_room">Chat</string>
     <string name="title_activity_profile">Profile</string>
 
+    <!--Home-->
+    <string name="home_fragment_welcome">Welcome</string>
+
     <!--Chat-->
     <string name="chat_card_title">User</string>
     <string name="chat_card_text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi assumenda culpa est facere, iusto nam numquam porro provident sed. Aperiam aut culpa debitis eos eum illo in ipsum iure laboriosam maiores molestiae optio provident recusandae sint, temporibus tenetur unde veniam vitae. Deserunt dolor magnam officia reiciendis sapiente similique?</string>
 
     <!--Contact-->
     <string name="button_add_contact_description">Button to navigate to the add a new contact screen.</string>
+
+    <!--Profile-->
+    <string name="profile_fragment_changePassword">Change Password</string>
+    <string name="profile_fragment_oldPassword">Old PW</string>
+    <string name="profile_fragment_newPassword">New PW</string>
+    <string name="profile_fragment_fullName">Name</string>
+    <string name="profile_fragment_username">Username</string>
+    <string name="profile_fragment_passwordNoMatch">Passwords do not match!</string>
+    <string name="profile_fragment_passwordWeak">Must be at least 8 chars long, and contain uppercase, lowercase, number, and symbol.</string>
+    <string name="profile_fragment_serverError">Unknown server error, please try again later</string>
+    <string name="profile_fragment_passwordSuccess">Password successfully changed!</string>
+
+<!--    <string name="url">http://10.0.0.67:5000/</string>-->
+    <string name="url">https://theweatherapp.herokuapp.com/</string>
 
 </resources>
