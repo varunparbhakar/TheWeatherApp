@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Weather App</string>
+    <!--    <string name="url">http://10.0.0.67:5000/</string>-->
+    <string name="url">https://theweatherapp.herokuapp.com/</string>
 
     <string name="hello_blank_fragment">Hello Chuck Finley! This text should really be bigger!</string>
     <string name="hint_activity_auth_login_email">E-mail</string>
@@ -9,6 +11,10 @@
     <string name="hint_fragment_auth_register_firstName">First Name</string>
     <string name="hint_fragment_auth_register_lastName">Last Name</string>
     <string name="hint_fragment_auth_register_confirmPassword">Confirm Password</string>
+    <string name="action_sign_out">Sign Out</string>
+    <string name="keys_shared_prefs">My Auth App Shared Prefs</string>
+    <string name="keys_prefs_jwt">Sharded Prefs JWT</string>
+    <string name="switch_sign_in">Stay Signed in</string>
 
     <!--Activity Names-->
     <string name="title_activity_auth">Main Activity</string>
@@ -40,8 +46,7 @@
     <string name="profile_fragment_serverError">Unknown server error, please try again later</string>
     <string name="profile_fragment_passwordSuccess">Password successfully changed!</string>
 
-<!--    <string name="url">http://10.0.0.67:5000/</string>-->
-    <string name="url">https://theweatherapp.herokuapp.com/</string>
-    <string name="base_url">https://theweatherapp.herokuapp.com/</string>
+    <string name="weather_enter_city_zip_code">Enter City Zip Code</string>
+    <string name="weather_today_s_weather_forecast">Today\'s Weather Forecast</string>
 
 </resources>

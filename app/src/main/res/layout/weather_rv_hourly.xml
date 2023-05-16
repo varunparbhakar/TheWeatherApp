@@ -20,7 +20,7 @@
             android:id="@+id/idTVTime"
             android:gravity="center"
             android:padding="4dp"
-            android:text="Date"
+            android:text="Hour"
             android:textColor="@color/design_default_color_on_primary"
             android:textAlignment="center"
             />
@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/idTVTemp"
             android:gravity="center"
-            android:text="20"
+            android:text="20°F"
             android:textAlignment="center"
             android:textSize="20sp"
             android:layout_below="@id/idTVTime"
@@ -48,19 +48,22 @@
             android:layout_marginBottom="5dp"
             android:padding="4dp"
             android:src="@mipmap/ic_launcher" />
+
         <TextView
+            android:id="@+id/idTVWindSpeed"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:layout_centerHorizontal="true"
-            android:gravity="center"
             android:layout_below="@id/idTVCondition"
-            android:id="@+id/idTVWindSpeed"
-            android:textColor="@color/design_default_color_on_primary"
-            android:text="13"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="4dp"
+            android:gravity="center"
             android:padding="3dp"
-            android:layout_margin="4dp"
-            />
+            android:text="Something"
+            android:textAlignment="center"
+            android:textColor="@color/design_default_color_on_primary" />
     </RelativeLayout>
 
 </androidx.cardview.widget.CardView>

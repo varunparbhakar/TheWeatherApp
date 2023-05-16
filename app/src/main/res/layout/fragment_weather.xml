@@ -5,7 +5,7 @@
     android:id="@+id/navigation_weather"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
+    android:background="@color/design_default_color_on_primary"
     tools:context=".weather.WeatherFragment">
 
     <ProgressBar
@@ -26,27 +26,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@color/black" />
+            android:src="@color/design_default_color_on_primary" />
 
-        <TextView
-            android:id="@+id/idTVCityName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:gravity="center"
-            android:padding="20dp"
-            android:text="Tacoma"
-            android:textAlignment="center"
-            android:textColor="@color/white"
-            android:textSize="18sp" />
 
         <LinearLayout
             android:id="@+id/idLLEdt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/idTVCityName"
             android:orientation="horizontal"
             android:weightSum="5">
+
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/idTILCity"
@@ -55,10 +44,10 @@
                 android:layout_margin="10dp"
                 android:layout_weight="4.5"
                 android:background="@android:color/transparent"
-                android:hint="Enter City Name"
+                android:hint="@string/weather_enter_city_zip_code"
                 android:padding="5dp"
-                android:textColorHint="@color/white"
-                app:hintTextColor="@color/white">
+                android:textColorHint="@color/black"
+                app:hintTextColor="@color/design_default_color_on_secondary">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/idEDTCity"
@@ -68,7 +57,7 @@
                     android:importantForAutofill="no"
                     android:inputType="text"
                     android:singleLine="true"
-                    android:textColor="@color/white"
+                    android:textColor="@color/design_default_color_on_secondary"
                     android:textSize="14sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -82,52 +71,80 @@
                 android:layout_weight="0.5"
                 android:background="@android:color/transparent"
                 android:src="@drawable/ic_search"
-                app:tint="@color/white" />
+                app:tint="@color/design_default_color_on_secondary" />
+
 
         </LinearLayout>
-
         <TextView
-            android:id="@+id/idTVTemp"
+            android:id="@+id/idTVCityName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/idLLEdt"
-            android:layout_margin="10dp"
+            android:gravity="center"
+            android:padding="20dp"
+            android:text="Tacoma"
+            android:textAlignment="center"
+            android:textColor="@color/design_default_color_on_secondary"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/idTVTemp"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/idTVCityName"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+
             android:gravity="center_horizontal"
             android:padding="5dp"
-            android:text="23"
-            android:textColor="@color/white"
-            android:textSize="70dp" />
+            android:text="23°F"
+            android:textColor="@color/design_default_color_on_secondary"
+            android:textSize="50dp" />
+
 
         <ImageView
             android:id="@+id/idIVIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/idTVTemp"
-            android:layout_centerHorizontal="true"
-            android:layout_margin="10dp"
+
+            android:layout_alignRight="@id/idTVTemp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="165dp"
+            android:layout_marginEnd="77dp"
+            android:layout_marginRight="-124dp"
+            android:layout_marginBottom="10dp"
             android:src="@mipmap/ic_launcher" />
 
         <TextView
             android:id="@+id/idTVCondition"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/idIVIcon"
-            android:layout_margin="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_alignLeft="@id/idIVIcon"
             android:gravity="center"
             android:text="Condition"
             android:textAlignment="center"
-            android:textColor="@color/white" />
+            android:textColor="@color/design_default_color_on_secondary" />
 
         <TextView
+            android:id="@+id/idTVTodayWeather"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@id/idRVWeather"
+            android:layout_below="@id/idTVCondition"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="40dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            android:text="Today's Weather Forecast"
-            android:textColor="@color/white"
+            android:text="@string/weather_today_s_weather_forecast"
+            android:textColor="@color/design_default_color_on_secondary"
             android:textStyle="bold" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -137,6 +154,18 @@
             android:layout_alignParentBottom="true"
             android:orientation="horizontal"
             tools:listitem="@layout/weather_rv_item"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/idRVHourlyWeather"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/idTVTodayWeather"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="-150dp"
+            android:layout_marginBottom="150dp"
+            android:orientation="horizontal"
+            tools:listitem="@layout/weather_rv_hourly"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
 
