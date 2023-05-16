@@ -11,6 +11,10 @@
     <string name="hint_fragment_auth_register_firstName">First Name</string>
     <string name="hint_fragment_auth_register_lastName">Last Name</string>
     <string name="hint_fragment_auth_register_confirmPassword">Confirm Password</string>
+    <string name="action_sign_out">Sign Out</string>
+    <string name="keys_shared_prefs">My Auth App Shared Prefs</string>
+    <string name="keys_prefs_jwt">Sharded Prefs JWT</string>
+    <string name="switch_sign_in">Stay Signed in</string>
 
     <!--Activity Names-->
     <string name="title_activity_auth">Main Activity</string>
