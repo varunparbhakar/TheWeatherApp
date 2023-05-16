@@ -218,7 +218,8 @@ public class WeatherFragment extends Fragment {
         return cityName;
     }
     private void getTacomaWeatherInfo() {
-        String URL = "http://api.weatherapi.com/v1/forecast.json?key=9953bd3e0e9448fba21212344231405 &q=Tacoma&days=5&aqi=no&alerts=no";
+        String URL = "https://theweatherapp.herokuapp.com/weather?zipcode=Tacoma";
+//        String URL = R.string.url + "weather?zipcode=Tacoma";
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, URL, null, new Response.Listener<JSONObject>() {
@@ -281,7 +282,8 @@ public class WeatherFragment extends Fragment {
         requestQueue.add(jsonObjectRequest);
     }
     private void getWeatherInfo(String zipCode) {
-        String URL = "http://api.weatherapi.com/v1/forecast.json?key=9953bd3e0e9448fba21212344231405 &q=" + zipCode + "&days=5&aqi=no&alerts=no";
+        String URL = "https://theweatherapp.herokuapp.com/weather?zipcode=" + zipCode;
+//        String URL = R.string.url + "weather?zipcode=" + zipCode;
         //cityNameTV.setText(zipCode);
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
 
