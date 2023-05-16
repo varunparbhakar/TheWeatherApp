@@ -9,17 +9,6 @@
 
     <!-- TODO: Update blank fragment layout -->
 
-    <include
-        android:id="@+id/my_chat_preview"
-        layout="@layout/fragment_chat_preview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="52dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
-
     <TextView
         android:id="@+id/text_greeting"
         android:layout_width="wrap_content"
@@ -103,5 +92,32 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/weather_info" />
+
+    <FrameLayout
+        android:id="@+id/chat_preview_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:onClick="onChatPreviewClicked"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView">
+
+        <!-- Your chat preview layout goes here -->
+        <include
+            android:id="@+id/my_chat_preview"
+            layout="@layout/fragment_chat_preview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

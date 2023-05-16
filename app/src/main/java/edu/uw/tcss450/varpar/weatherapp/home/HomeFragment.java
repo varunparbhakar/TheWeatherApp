@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +42,11 @@ public class HomeFragment extends Fragment {
 
     private ImageView iconIV;
 
+    public void onChatPreviewClicked(View view) {
+        // Navigate to the messages tab
+        NavController navController = Navigation.findNavController(view);
+        navController.navigate(R.id.chat_user);
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
