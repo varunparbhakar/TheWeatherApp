@@ -26,6 +26,7 @@ import org.json.JSONObject;
 
 import edu.uw.tcss450.varpar.weatherapp.R;
 import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentProfileBinding;
+import edu.uw.tcss450.varpar.weatherapp.model.UserInfoViewModel;
 import edu.uw.tcss450.varpar.weatherapp.util.PasswordValidator;
 
 /**

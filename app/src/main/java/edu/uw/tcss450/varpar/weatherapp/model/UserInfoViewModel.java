@@ -1,4 +1,4 @@
-package edu.uw.tcss450.varpar.weatherapp.profile;
+package edu.uw.tcss450.varpar.weatherapp.model;
 
 import android.app.Application;
 import android.util.Log;
