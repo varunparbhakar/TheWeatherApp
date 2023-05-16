@@ -42,5 +42,6 @@
 
 <!--    <string name="url">http://10.0.0.67:5000/</string>-->
     <string name="url">https://theweatherapp.herokuapp.com/</string>
+    <string name="base_url">https://theweatherapp.herokuapp.com/</string>
 
 </resources>

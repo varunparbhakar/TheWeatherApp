@@ -18,7 +18,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentLoginBinding;
-import edu.uw.tcss450.varpar.weatherapp.profile.UserInfoViewModel;
+import edu.uw.tcss450.varpar.weatherapp.model.UserInfoViewModel;
 import edu.uw.tcss450.varpar.weatherapp.util.PasswordValidator;
 
 /**

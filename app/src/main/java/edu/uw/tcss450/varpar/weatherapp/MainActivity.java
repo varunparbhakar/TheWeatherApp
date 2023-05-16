@@ -17,7 +17,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import edu.uw.tcss450.varpar.weatherapp.profile.UserInfoViewModel;
+import edu.uw.tcss450.varpar.weatherapp.model.UserInfoViewModel;
 
 /**
  * Activity that holds all the main content for the app.

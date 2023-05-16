@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 
 import edu.uw.tcss450.varpar.weatherapp.R;
 import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentHomeBinding;
-import edu.uw.tcss450.varpar.weatherapp.profile.UserInfoViewModel;
+import edu.uw.tcss450.varpar.weatherapp.model.UserInfoViewModel;
 
 /**
  * A simple {@link Fragment} subclass.

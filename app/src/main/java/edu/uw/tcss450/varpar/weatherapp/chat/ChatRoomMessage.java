@@ -1,6 +1,9 @@
 package edu.uw.tcss450.varpar.weatherapp.chat;
 
+import android.icu.text.SimpleDateFormat;
+
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Class to encapsulate a chat message from a contact.
@@ -8,7 +11,7 @@ import java.io.Serializable;
  * @author Nathan Brown
  * @version 5/10/2023
  */
-public class ChatRoomRecyclerItem implements Serializable {
+public class ChatRoomMessage implements Serializable {
 
     private final int mMessageId;
 
@@ -18,11 +21,11 @@ public class ChatRoomRecyclerItem implements Serializable {
 
     private final String mTimestamp;
 
-    public ChatRoomRecyclerItem(int messageId, String messageBody, String user, String timestamp) {
+    public ChatRoomMessage(int messageId, String messageBody, String user) {
         this.mMessageId = messageId;
         this.mMessageBody = messageBody;
         this.mUser = user;
-        this.mTimestamp = timestamp;
+        this.mTimestamp = new SimpleDateFormat("HH.mm.ss").format(new Date());
     }
 
     public int getMessageId() {

@@ -13,14 +13,18 @@ import org.jetbrains.annotations.Nullable;
 
 import edu.uw.tcss450.varpar.weatherapp.R;
 import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentChatRoomBinding;
-import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentContactListBinding;
+import edu.uw.tcss450.varpar.weatherapp.model.UserInfoViewModel;
 
 public class ChatRoomFragment extends Fragment {
 
-    private ChatRoomRecyclerViewAdapter myContactAdapter;
+    //The chat ID for "global" chat
+    private static final int HARD_CODED_CHAT_ID = 1;
 
-    private int chatRoomID;
-    private String chatRoomUser;
+    private ChatRoomViewModel mChatModel;
+
+    private UserInfoViewModel mUserModel;
+
+    private ChatSendViewModel mSendModel;
 
     public ChatRoomFragment() {
         // Required empty public constructor
