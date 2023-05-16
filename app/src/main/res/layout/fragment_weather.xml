@@ -5,7 +5,7 @@
     android:id="@+id/navigation_weather"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
+    android:background="@color/design_default_color_on_primary"
     tools:context=".weather.WeatherFragment">
 
     <ProgressBar
@@ -26,7 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@color/black" />
+            android:src="@color/design_default_color_on_primary" />
 
 
         <LinearLayout
@@ -46,8 +46,8 @@
                 android:background="@android:color/transparent"
                 android:hint="Enter City Zip Code"
                 android:padding="5dp"
-                android:textColorHint="@color/white"
-                app:hintTextColor="@color/white">
+                android:textColorHint="@color/black"
+                app:hintTextColor="@color/design_default_color_on_secondary">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/idEDTCity"
@@ -57,7 +57,7 @@
                     android:importantForAutofill="no"
                     android:inputType="text"
                     android:singleLine="true"
-                    android:textColor="@color/white"
+                    android:textColor="@color/design_default_color_on_secondary"
                     android:textSize="14sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -71,7 +71,7 @@
                 android:layout_weight="0.5"
                 android:background="@android:color/transparent"
                 android:src="@drawable/ic_search"
-                app:tint="@color/white" />
+                app:tint="@color/design_default_color_on_secondary" />
 
 
         </LinearLayout>
@@ -84,7 +84,7 @@
             android:padding="20dp"
             android:text="Tacoma"
             android:textAlignment="center"
-            android:textColor="@color/white"
+            android:textColor="@color/design_default_color_on_secondary"
             android:textSize="18sp" />
 
         <TextView
@@ -100,7 +100,7 @@
             android:gravity="center_horizontal"
             android:padding="5dp"
             android:text="23°F"
-            android:textColor="@color/white"
+            android:textColor="@color/design_default_color_on_secondary"
             android:textSize="50dp" />
 
 
@@ -131,7 +131,7 @@
             android:gravity="center"
             android:text="Condition"
             android:textAlignment="center"
-            android:textColor="@color/white" />
+            android:textColor="@color/design_default_color_on_secondary" />
 
         <TextView
             android:id="@+id/idTVTodayWeather"
@@ -140,11 +140,11 @@
             android:layout_above="@id/idRVWeather"
             android:layout_below="@id/idTVCondition"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="60dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:text="Today's Weather Forecast"
-            android:textColor="@color/white"
+            android:textColor="@color/design_default_color_on_secondary"
             android:textStyle="bold" />
 
         <androidx.recyclerview.widget.RecyclerView
