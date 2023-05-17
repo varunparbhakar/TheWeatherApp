@@ -29,6 +29,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import edu.uw.tcss450.varpar.weatherapp.R;
+import edu.uw.tcss450.varpar.weatherapp.chat.ChatListFragmentDirections;
 import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentHomeBinding;
 import edu.uw.tcss450.varpar.weatherapp.profile.UserInfoViewModel;
 
@@ -37,15 +38,20 @@ import edu.uw.tcss450.varpar.weatherapp.profile.UserInfoViewModel;
  */
 public class HomeFragment extends Fragment {
     FragmentHomeBinding mBinding;
-
     private TextView locationTextView, tempTV, conditionTV;
-
     private ImageView iconIV;
 
     public void onChatPreviewClicked(View view) {
         // Navigate to the messages tab
         NavController navController = Navigation.findNavController(view);
         navController.navigate(R.id.chat_user);
+////        mBinding.frameLayout2.setVisibility(View.GONE);
+//        mBinding.frameLayout2.setOnClickListener(
+//                card -> {
+//                    Navigation.findNavController().navigate(
+//                            edu.uw.tcss450.varpar.weatherapp.chat.ChatListFragmentDirections.actionNavigationChatToChatRoom());
+//                }
+//        );
     }
 
     @Override
@@ -109,7 +115,6 @@ public class HomeFragment extends Fragment {
 
             }
         });
-
         requestQueue.add(jsonObjectRequest);
     }
 }
