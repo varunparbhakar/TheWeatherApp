@@ -47,7 +47,6 @@
     <string name="profile_fragment_passwordSuccess">Password successfully changed!</string>
 
 <!--    <string name="url">http://10.0.0.67:5000/</string>-->
-    <string name="url">https://theweatherapp.herokuapp.com/</string>
     <string name="base_url">https://theweatherapp.herokuapp.com/</string>
     <string name="weather_enter_city_zip_code">Enter City Zip Code</string>
     <string name="weather_today_s_weather_forecast">Today\'s Weather Forecast</string>
