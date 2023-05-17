@@ -45,7 +45,7 @@ public class ChatListFragment extends Fragment {
 
         mBinding = FragmentChatListBinding.bind(getView());
 
-        mBinding.listRoot.setAdapter(
+        mBinding.recyclerChatMessages.setAdapter(
                 new ChatListRecyclerViewAdapter(ChatListRoomPreviewGenerator.getChatList())
         );
 
