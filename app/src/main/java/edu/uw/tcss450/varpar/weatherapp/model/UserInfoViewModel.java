@@ -197,4 +197,6 @@ public class UserInfoViewModel extends AndroidViewModel {
     public String getEmail() {
         return mEmail;
     }
+
+    public String getJwt(){return mJwt;}
 }

@@ -16,12 +16,14 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
 
     //Store all of the blogs to present
     private final List<ChatRoomMessage> mChats;
+    private final String mUser;
 
 //    //Store the expanded state for each List item, true -> expanded, false -> not
 //    private final Map<ChatMessage, Boolean> mExpandedFlags;
 
-    public ChatRoomRecyclerViewAdapter(List<ChatRoomMessage> items) {
+    public ChatRoomRecyclerViewAdapter(List<ChatRoomMessage> items, String user) {
         this.mChats = items;
+        this.mUser = user;
 //        mExpandedFlags = mChats.stream()
 //                .collect(Collectors.toMap(Function.identity(), blog -> false));
 
