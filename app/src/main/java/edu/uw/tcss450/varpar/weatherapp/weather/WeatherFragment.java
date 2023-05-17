@@ -218,8 +218,7 @@ public class WeatherFragment extends Fragment {
         return cityName;
     }
     private void getTacomaWeatherInfo() {
-        String URL = "https://theweatherapp.herokuapp.com/weather?zipcode=Tacoma";
-//        String URL = R.string.url + "weather?zipcode=Tacoma";
+        String URL = getText(R.string.url) + "weather?zipcode=Tacoma";
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, URL, null, new Response.Listener<JSONObject>() {
@@ -268,22 +267,19 @@ public class WeatherFragment extends Fragment {
                     weatherRVAdapter.notifyDataSetChanged();
 
                 } catch (JSONException e) {
-                    throw new RuntimeException(e);
+                    weatherErrorToast();
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getActivity(), "Please enter valid city name...", Toast.LENGTH_SHORT).show();
-
+                weatherErrorToast();
             }
         });
-
         requestQueue.add(jsonObjectRequest);
     }
     private void getWeatherInfo(String zipCode) {
-        String URL = "https://theweatherapp.herokuapp.com/weather?zipcode=" + zipCode;
-//        String URL = R.string.url + "weather?zipcode=" + zipCode;
+        String URL = getText(R.string.url) + "weather?zipcode=" + zipCode;
         //cityNameTV.setText(zipCode);
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
 
@@ -341,19 +337,22 @@ public class WeatherFragment extends Fragment {
                     weatherRVAdapter.notifyDataSetChanged();
 
                 } catch (JSONException e) {
-                    throw new RuntimeException(e);
+                    weatherErrorToast();
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getActivity(), "Please enter valid city name...", Toast.LENGTH_SHORT).show();
-
+                weatherErrorToast();
             }
         });
-
         requestQueue.add(jsonObjectRequest);
     }
 
-
+    /**
+     * Displays toast to user that their city name was invalid.
+     */
+    private void weatherErrorToast() {
+        Toast.makeText(getActivity(), getText(R.string.weather_valid_city_error), Toast.LENGTH_SHORT).show();
+    }
 }

@@ -48,5 +48,6 @@
 
     <string name="weather_enter_city_zip_code">Enter City Zip Code</string>
     <string name="weather_today_s_weather_forecast">Today\'s Weather Forecast</string>
+    <string name="weather_valid_city_error">Please enter valid city name…</string>
 
 </resources>
