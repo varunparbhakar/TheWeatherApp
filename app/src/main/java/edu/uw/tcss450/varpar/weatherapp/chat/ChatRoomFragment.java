@@ -4,6 +4,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,14 +15,18 @@ import org.jetbrains.annotations.Nullable;
 
 import edu.uw.tcss450.varpar.weatherapp.R;
 import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentChatRoomBinding;
-import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentContactListBinding;
+import edu.uw.tcss450.varpar.weatherapp.model.UserInfoViewModel;
 
 public class ChatRoomFragment extends Fragment {
 
-    private ChatRoomRecyclerViewAdapter myContactAdapter;
+    //The chat ID for "global" chat
+    private static final int HARD_CODED_CHAT_ID = 1;
 
-    private int chatRoomID;
-    private String chatRoomUser;
+    private ChatRoomViewModel mChatModel;
+
+    private UserInfoViewModel mUserModel;
+
+    private ChatSendViewModel mSendModel;
 
     public ChatRoomFragment() {
         // Required empty public constructor
@@ -28,6 +34,11 @@ public class ChatRoomFragment extends Fragment {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ViewModelProvider provider = new ViewModelProvider(getActivity());
+        mUserModel = provider.get(UserInfoViewModel.class);
+        mChatModel = provider.get(ChatRoomViewModel.class);
+        mChatModel.getFirstMessages(HARD_CODED_CHAT_ID, mUserModel.getJwt());
+        mSendModel = provider.get(ChatSendViewModel.class);
     }
 
     @Override
@@ -41,10 +52,15 @@ public class ChatRoomFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
         FragmentChatRoomBinding binding = FragmentChatRoomBinding.bind(getView());
-        binding.listRoot.setAdapter(
-                new ChatRoomRecyclerViewAdapter(ChatRoomMessageGenerator.getChatRoomMessagesAsList())
+
+        binding.swipeContainer.setRefreshing(true);
+
+        binding.recyclerChatMessages.setAdapter(
+            new ChatRoomRecyclerViewAdapter(
+                mChatModel.getMessageListByChatId(HARD_CODED_CHAT_ID),
+                mUserModel.getUsername()
+            )
         );
     }
 }

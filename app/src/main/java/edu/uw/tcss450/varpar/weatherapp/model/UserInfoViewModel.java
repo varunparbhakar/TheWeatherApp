@@ -1,4 +1,4 @@
-package edu.uw.tcss450.varpar.weatherapp.profile;
+package edu.uw.tcss450.varpar.weatherapp.model;
 
 import android.app.Application;
 import android.util.Log;
@@ -197,4 +197,6 @@ public class UserInfoViewModel extends AndroidViewModel {
     public String getEmail() {
         return mEmail;
     }
+
+    public String getJwt(){return mJwt;}
 }

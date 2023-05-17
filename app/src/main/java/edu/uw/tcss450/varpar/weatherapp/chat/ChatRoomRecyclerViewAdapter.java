@@ -15,13 +15,15 @@ import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentChatRoomMessageCardB
 public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRecyclerViewAdapter.ChatRoomViewHolder> {
 
     //Store all of the blogs to present
-    private final List<ChatRoomRecyclerItem> mChats;
+    private final List<ChatRoomMessage> mChats;
+    private final String mUser;
 
 //    //Store the expanded state for each List item, true -> expanded, false -> not
 //    private final Map<ChatMessage, Boolean> mExpandedFlags;
 
-    public ChatRoomRecyclerViewAdapter(List<ChatRoomRecyclerItem> items) {
+    public ChatRoomRecyclerViewAdapter(List<ChatRoomMessage> items, String user) {
         this.mChats = items;
+        this.mUser = user;
 //        mExpandedFlags = mChats.stream()
 //                .collect(Collectors.toMap(Function.identity(), blog -> false));
 
@@ -52,7 +54,7 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
     public class ChatRoomViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public FragmentChatRoomMessageCardBinding binding;
-        private ChatRoomRecyclerItem mChat;
+        private ChatRoomMessage mChat;
 
         public ChatRoomViewHolder(View view) {
             super(view);
@@ -91,7 +93,7 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
 //            }
 //        }
 
-        void setChat(final ChatRoomRecyclerItem chat) {
+        void setChat(final ChatRoomMessage chat) {
             mChat = chat;
             binding.textChatRoomMessage.setText(chat.getMessage());
 

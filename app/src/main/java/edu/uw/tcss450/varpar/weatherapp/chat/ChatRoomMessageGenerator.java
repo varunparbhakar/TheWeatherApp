@@ -5,7 +5,7 @@ import java.util.List;
 
 public class ChatRoomMessageGenerator {
 
-    private static final ChatRoomRecyclerItem[] CHATS;
+    private static final ChatRoomMessage[] CHATS;
     public static final int COUNT = 12;
 
     private static String[] messages = new String[5];
@@ -17,21 +17,19 @@ public class ChatRoomMessageGenerator {
         messages[2] = "lorem";
         messages[3] = "lol";
         messages[4] = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et.";
-        CHATS = new ChatRoomRecyclerItem[COUNT];
+        CHATS = new ChatRoomMessage[COUNT];
         for (int i = 0; i < CHATS.length; i++) {
             int j = i % messages.length;
-            CHATS[i] = new ChatRoomRecyclerItem
-                    .Builder(messages[j], "User_" + i % 2)
-                    .build();
+            CHATS[i] = new ChatRoomMessage(i, messages[j], "User_" + i % 2);
         }
 
     }
 
-    public static List<ChatRoomRecyclerItem> getChatRoomMessagesAsList() {
+    public static List<ChatRoomMessage> getChatRoomMessagesAsList() {
         return Arrays.asList(CHATS);
     }
 
-    public static ChatRoomRecyclerItem[] getChatRoomMessages() {
+    public static ChatRoomMessage[] getChatRoomMessages() {
         return Arrays.copyOf(CHATS, CHATS.length);
     }
 
