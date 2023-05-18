@@ -5,7 +5,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +21,7 @@ public class ChatRoomFragment extends Fragment {
     //The chat ID for "global" chat
     private static final int HARD_CODED_CHAT_ID = 1;
 
-    private ChatRoomViewModel mChatModel;
+    private ChatRoomViewModel mChatRoomModel;
 
     private UserInfoViewModel mUserModel;
 
@@ -36,8 +35,8 @@ public class ChatRoomFragment extends Fragment {
         super.onCreate(savedInstanceState);
         ViewModelProvider provider = new ViewModelProvider(getActivity());
         mUserModel = provider.get(UserInfoViewModel.class);
-        mChatModel = provider.get(ChatRoomViewModel.class);
-        mChatModel.getFirstMessages(HARD_CODED_CHAT_ID, mUserModel.getJwt());
+        mChatRoomModel = provider.get(ChatRoomViewModel.class);
+        mChatRoomModel.getFirstMessages(HARD_CODED_CHAT_ID, mUserModel.getJwt());
         mSendModel = provider.get(ChatSendViewModel.class);
     }
 
@@ -58,9 +57,26 @@ public class ChatRoomFragment extends Fragment {
 
         binding.recyclerChatMessages.setAdapter(
             new ChatRoomRecyclerViewAdapter(
-                mChatModel.getMessageListByChatId(HARD_CODED_CHAT_ID),
+                mChatRoomModel.getMessageListByChatId(HARD_CODED_CHAT_ID),
                 mUserModel.getUsername()
             )
         );
+
+        binding.swipeContainer.setOnRefreshListener(() -> {
+            mChatRoomModel.getNextMessages(HARD_CODED_CHAT_ID, mUserModel.getJwt());
+        });
+
+//        mChatModel.addMessageObserver();
+
+//        //Send button was clicked. Send the message via the SendViewModel
+//        binding.buttonSend.setOnClickListener(button -> {
+//            mSendModel.sendMessage(HARD_CODED_CHAT_ID,
+//                    mUserModel.getmJwt(),
+//                    binding.editMessage.getText().toString());
+//        });
+//        //when we get the response back from the server, clear the edittext
+//        mSendModel.addResponseObserver(getViewLifecycleOwner(), response ->
+//                binding.editMessage.setText("")
+//        );
     }
 }

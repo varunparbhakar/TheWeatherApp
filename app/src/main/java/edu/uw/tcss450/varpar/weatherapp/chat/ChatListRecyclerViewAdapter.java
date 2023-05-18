@@ -16,12 +16,12 @@ import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentChatListCardBinding;
 public class ChatListRecyclerViewAdapter extends RecyclerView.Adapter<ChatListRecyclerViewAdapter.ChatListViewHolder> {
 
     //Store all of the blogs to present
-    private final List<ChatListRecyclerItem> mChats;
+    private final List<ChatListRoom> mChats;
 
 //    //Store the expanded state for each List item, true -> expanded, false -> not
 //    private final Map<ChatMessage, Boolean> mExpandedFlags;
 
-    public ChatListRecyclerViewAdapter(List<ChatListRecyclerItem> items) {
+    public ChatListRecyclerViewAdapter(List<ChatListRoom> items) {
         this.mChats = items;
 //        mExpandedFlags = mChats.stream()
 //                .collect(Collectors.toMap(Function.identity(), blog -> false));
@@ -53,7 +53,7 @@ public class ChatListRecyclerViewAdapter extends RecyclerView.Adapter<ChatListRe
     public class ChatListViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public FragmentChatListCardBinding binding;
-        private ChatListRecyclerItem mChat;
+        private ChatListRoom mChat;
 
         public ChatListViewHolder(View view) {
             super(view);
@@ -97,7 +97,7 @@ public class ChatListRecyclerViewAdapter extends RecyclerView.Adapter<ChatListRe
 //            }
 //        }
 
-        void setChat(final ChatListRecyclerItem chat) {
+        void setChat(final ChatListRoom chat) {
             mChat = chat;
 //            binding.buttonFullPost.setOnClickListener(view -> {
 //                Navigation.findNavController(mView).navigate(

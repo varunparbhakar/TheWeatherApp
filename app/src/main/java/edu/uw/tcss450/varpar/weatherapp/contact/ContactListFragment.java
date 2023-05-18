@@ -61,15 +61,6 @@ public class ContactListFragment extends Fragment {
         myContactAdapter = new ContactRecyclerViewAdapter(ContactGenerator.getContactList());
         binding.recyclerChatMessages.setAdapter(myContactAdapter);
 
-//        //This code causes a crash!!!!!
-//        binding.buttonAddContact.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                myContactAdapter.addContact(new Contact.Builder("Varun").build());
-//                myContactAdapter.notifyItemInserted(myContactAdapter.getItemCount() - 1);
-//            }
-//        });
-
 
 
 //        int position = myContactAdapter.getItemCount() - 1;

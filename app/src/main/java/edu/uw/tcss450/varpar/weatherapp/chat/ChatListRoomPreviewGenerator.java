@@ -5,24 +5,24 @@ import java.util.List;
 
 public class ChatListRoomPreviewGenerator {
 
-    private static final ChatListRecyclerItem[] CHATS;
+    private static final ChatListRoom[] CHATS;
     public static final int COUNT = 20;
 
 
     static {
-        CHATS = new ChatListRecyclerItem[COUNT];
+        CHATS = new ChatListRoom[COUNT];
         for (int i = 0; i < CHATS.length; i++) {
-            CHATS[i] = new ChatListRecyclerItem
+            CHATS[i] = new ChatListRoom
                     .Builder("User_" + i, "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et.")
                     .build();
         }
     }
 
-    public static List<ChatListRecyclerItem> getChatList() {
+    public static List<ChatListRoom> getChatList() {
         return Arrays.asList(CHATS);
     }
 
-    public static ChatListRecyclerItem[] getChats() {
+    public static ChatListRoom[] getChats() {
         return Arrays.copyOf(CHATS, CHATS.length);
     }
 
