@@ -28,6 +28,8 @@
     <!--Home-->
     <string name="home_fragment_welcome">Welcome</string>
 
+    <string name="chat_card_last_message">Recent Chat</string>
+
     <!--Chat-->
     <string name="chat_card_title">User</string>
     <string name="chat_card_text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi assumenda culpa est facere, iusto nam numquam porro provident sed. Aperiam aut culpa debitis eos eum illo in ipsum iure laboriosam maiores molestiae optio provident recusandae sint, temporibus tenetur unde veniam vitae. Deserunt dolor magnam officia reiciendis sapiente similique?</string>
@@ -46,7 +48,10 @@
     <string name="profile_fragment_serverError">Unknown server error, please try again later</string>
     <string name="profile_fragment_passwordSuccess">Password successfully changed!</string>
 
+<!--    <string name="url">http://10.0.0.67:5000/</string>-->
+    <string name="base_url">https://theweatherapp.herokuapp.com/</string>
     <string name="weather_enter_city_zip_code">Enter City Zip Code</string>
     <string name="weather_today_s_weather_forecast">Today\'s Weather Forecast</string>
+    <string name="weather_valid_city_error">Please enter valid city name…</string>
 
 </resources>

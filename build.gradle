@@ -8,7 +8,7 @@ buildscript {
 
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.0.0'
+        classpath 'com.android.tools.build:gradle:8.0.1'
 
         def nav_version = '2.5.2'
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"
@@ -18,8 +18,8 @@ buildscript {
 }
 
 plugins {
-    id 'com.android.application' version '8.0.0' apply false
-    id 'com.android.library' version '8.0.0' apply false
+    id 'com.android.application' version '8.0.1' apply false
+    id 'com.android.library' version '8.0.1' apply false
 }
 
 //jd: causes gradle compile error. supposed to be done in settings.gradle by default now.

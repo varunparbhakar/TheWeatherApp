@@ -62,7 +62,6 @@ public class ContactListFragment extends Fragment {
         binding.recyclerChatMessages.setAdapter(myContactAdapter);
 
 
-
 //        int position = myContactAdapter.getItemCount() - 1;
 //        myContactAdapter.notifyItemInserted(position);
 

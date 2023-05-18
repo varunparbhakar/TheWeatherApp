@@ -166,25 +166,7 @@ public class WeatherFragment extends Fragment {
         });
         weatherRVModelArrayList.clear();
         weatherRVHourlyArrayList.clear();
-        getTacomaWeatherInfo();
-
-//        for(int i = 0;i < 5; i++) {
-//            String time = "time";
-//            String temper = "temp_c";
-//            String img = "@mipmap/ic_launcher";
-//            String wind = "wind_kph";
-//            weatherRVModelArrayList.add(new WeatherRVModel(time, temper, img, wind));
-//        }
-//        weatherRVAdapter.notifyDataSetChanged();
-//
-//        for(int i = 0;i < 24; i++) {
-//            String time = "time";
-//            String temper = "temp_c";
-//            String img = "@mipmap/ic_launcher";
-//            String wind = "wind_kph";
-//            weatherRVHourlyArrayList.add(new WeatherRVModel(time, temper, img, wind));
-//        }
-//        weatherRVHourlyAdapter.notifyDataSetChanged();
+        getWeatherInfo("Tacoma");
 
     }
 
@@ -217,73 +199,9 @@ public class WeatherFragment extends Fragment {
         }
         return cityName;
     }
-    private void getTacomaWeatherInfo() {
-        String URL = "https://theweatherapp.herokuapp.com/weather?zipcode=Tacoma";
-//        String URL = R.string.url + "weather?zipcode=Tacoma";
-        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, URL, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                loadingPB.setVisibility(View.GONE);
-                homeRL.setVisibility(View.VISIBLE);
-
-                try {
-                    String cityName = response.getJSONObject("location").getString("name");
-                    cityNameTV.setText("Tacoma");
-                    String temp = response.getJSONObject("current").getString("temp_f");
-                    tempTV.setText(temp+"°F");
-                    String condition = response.getJSONObject("current").getJSONObject("condition").getString("text");
-                    String conditionIcon = response.getJSONObject("current").getJSONObject("condition").getString("icon");
-                    Picasso.get().load("http:".concat(conditionIcon)).into(iconIV);
-                    conditionTV.setText(condition);
-
-                    JSONObject forecastObj = response.getJSONObject("forecast");
-                    JSONObject forecast0 = forecastObj.getJSONArray("forecastday").getJSONObject(0);
-                    JSONArray hourArray = forecast0.getJSONArray("hour");
-
-                    for(int i = 0;i < 23; i++) {
-                        JSONObject hourObj = hourArray.getJSONObject(i);
-                        String time = hourObj.getString("time");
-                        String temper = hourObj.getString("temp_f");
-                        String img = hourObj.getJSONObject("condition").getString("icon");
-                        String cond = hourObj.getJSONObject("condition").getString("text");
-                        weatherRVHourlyArrayList.add(new WeatherRVModel(time, temper, img, cond));
-                    }
-                    weatherRVHourlyAdapter.notifyDataSetChanged();
-
-                    int day = 1;
-                    JSONArray forecastArray = forecastObj.getJSONArray("forecastday");
-
-                    for(int i = 0;i < 5; i++) {
-                        JSONObject forecastDayObj = forecastArray.getJSONObject(i);
-                        JSONObject dayObj = forecastDayObj.getJSONObject("day");
-                        String date = forecastDayObj.getString("date");
-                        String temper = dayObj.getString("maxtemp_f");
-                        String img = dayObj.getJSONObject("condition").getString("icon");
-                        String cond = dayObj.getJSONObject("condition").getString("text");
-                        weatherRVModelArrayList.add(new WeatherRVModel(date, temper, img, cond));
-                        //day++;
-                    }
-                    weatherRVAdapter.notifyDataSetChanged();
-
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getActivity(), "Please enter valid city name...", Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
-        requestQueue.add(jsonObjectRequest);
-    }
     private void getWeatherInfo(String zipCode) {
-        String URL = "https://theweatherapp.herokuapp.com/weather?zipcode=" + zipCode;
-//        String URL = R.string.url + "weather?zipcode=" + zipCode;
+        String URL = getText(R.string.url) + "weather?zipcode=" + zipCode;
         //cityNameTV.setText(zipCode);
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
 
@@ -341,19 +259,22 @@ public class WeatherFragment extends Fragment {
                     weatherRVAdapter.notifyDataSetChanged();
 
                 } catch (JSONException e) {
-                    throw new RuntimeException(e);
+                    weatherErrorToast();
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getActivity(), "Please enter valid city name...", Toast.LENGTH_SHORT).show();
-
+                weatherErrorToast();
             }
         });
-
         requestQueue.add(jsonObjectRequest);
     }
 
-
+    /**
+     * Displays toast to user that their city name was invalid.
+     */
+    private void weatherErrorToast() {
+        Toast.makeText(getActivity(), getText(R.string.weather_valid_city_error), Toast.LENGTH_SHORT).show();
+    }
 }
