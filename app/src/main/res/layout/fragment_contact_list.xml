@@ -7,35 +7,26 @@
     android:layout_height="match_parent"
     tools:context=".contact.ContactListFragment">
 
-    <!--    <androidx.constraintlayout.widget.ConstraintLayout-->
-    <!--        android:id="@+id/layout_wait"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="match_parent"-->
-    <!--        android:background="@color/colorPrimaryAlpha"-->
-    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent">-->
-
     <EditText
         android:id="@+id/text_contact_search"
-        android:layout_width="0dp"
+        android:layout_width="237dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
         android:autofillHints="Name Of Contact"
         android:ems="10"
         android:inputType="textPersonName"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:lineHeight="32dp" />
+        app:lineHeight="32dp"
+        tools:layout_editor_absoluteY="88dp" />
 
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="wrap_content"
+    <Button
+        android:id="@+id/button_addContact"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="32dp"
-        android:src="@drawable/ic_search_black_32"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="Add"
+        app:layout_constraintBottom_toBottomOf="@+id/text_contact_search"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/text_contact_search"
         app:layout_constraintTop_toTopOf="@+id/text_contact_search" />
@@ -49,31 +40,9 @@
         app:layoutManager="LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_contact_search"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_bias="1.0"
         tools:context="edu.uw.tcss450.varpar.weatherapp.contact.ContactListFragment"
-        tools:layout_editor_absoluteX="-96dp"
+        tools:layout_editor_absoluteX="0dp"
         tools:listitem="@layout/fragment_contact_card" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/button_addContact"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:clickable="true"
-        android:scaleType="centerInside"
-        android:src="@drawable/baseline_add_circle_24"
-        app:fabSize="auto"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-
-        app:layout_constraintHorizontal_bias="0.95"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.96"
-        app:maxImageSize="64dp"
-        app:useCompatPadding="true" />
-
-    <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
