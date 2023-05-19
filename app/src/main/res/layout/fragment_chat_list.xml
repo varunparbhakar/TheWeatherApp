@@ -8,26 +8,25 @@
 
     <EditText
         android:id="@+id/text_chat_search"
-        android:layout_width="0dp"
+        android:layout_width="237dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:autofillHints="Name Of Contact"
         android:ems="10"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/recycler_chat_messages"
-        app:layout_constraintEnd_toStartOf="@+id/button_add_chat"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:lineHeight="32dp" />
 
     <Button
         android:id="@+id/button_add_chat"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:text="Add Chat"
+        android:text="Add"
+        app:layout_constraintBottom_toBottomOf="@+id/text_chat_search"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/text_chat_search"
         app:layout_constraintTop_toTopOf="@+id/text_chat_search" />
