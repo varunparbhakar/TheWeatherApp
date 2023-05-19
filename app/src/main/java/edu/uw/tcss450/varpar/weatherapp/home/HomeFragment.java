@@ -40,6 +40,8 @@ import edu.uw.tcss450.varpar.weatherapp.weather.WeatherRVModel;
 
 /**
  * A simple {@link Fragment} subclass.
+ * Use the {@link HomeFragment} factory method to
+ * create an instance of this fragment.
  */
 public class HomeFragment extends Fragment {
     FragmentHomeBinding mBinding;
