@@ -30,6 +30,34 @@
         app:layout_constraintStart_toEndOf="@+id/text_chat_search"
         app:layout_constraintTop_toTopOf="@+id/text_chat_search" />
 
+    <Button
+        android:id="@+id/button_add_chat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Chat"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_chat_search"
+        app:layout_constraintEnd_toStartOf="@+id/text_chat_message" />
+
+    <EditText
+        android:id="@+id/text_chat_message"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:inputType="textMultiLine"
+        app:layout_constraintEnd_toStartOf="@+id/button_send"
+        app:layout_constraintStart_toEndOf="@+id/button_add_chat"
+        app:layout_constraintTop_toBottomOf="@+id/text_chat_search" />
+
+    <Button
+        android:id="@+id/button_send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Send"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_chat_search" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_chat_messages"
         android:name="edu.uw.tcss450.varpar.weatherapp.chat.ChatFragment"
@@ -38,33 +66,9 @@
         android:orientation="vertical"
         app:layoutManager="LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_chat_search"
+        app:layout_constraintTop_toBottomOf="@+id/button_send"
         tools:context="edu.uw.tcss450.varpar.weatherapp.chat.ChatListFragment"
         tools:layout_editor_absoluteX="16dp"
         tools:listitem="@layout/fragment_chat_list_card" />
 
-<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--        android:id="@+id/layout_wait"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:background="@color/colorPrimaryAlpha"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent">-->
-<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
 </androidx.constraintlayout.widget.ConstraintLayout>
-
-<!--<androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
-<!--    xmlns:tools="http://schemas.android.com/tools"-->
-<!--    android:id="@+id/list_root"-->
-<!--    android:name="edu.uw.tcss450.varpar.weatherapp.chat.ChatFragment"-->
-<!--    android:layout_width="match_parent"-->
-<!--    android:layout_height="match_parent"-->
-<!--    android:layout_marginLeft="16dp"-->
-<!--    android:layout_marginRight="16dp"-->
-<!--    app:layoutManager="LinearLayoutManager"-->
-<!--    android:orientation="vertical"-->
-<!--    tools:context="edu.uw.tcss450.varpar.weatherapp.chat.ChatListFragment"-->
-<!--    tools:listitem="@layout/fragment_chat_card"/>-->

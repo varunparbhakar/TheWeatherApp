@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -62,6 +63,14 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
+
+        // This is the code for the add chat button
+        // TODO: add chat button to chat fragment functionality
+//        Button addChatButton = findViewById(R.id.);
+//        addChatButton.setOnClickListener(button -> {
+//            Navigation.findNavController(this, R.id.nav_host_fragment).navigate(
+//                    MainActivityDirections.actionNavigationChatToAddChatFragment());
+//        });
     }
 
     /**
