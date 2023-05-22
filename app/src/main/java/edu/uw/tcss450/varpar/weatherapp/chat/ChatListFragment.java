@@ -4,17 +4,13 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.navigation.Navigation;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import org.jetbrains.annotations.Nullable;
-
-import edu.uw.tcss450.varpar.weatherapp.R;
 import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentChatListBinding;
 
 /**
@@ -26,9 +22,7 @@ public class ChatListFragment extends Fragment {
 
     private ChatListViewModel mModel;
 
-    public ChatListFragment() {
-        // Required empty public constructor
-    }
+    private FragmentChatListBinding mBinding;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,7 +34,8 @@ public class ChatListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_chat_list, container, false);
+        mBinding = FragmentChatListBinding.inflate(inflater, container, false);
+        return mBinding.getRoot();
     }
 
     @Override
@@ -48,10 +43,10 @@ public class ChatListFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
 
-        FragmentChatListBinding binding = FragmentChatListBinding.bind(getView());
+        mBinding = FragmentChatListBinding.bind(getView());
 
-        binding.listRoot.setAdapter(
-                new ChatRecyclerViewAdapter(ChatGenerator.getChatList())
+        mBinding.recyclerChatMessages.setAdapter(
+                new ChatListRecyclerViewAdapter(ChatListRoomPreviewGenerator.getChatList())
         );
 
 //
@@ -63,5 +58,15 @@ public class ChatListFragment extends Fragment {
 //                binding.layoutWait.setVisibility(View.GONE);
 //            }
 //        });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mBinding = null;
+    }
+
+    public ChatListFragment() {
+        // Required empty public constructor
     }
 }

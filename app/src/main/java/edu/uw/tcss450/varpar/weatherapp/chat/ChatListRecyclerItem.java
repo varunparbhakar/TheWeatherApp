@@ -8,7 +8,7 @@ import java.io.Serializable;
  * @author Nathan Brown
  * @version 4/30/2023
  */
-public class ChatMessage implements Serializable {
+public class ChatListRecyclerItem implements Serializable {
 
     //    private final String mTimestamp;
     private final String mUser;
@@ -36,13 +36,13 @@ public class ChatMessage implements Serializable {
             this.mMessage = message;
         }
 
-        public ChatMessage build() {
-            return new ChatMessage(this);
+        public ChatListRecyclerItem build() {
+            return new ChatListRecyclerItem(this);
         }
 
     }
 
-    private ChatMessage(final Builder builder) {
+    private ChatListRecyclerItem(final Builder builder) {
         this.mUser = builder.mUser;
         this.mMessage = builder.mMessage;
     }

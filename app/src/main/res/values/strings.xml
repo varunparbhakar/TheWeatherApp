@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Weather App</string>
+    <!--    <string name="url">http://10.0.0.67:5000/</string>-->
+    <string name="url">https://theweatherapp.herokuapp.com/</string>
 
     <string name="hello_blank_fragment">Hello Chuck Finley! This text should really be bigger!</string>
     <string name="hint_activity_auth_login_email">E-mail</string>
@@ -9,6 +11,31 @@
     <string name="hint_fragment_auth_register_firstName">First Name</string>
     <string name="hint_fragment_auth_register_lastName">Last Name</string>
     <string name="hint_fragment_auth_register_confirmPassword">Confirm Password</string>
+    <string name="action_sign_out">Sign Out</string>
+    <string name="keys_shared_prefs">My Auth App Shared Prefs</string>
+    <string name="keys_prefs_jwt">Sharded Prefs JWT</string>
+    <string name="switch_sign_in">Stay Signed in</string>
+
+    <!--Activity Names-->
+    <string name="title_activity_auth">Main Activity</string>
+    <string name="title_activity_home">Home</string>
+    <string name="title_activity_weather">Weather</string>
+    <string name="title_activity_contacts">Contacts</string>
+    <string name="title_activity_chat">Chat</string>
+    <string name="title_fragment_chat_room">Chat</string>
+    <string name="title_activity_profile">Profile</string>
+
+    <!--Home-->
+    <string name="home_fragment_welcome">Welcome</string>
+
+    <string name="chat_card_last_message">Recent Chat</string>
+
+    <!--Chat-->
+    <string name="chat_card_title">User</string>
+    <string name="chat_card_text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi assumenda culpa est facere, iusto nam numquam porro provident sed. Aperiam aut culpa debitis eos eum illo in ipsum iure laboriosam maiores molestiae optio provident recusandae sint, temporibus tenetur unde veniam vitae. Deserunt dolor magnam officia reiciendis sapiente similique?</string>
+
+    <!--Contact-->
+    <string name="button_add_contact_description">Button to navigate to the add a new contact screen.</string>
 
     <!--Profile-->
     <string name="profile_fragment_changePassword">Change Password</string>
@@ -21,22 +48,10 @@
     <string name="profile_fragment_serverError">Unknown server error, please try again later</string>
     <string name="profile_fragment_passwordSuccess">Password successfully changed!</string>
 
-    <!--Activity Names-->
-    <string name="title_activity_auth">Main Activity</string>
-    <string name="title_activity_home">Home</string>
-    <string name="title_activity_weather">Weather</string>
-    <string name="title_activity_contacts">Contacts</string>
-    <string name="title_activity_chat">Chat</string>
-    <string name="title_activity_profile">Profile</string>
-
-    <!--Chat-->
-    <string name="chat_card_title">User</string>
-    <string name="chat_card_text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi assumenda culpa est facere, iusto nam numquam porro provident sed. Aperiam aut culpa debitis eos eum illo in ipsum iure laboriosam maiores molestiae optio provident recusandae sint, temporibus tenetur unde veniam vitae. Deserunt dolor magnam officia reiciendis sapiente similique?</string>
-
-    <!--Contact-->
-    <string name="button_add_contact_description">Button to navigate to the add a new contact screen.</string>
-
 <!--    <string name="url">http://10.0.0.67:5000/</string>-->
-        <string name="url">https://theweatherapp.herokuapp.com/</string>
+    <string name="base_url">https://theweatherapp.herokuapp.com/</string>
+    <string name="weather_enter_city_zip_code">Enter City Zip Code</string>
+    <string name="weather_today_s_weather_forecast">Today\'s Weather Forecast</string>
+    <string name="weather_valid_city_error">Please enter valid city name…</string>
 
 </resources>

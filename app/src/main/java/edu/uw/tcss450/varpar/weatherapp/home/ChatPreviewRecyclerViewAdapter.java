@@ -1,4 +1,4 @@
-package edu.uw.tcss450.varpar.weatherapp.contact;
+package edu.uw.tcss450.varpar.weatherapp.home;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,64 +10,53 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import edu.uw.tcss450.varpar.weatherapp.R;
-import edu.uw.tcss450.varpar.weatherapp.contact.Contact;
-import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentContactCardBinding;
+import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentChatPreviewBinding;
 
-public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecyclerViewAdapter.ContactViewHolder> {
+public class ChatPreviewRecyclerViewAdapter extends RecyclerView.Adapter<ChatPreviewRecyclerViewAdapter.ChatPreviewViewHolder> {
 
     //Store all of the blogs to present
-    private final List<Contact> mContacts;
+    private final List<ChatPreview> mChatPreviews;
 
 //    //Store the expanded state for each List item, true -> expanded, false -> not
 //    private final Map<Contact, Boolean> mExpandedFlags;
 
-    public ContactRecyclerViewAdapter(List<Contact> items) {
-        this.mContacts = items;
+    public ChatPreviewRecyclerViewAdapter(List<ChatPreview> items) {
+        this.mChatPreviews = items;
 //        mExpandedFlags = mContacts.stream()
 //                .collect(Collectors.toMap(Function.identity(), blog -> false));
-
     }
 
     @NonNull
     @Override
-    public ContactViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ContactViewHolder(LayoutInflater
+    public ChatPreviewViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new ChatPreviewViewHolder(LayoutInflater
                 .from(parent.getContext())
                 .inflate(R.layout.fragment_contact_card, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ContactViewHolder holder, int position) {
-        holder.setContact(mContacts.get(position));
+    public void onBindViewHolder(@NonNull ChatPreviewViewHolder holder, int position) {
+        holder.setChatPreviews(mChatPreviews.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return mContacts.size();
-    }
-
-    /**
-     * Adding a contact to the contact list
-     * @param myContact
-     * @return
-     */
-    public boolean addContact(Contact myContact){
-        return mContacts.add(myContact);
+        return mChatPreviews.size();
     }
 
     /**
      * Objects from this class represent an Individual row View from the List
      * of rows in the Contact Recycler View.
      */
-    public class ContactViewHolder extends RecyclerView.ViewHolder {
+    public class ChatPreviewViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public FragmentContactCardBinding binding;
-        private Contact mContact;
+        public FragmentChatPreviewBinding binding;
+        private ChatPreview mChatPreview;
 
-        public ContactViewHolder(View view) {
+        public ChatPreviewViewHolder(View view) {
             super(view);
             mView = view;
-            binding = FragmentContactCardBinding.bind(view);
+            binding = FragmentChatPreviewBinding.bind(view);
 //            binding.buittonMore.setOnClickListener(this::handleMoreOrLess);
         }
 
@@ -101,14 +90,14 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
 //            }
 //        }
 
-        void setContact(final Contact contact) {
-            mContact = contact;
+        void setChatPreviews(final ChatPreview ChatPreview) {
+            mChatPreview = ChatPreview;
 //            binding.buttonFullPost.setOnClickListener(view -> {
 //                Navigation.findNavController(mView).navigate(
 //                        ContactListFragmentDirections
 //                                .ContactFragment(blog));
 //            });
-            binding.textContactUser.setText(contact.getUser());
+//            binding.textUser.setText(ChatPreview.getUser());
             //Use methods in the HTML class to format the HTML found in the text
 //            final String preview =  Html.fromHtml(
 //                            contact.getTeaser(),
@@ -119,5 +108,4 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
 //            displayPreview();
         }
     }
-
 }

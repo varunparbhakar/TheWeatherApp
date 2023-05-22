@@ -7,7 +7,7 @@
     android:layout_margin="4dp"
     app:cardElevation="6dp"
     app:cardCornerRadius="10dp"
-    android:background="@android:color/transparent"
+    android:background="@color/colorPrimary"
     >
     <RelativeLayout
         android:layout_width="match_parent"
@@ -20,7 +20,7 @@
             android:id="@+id/idTVTime"
             android:gravity="center"
             android:padding="4dp"
-            android:text="Date"
+            android:text="Hour"
             android:textColor="@color/design_default_color_on_primary"
             android:textAlignment="center"
             />
@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/idTVTemp"
             android:gravity="center"
-            android:text="20"
+            android:text="20°F"
             android:textAlignment="center"
             android:textSize="20sp"
             android:layout_below="@id/idTVTime"
@@ -61,7 +61,7 @@
             android:layout_marginBottom="4dp"
             android:gravity="center"
             android:padding="3dp"
-            android:text="13"
+            android:text="Something"
             android:textAlignment="center"
             android:textColor="@color/design_default_color_on_primary" />
     </RelativeLayout>

@@ -19,37 +19,36 @@ import java.util.Date;
 
 import edu.uw.tcss450.varpar.weatherapp.R;
 
-public class WeatherRVAdapter extends RecyclerView.Adapter<WeatherRVAdapter.ViewHolder> {
+public class WeatherRVHourly extends RecyclerView.Adapter<WeatherRVHourly.ViewHolder> {
     private Context context;
     private ArrayList<WeatherRVModel> weatherRVModelArrayList;
 
-    public WeatherRVAdapter(Context context, ArrayList<WeatherRVModel> weatherRVModelArrayList) {
+    public WeatherRVHourly(Context context, ArrayList<WeatherRVModel> weatherRVModelArrayList) {
         this.context = context;
         this.weatherRVModelArrayList = weatherRVModelArrayList;
     }
 
     @NonNull
     @Override
-    public WeatherRVAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.weather_rv_item,parent,false);
+    public WeatherRVHourly.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.weather_rv_hourly,parent,false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull WeatherRVAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull WeatherRVHourly.ViewHolder holder, int position) {
         WeatherRVModel model = weatherRVModelArrayList.get(position);
         holder.tempTV.setText(model.getTemp() + "°F");
         Picasso.get().load("http:".concat(model.getIcon())).into(holder.conditionTV);
         holder.windTV.setText(model.getCondition());
-        holder.timeTV.setText(model.getTime());
-//        SimpleDateFormat input = new SimpleDateFormat("yyyy-mm-dd hh:mm");
-//        SimpleDateFormat output = new SimpleDateFormat("hh:mm aa");
-//        try {
-//            Date t = input.parse(model.getTime());
-//            holder.timeTV.setText(output.format(t));
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
+        SimpleDateFormat input = new SimpleDateFormat("yyyy-mm-dd hh:mm");
+        SimpleDateFormat output = new SimpleDateFormat("hh:mm aa");
+        try {
+            Date t = input.parse(model.getTime());
+            holder.timeTV.setText(output.format(t));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

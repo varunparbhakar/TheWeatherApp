@@ -1,24 +1,26 @@
 package edu.uw.tcss450.varpar.weatherapp;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import edu.uw.tcss450.varpar.weatherapp.profile.UserInfoViewModel;
+import edu.uw.tcss450.varpar.weatherapp.model.UserInfoViewModel;
 
 /**
  * Activity that holds all the main content for the app.
@@ -39,27 +41,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         //Importing Arguments
         MainActivityArgs args = MainActivityArgs.fromBundle(getIntent().getExtras());
-//        new ViewModelProvider(this, new UserInfoViewModel(getApplication(), args.getEmail(), args.getJwt())
-//        ).get(UserInfoViewModel.class);
         UserInfoViewModel model = new ViewModelProvider(this).get(UserInfoViewModel.class);
         try {
             model.setJSON(new JSONObject(args.getJson()));
-            Log.e("help",args.getJson());
         } catch (JSONException e) {
             Log.i("CONVERTING ERROR", "onCreate: while converting from string back into the json object there was an error ");
             throw new RuntimeException(e);
         }
-        try {
-            model.setJSON(new JSONObject(args.getJson()));
-        } catch (JSONException e) {
-            Log.d("Parsing", "Parsing String into JSON " + args.getJson());
-            throw new RuntimeException(e);
-        }
 
         setContentView(R.layout.activity_main);
+
         //this stuff works with binding existing fragment to nav
         BottomNavigationView navView = findViewById(R.id.nav_view);
 
@@ -71,6 +64,13 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
+        // This is the code for the add chat button
+        // TODO: add chat button to chat fragment functionality
+//        Button addChatButton = findViewById(R.id.);
+//        addChatButton.setOnClickListener(button -> {
+//            Navigation.findNavController(this, R.id.nav_host_fragment).navigate(
+//                    MainActivityDirections.actionNavigationChatToAddChatFragment());
+//        });
     }
 
     /**
@@ -104,8 +104,25 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        if (item.getItemId() == R.id.action_sign_out) {
+            signOut();
+        }
         return NavigationUI.onNavDestinationSelected(item, navController)
                 || super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Sign-out functionality for users.
+     * Commented out code may be used later to store user being able to sign in again automatically.
+     */
+    private void signOut() {
+//        SharedPreferences prefs =
+//                getSharedPreferences(
+//                        getString(R.string.keys_shared_prefs),
+//                        Context.MODE_PRIVATE);
+//        prefs.edit().remove(getString(R.string.keys_prefs_jwt)).apply();
+        //End the app completely
+        finishAndRemoveTask();
     }
 
 }

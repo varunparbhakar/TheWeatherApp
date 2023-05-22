@@ -15,8 +15,6 @@ import android.view.ViewGroup;
 import org.jetbrains.annotations.Nullable;
 
 import edu.uw.tcss450.varpar.weatherapp.R;
-import edu.uw.tcss450.varpar.weatherapp.chat.ChatGenerator;
-import edu.uw.tcss450.varpar.weatherapp.chat.ChatRecyclerViewAdapter;
 import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentContactListBinding;
 
 /**
@@ -61,8 +59,9 @@ public class ContactListFragment extends Fragment {
 
         FragmentContactListBinding binding = FragmentContactListBinding.bind(getView());
         myContactAdapter = new ContactRecyclerViewAdapter(ContactGenerator.getContactList());
-        binding.listRoot.setAdapter(myContactAdapter);
+        binding.recyclerChatMessages.setAdapter(myContactAdapter);
 
+        //This code causes a crash!!!!!
 //        //This code causes a crash!!!!!
 //        binding.buttonAddContact.setOnClickListener(new View.OnClickListener() {
 //            @Override
