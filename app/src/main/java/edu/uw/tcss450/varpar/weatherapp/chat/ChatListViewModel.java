@@ -1,5 +1,4 @@
 package edu.uw.tcss450.varpar.weatherapp.chat;
-
 import static com.android.volley.DefaultRetryPolicy.*;
 
 import android.app.Application;
@@ -10,6 +9,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -29,16 +29,21 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.IntFunction;
 
+import edu.uw.tcss450.varpar.weatherapp.MainActivityArgs;
 import edu.uw.tcss450.varpar.weatherapp.R;
+import edu.uw.tcss450.varpar.weatherapp.model.UserInfoViewModel;
 
 public class ChatListViewModel extends AndroidViewModel {
 
     private MutableLiveData<List<ChatListRoom>> mChatList;
 
+    private UserInfoViewModel mUser;
+
     public ChatListViewModel(@NonNull Application application) {
         super(application);
         mChatList = new MutableLiveData<>();
         mChatList.setValue(new ArrayList<>());
+        mUser = new ViewModelProvider(getApplication()).get(UserInfoViewModel.class);
     }
 
     public void addChatListObserver(@NonNull LifecycleOwner owner,
@@ -46,13 +51,12 @@ public class ChatListViewModel extends AndroidViewModel {
         mChatList.observe(owner, observer);
     }
 
-    private void handleSuccess(final JSONObject response) {
+    private void handleSuccessForGetChatIds(final JSONObject response) {
         List<ChatListRoom> list;
         if (!response.has("chatId")) {
             throw new IllegalStateException("Unexpected response in ChatViewModel: " + response);
         }
         try {
-            JSONArray chatsJArray = response.getJSONArray("rows");
             ChatListRoom cRoom = new ChatListRoom(
                 response.getInt("chatId"),
                 response.getString("email"),
@@ -66,7 +70,7 @@ public class ChatListViewModel extends AndroidViewModel {
         }
     }
 
-    private void handleError(final VolleyError error) {
+    private void handleErrorForGetChatIds(final VolleyError error) {
         if (Objects.isNull(error.networkResponse)) {
             Log.e("NETWORK ERROR", error.getMessage());
         }
@@ -77,36 +81,6 @@ public class ChatListViewModel extends AndroidViewModel {
                             " " +
                             data);
         }
-    }
-
-    private void getChatRooms(final JSONObject result) {
-        String url = getApplication().getResources().getString(R.string.url) + "chatList";
-
-        Request request = new JsonObjectRequest(
-            Request.Method.GET,
-            url,
-            null,
-            this::handleSuccess,
-            this::handleError
-        ){
-//                @Override
-//                public Map<String, String> getHeaders() {
-//                    Map<String, String> headers = new HashMap<>();
-//                    // add headers <key,value>
-//                    headers.put("Authorization", jwt);
-//                    return headers;
-//                }
-        };
-
-        request.setRetryPolicy(new DefaultRetryPolicy(
-                10_000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
-        //Instantiate the RequestQueue and add the request to the queue
-        Volley.newRequestQueue(getApplication().getApplicationContext())
-                .add(request);
-
     }
 
 

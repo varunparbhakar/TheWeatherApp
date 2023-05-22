@@ -66,7 +66,20 @@ public class ChatRoomFragment extends Fragment {
             mChatRoomModel.getNextMessages(HARD_CODED_CHAT_ID, mUserModel.getJwt());
         });
 
-//        mChatModel.addMessageObserver();
+        mChatRoomModel.addMessageObserver(HARD_CODED_CHAT_ID, getViewLifecycleOwner(),
+                list -> {
+                    /*
+                     * This solution needs work on the scroll position. As a group,
+                     * you will need to come up with some solution to manage the
+                     * recyclerview scroll position. You also should consider a
+                     * solution for when the keyboard is on the screen.
+                     */
+                    //inform the RV that the underlying list has (possibly) changed
+                    binding.recyclerChatMessages.getAdapter().notifyDataSetChanged();
+                    binding.recyclerChatMessages.scrollToPosition(binding.recyclerChatMessages.getAdapter().getItemCount() - 1);
+                    binding.swipeContainer.setRefreshing(false);
+                }
+        );
 
 //        //Send button was clicked. Send the message via the SendViewModel
 //        binding.buttonSend.setOnClickListener(button -> {

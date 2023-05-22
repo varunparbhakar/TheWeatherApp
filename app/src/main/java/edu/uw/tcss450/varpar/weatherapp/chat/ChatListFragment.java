@@ -12,6 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
+
 import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentChatListBinding;
 import edu.uw.tcss450.varpar.weatherapp.model.UserInfoViewModel;
 
@@ -31,9 +34,9 @@ public class ChatListFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ViewModelProvider provider = new ViewModelProvider(getActivity());
-        mUserModel = provider.get(UserInfoViewModel.class);
-        mChatListModel = provider.get(ChatListViewModel.class);
+        ViewModelProvider provider = new ViewModelProvider(requireActivity());
+//        mUserModel = provider.get(UserInfoViewModel.class);
+//        mChatListModel = provider.get(ChatListViewModel.class);
 //        mChatListModel.
     }
 

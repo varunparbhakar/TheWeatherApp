@@ -1,11 +1,19 @@
 package edu.uw.tcss450.varpar.weatherapp.chat;
 
+import android.content.res.Resources;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.shape.CornerFamily;
 
 import java.util.List;
 
@@ -16,14 +24,14 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
 
     //Store all of the blogs to present
     private final List<ChatRoomMessage> mChats;
-    private final String mUser;
+    private final String mEmail;
 
 //    //Store the expanded state for each List item, true -> expanded, false -> not
-//    private final Map<ChatMessage, Boolean> mExpandedFlags;
+//    private final Map<ChatRoomMessage, Boolean> mExpandedFlags;
 
-    public ChatRoomRecyclerViewAdapter(List<ChatRoomMessage> items, String user) {
+    public ChatRoomRecyclerViewAdapter(List<ChatRoomMessage> items, String email) {
         this.mChats = items;
-        this.mUser = user;
+        this.mEmail = email;
 //        mExpandedFlags = mChats.stream()
 //                .collect(Collectors.toMap(Function.identity(), blog -> false));
 
@@ -93,23 +101,84 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
 //            }
 //        }
 
-        void setChat(final ChatRoomMessage chat) {
-            mChat = chat;
-            binding.textChatRoomMessage.setText(chat.getMessage());
+        void setChat(final ChatRoomMessage message) {
+            final Resources res = mView.getContext().getResources();
+            final MaterialCardView card = binding.cardRoot;
 
-//            binding.buttonFullPost.setOnClickListener(view -> {
-//                Navigation.findNavController(mView).navigate(
-//                        ChatListFragmentDirections
-//                                .actionNavigationChatsToChatMessageFragment(blog));
-//            });
-            //Use methods in the HTML class to format the HTML found in the text
-//            final String preview =  Html.fromHtml(
-//                            chat.getTeaser(),
-//                            Html.FROM_HTML_MODE_COMPACT)
-//                    .toString().substring(0,100) //just a preview of the teaser
-//                    + "...";
-//            binding.textPreview.setText(preview);
-//            displayPreview();
+            int standard = (int) res.getDimension(R.dimen.chat_margin);
+            int extended = (int) res.getDimension(R.dimen.chat_margin_sided);
+
+            if (mEmail.equals(message.getSender())) {
+                //This message is from the user. Format it as such
+                binding.textChatRoomMessage.setText(message.getMessage());
+                ViewGroup.MarginLayoutParams layoutParams =
+                        (ViewGroup.MarginLayoutParams) card.getLayoutParams();
+                //Set the left margin
+                layoutParams.setMargins(extended, standard, standard, standard);
+                // Set this View to the right (end) side
+                ((FrameLayout.LayoutParams) card.getLayoutParams()).gravity =
+                        Gravity.END;
+
+                card.setCardBackgroundColor(
+                        ColorUtils.setAlphaComponent(
+                                res.getColor(R.color.colorPrimary, null),
+                                16));
+                binding.textChatRoomMessage.setTextColor(
+                        res.getColor(R.color.colorAccent, null));
+
+                card.setStrokeWidth(standard / 5);
+                card.setStrokeColor(ColorUtils.setAlphaComponent(
+                        res.getColor(R.color.colorPrimary, null),
+                        200));
+
+                //Round the corners on the left side
+                card.setShapeAppearanceModel(
+                        card.getShapeAppearanceModel()
+                                .toBuilder()
+                                .setTopLeftCorner(CornerFamily.ROUNDED,standard * 2)
+                                .setBottomLeftCorner(CornerFamily.ROUNDED,standard * 2)
+                                .setBottomRightCornerSize(0)
+                                .setTopRightCornerSize(0)
+                                .build());
+
+                card.requestLayout();
+            } else {
+                //This message is from another user. Format it as such
+                binding.textChatRoomMessage.setText(message.getSender() +
+                        ": " + message.getMessage());
+                ViewGroup.MarginLayoutParams layoutParams =
+                        (ViewGroup.MarginLayoutParams) card.getLayoutParams();
+
+                //Set the right margin
+                layoutParams.setMargins(standard, standard, extended, standard);
+                // Set this View to the left (start) side
+                ((FrameLayout.LayoutParams) card.getLayoutParams()).gravity =
+                        Gravity.START;
+
+                card.setCardBackgroundColor(
+                        ColorUtils.setAlphaComponent(
+                                res.getColor(R.color.colorAccent, null),
+                                16));
+
+                card.setStrokeWidth(standard / 5);
+                card.setStrokeColor(ColorUtils.setAlphaComponent(
+                        res.getColor(R.color.colorAccent, null),
+                        200));
+
+                binding.textChatRoomMessage.setTextColor(
+                        res.getColor(R.color.colorOffWhite, null));
+
+                //Round the corners on the right side
+                card.setShapeAppearanceModel(
+                        card.getShapeAppearanceModel()
+                                .toBuilder()
+                                .setTopRightCorner(CornerFamily.ROUNDED,standard * 2)
+                                .setBottomRightCorner(CornerFamily.ROUNDED,standard * 2)
+                                .setBottomLeftCornerSize(0)
+                                .setTopLeftCornerSize(0)
+                                .build());
+                card.requestLayout();
+            }
         }
     }
 

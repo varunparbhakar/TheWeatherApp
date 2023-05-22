@@ -132,10 +132,8 @@ public class ChatRoomViewModel extends AndroidViewModel {
      */
     public void getNextMessages(final int chatId, final String jwt) {
         String url = getApplication().getResources().getString(R.string.url) +
-                "messages/" +
-                chatId +
-                "/" +
-                mMessages.get(chatId).getValue().get(0).getMessageId();
+                "messages/" + chatId +
+                "/" + mMessages.get(chatId).getValue().get(0).getMessageId();
 
         Request request = new JsonObjectRequest(
                 Request.Method.GET,
@@ -189,7 +187,7 @@ public class ChatRoomViewModel extends AndroidViewModel {
                 ChatRoomMessage cMessage = new ChatRoomMessage(
                         message.getInt("messageid"),
                         message.getString("message"),
-                        message.getString("user")
+                        message.getString("email")
                 );
                 if (!list.contains(cMessage)) {
                     // don't add a duplicate

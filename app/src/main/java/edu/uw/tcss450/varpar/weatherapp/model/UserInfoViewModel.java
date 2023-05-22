@@ -28,6 +28,8 @@ import edu.uw.tcss450.varpar.weatherapp.io.RequestQueueSingleton;
  */
 public class UserInfoViewModel extends AndroidViewModel {
 
+    private String mMemberId;
+
     /** User email. */
     private String mEmail;
 
@@ -64,6 +66,7 @@ public class UserInfoViewModel extends AndroidViewModel {
      */
     public void setJSON(final JSONObject json) {
         mResponse.setValue(json);
+        mMemberId = getInfoJson("memberId");
         mEmail = getInfoJson("email");
         mJwt = getInfoJson("token");
         mFirstName = getInfoJson("firstname");
@@ -164,6 +167,14 @@ public class UserInfoViewModel extends AndroidViewModel {
      */
     public void removeResponseObserver(final @NonNull Observer<? super JSONObject> observer) {
         mResponse.removeObserver(observer);
+    }
+
+    /**
+     * Get memberId
+     * @return memberId as string
+     */
+    public String getMemberId() {
+        return mMemberId;
     }
 
     /**
