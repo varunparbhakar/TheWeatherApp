@@ -44,6 +44,7 @@ public class RegisterViewModel extends AndroidViewModel {
                 mResponse.setValue(new JSONObject("{" +
                         "error:\"" + error.getMessage() +
                         "\"}"));
+
             } catch (JSONException e) {
                 Log.e("JSON PARSE", "JSON Parse Error in handleError");
             }
@@ -61,8 +62,16 @@ public class RegisterViewModel extends AndroidViewModel {
             }
         }
     }
+    private void handleResult(final JSONObject result) {
+
+        mResponse.setValue(result);
+
+
+
+    }
     public void connect(final String first,
                         final String last,
+                        final String username,
                         final String email,
                         final String password) {
         String url = getApplication().getResources().getString(R.string.url)+"auth";
@@ -70,6 +79,7 @@ public class RegisterViewModel extends AndroidViewModel {
         try {
             body.put("first", first);
             body.put("last", last);
+            body.put("username", username);
             body.put("email", email);
             body.put("password", password);
         } catch (JSONException e) {
@@ -79,7 +89,7 @@ public class RegisterViewModel extends AndroidViewModel {
                 Request.Method.POST,
                 url,
                 body,
-                mResponse::setValue,
+                this::handleResult,
                 this::handleError);
         request.setRetryPolicy(new DefaultRetryPolicy(
                 10_000,

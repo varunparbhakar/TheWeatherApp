@@ -1,9 +1,10 @@
 <resources>
     <string name="app_name">Weather App</string>
-    <!--    <string name="url">http://10.0.0.67:5000/</string>-->
+<!--        <string name="url">http://10.0.0.67:5000/</string>-->
     <string name="url">https://theweatherapp.herokuapp.com/</string>
 
     <string name="hello_blank_fragment">Hello Chuck Finley! This text should really be bigger!</string>
+    <string name="hint_activity_auth_login_username">User Name</string>
     <string name="hint_activity_auth_login_email">E-mail</string>
     <string name="hint_activity_auth_login_pass">Password</string>
     <string name="text_activity_auth_login_button_login">Login</string>
@@ -48,7 +49,7 @@
     <string name="profile_fragment_serverError">Unknown server error, please try again later</string>
     <string name="profile_fragment_passwordSuccess">Password successfully changed!</string>
 
-<!--    <string name="url">http://10.0.0.67:5000/</string>-->
+<!--    <string name="base_url">http://10.0.0.67:5000/</string>-->
     <string name="base_url">https://theweatherapp.herokuapp.com/</string>
     <string name="weather_enter_city_zip_code">Enter City Zip Code</string>
     <string name="weather_today_s_weather_forecast">Today\'s Weather Forecast</string>

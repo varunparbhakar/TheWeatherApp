@@ -1,5 +1,6 @@
 package edu.uw.tcss450.varpar.weatherapp.auth.login;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import static edu.uw.tcss450.varpar.weatherapp.util.PasswordValidator.*;
 import androidx.annotation.NonNull;
@@ -86,7 +87,7 @@ public class LoginFragment extends Fragment {
         //EASE OF LOGGIN IN
         mBinding.etEmail.setText("mom@gmail.com");
         mBinding.etPassword.setText("Test123!");
-        attemptSignIn(mBinding.buttonLogin);
+//        attemptSignIn(mBinding.buttonLogin);
         //EASE OF LOGGING IN
     }
     private void attemptSignIn(final View button) {
@@ -118,13 +119,24 @@ public class LoginFragment extends Fragment {
         if (response.length() > 0) {
             if (response.has("code")) {
                 try {
+                    if(String.valueOf(response.get("code")).equals("401")) {
+                        AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(getContext());
+                        dlgAlert.setMessage(response.getJSONObject("data").getString("message"));
+                        dlgAlert.setTitle("Please Verify");
+                        dlgAlert.setPositiveButton("OK", null);
+                        dlgAlert.setCancelable(true);
+                        dlgAlert.create().show();
+                    }else{
                     mBinding.etEmail.setError(
                             "Error Authenticating: " +
                                     response.getJSONObject("data").getString("message"));
+
+                    }
+
                 } catch (JSONException e) {
                     Log.e("JSON Parse Error in login response observer", e.getMessage());
                 }
-            } else {
+            }else {
                 //Taking the user's json and passing to the other activity
                 navigateToSuccess(response.toString());
 
@@ -137,4 +149,5 @@ public class LoginFragment extends Fragment {
     private void navigateToSuccess(final String json) {
         Navigation.findNavController(getView()).navigate(LoginFragmentDirections.actionLoginFragmentToMainActivity2(json));
     }
+
 }
