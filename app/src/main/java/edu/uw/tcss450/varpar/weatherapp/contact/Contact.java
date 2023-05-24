@@ -8,10 +8,18 @@ import java.io.Serializable;
  * @author Nathan Brown
  * @version 4/30/2023
  */
-public class Contact implements Serializable {
+public class Contact implements Serializable, Comparable<Contact> {
 
-    //    private final String mTimestamp;
     private final String mUser;
+
+    @Override
+    public int compareTo(Contact o) {
+        return mUser.compareTo(o.mUser);
+    }
+
+    public String getUser() {
+        return mUser;
+    }
 
     /**
      * Helper class for building messages.
@@ -21,7 +29,6 @@ public class Contact implements Serializable {
     public static class Builder {
 
         private final String mUser;
-
 
         /**
          * Constructs a new Builder.
@@ -41,10 +48,5 @@ public class Contact implements Serializable {
     private Contact(final Builder builder) {
         this.mUser = builder.mUser;
     }
-
-    public String getUser() {
-        return mUser;
-    }
-
 
 }

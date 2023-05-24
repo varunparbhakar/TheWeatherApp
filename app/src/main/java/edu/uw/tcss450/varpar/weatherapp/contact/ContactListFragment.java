@@ -16,17 +16,15 @@ import org.jetbrains.annotations.Nullable;
 
 import edu.uw.tcss450.varpar.weatherapp.R;
 import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentContactListBinding;
+import edu.uw.tcss450.varpar.weatherapp.model.UserInfoViewModel;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link ContactListFragment} factory method to
- * create an instance of this fragment.
+ * Logic for contact list visual.
  */
 public class ContactListFragment extends Fragment {
 
     private ContactListViewModel mModel;
     private ContactRecyclerViewAdapter myContactAdapter;
-
 
     public ContactListFragment() {
         // Required empty public constructor
@@ -35,15 +33,14 @@ public class ContactListFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        mModel = new ViewModelProvider(getActivity()).get(ContactListViewModel.class);
-//        mModel.connectGet();
-    }
+        mModel = new ViewModelProvider(getActivity()).get(ContactListViewModel.class);
+        mModel.getContacts();
 
-//    @Override
-//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//                             Bundle savedInstanceState) {
-//        return inflater.inflate(R.layout.fragment_chat_list, container, false);
-//    }
+        //could be made one line if it works
+        ViewModelProvider provider = new ViewModelProvider(getActivity());
+        UserInfoViewModel uivm = provider.get(UserInfoViewModel.class);
+        mModel.setJwt(uivm.getJwt());
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -56,12 +53,10 @@ public class ContactListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
         FragmentContactListBinding binding = FragmentContactListBinding.bind(getView());
         myContactAdapter = new ContactRecyclerViewAdapter(ContactGenerator.getContactList());
         binding.recyclerChatMessages.setAdapter(myContactAdapter);
 
-        //This code causes a crash!!!!!
 //        //This code causes a crash!!!!!
 //        binding.buttonAddContact.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -71,12 +66,8 @@ public class ContactListFragment extends Fragment {
 //            }
 //        });
 
-
-
 //        int position = myContactAdapter.getItemCount() - 1;
 //        myContactAdapter.notifyItemInserted(position);
-
-
 
 //        mModel.addContactListObserver(getViewLifecycleOwner(), blogList -> {
 //            if (!blogList.isEmpty()) {
