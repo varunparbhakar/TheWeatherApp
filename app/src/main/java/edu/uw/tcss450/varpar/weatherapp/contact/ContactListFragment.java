@@ -5,7 +5,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,13 +32,16 @@ public class ContactListFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         mModel = new ViewModelProvider(getActivity()).get(ContactListViewModel.class);
-        mModel.getContacts();
 
         //could be made one line if it works
         ViewModelProvider provider = new ViewModelProvider(getActivity());
         UserInfoViewModel uivm = provider.get(UserInfoViewModel.class);
         mModel.setJwt(uivm.getJwt());
+        mModel.setMemberID("4");
+
+        mModel.getContacts();
     }
 
     @Override
@@ -52,30 +54,25 @@ public class ContactListFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         FragmentContactListBinding binding = FragmentContactListBinding.bind(getView());
-        myContactAdapter = new ContactRecyclerViewAdapter(ContactGenerator.getContactList());
+
+        myContactAdapter = new ContactRecyclerViewAdapter(mModel.getContactList());
         binding.recyclerChatMessages.setAdapter(myContactAdapter);
 
-//        //This code causes a crash!!!!!
-//        binding.buttonAddContact.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                myContactAdapter.addContact(new Contact.Builder("Varun").build());
-//                myContactAdapter.notifyItemInserted(myContactAdapter.getItemCount() - 1);
-//            }
-//        });
+        mModel.addContactListObserver(getViewLifecycleOwner(), contactList -> {
+            if (!contactList.isEmpty()) {
+                binding.recyclerChatMessages.setAdapter(
+                        new ContactRecyclerViewAdapter(contactList)
+                );
+                binding.layoutWait.setVisibility(View.GONE);
+            }
+        });
 
-//        int position = myContactAdapter.getItemCount() - 1;
-//        myContactAdapter.notifyItemInserted(position);
+        binding.layoutWait.setVisibility(View.GONE); //make the visibility good when stuff broken
 
-//        mModel.addContactListObserver(getViewLifecycleOwner(), blogList -> {
-//            if (!blogList.isEmpty()) {
-//                binding.listRoot.setAdapter(
-//                        new ContactRecyclerViewAdapter(blogList)
-//                );
-//                binding.layoutWait.setVisibility(View.GONE);
-//            }
-//        });
+        binding.buttonAddContact.setOnClickListener(v -> {
+//            mModel.addContact(new Contact.Builder("Varun", "420").build());
+            Log.wtf("TODO", "Yeah idk man");
+        });
     }
 }

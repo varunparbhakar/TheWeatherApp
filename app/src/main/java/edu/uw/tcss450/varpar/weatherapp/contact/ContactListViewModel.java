@@ -27,18 +27,18 @@ import java.util.Map;
 import java.util.Objects;
 
 import edu.uw.tcss450.varpar.weatherapp.R;
-import edu.uw.tcss450.varpar.weatherapp.chat.ChatRoomMessage;
 import edu.uw.tcss450.varpar.weatherapp.io.RequestQueueSingleton;
 
 public class ContactListViewModel extends AndroidViewModel {
 
-    /**
-     * A List of Contacts.
-     */
+    /** A List of Contacts. */
     private MutableLiveData<List<Contact>> mContacts;
 
     /** User's jwt. */
     private String mJwt;
+
+    /** User's memberID. */
+    private String mMemberID;
 
     public ContactListViewModel(@NonNull Application application) {
         super(application);
@@ -46,8 +46,36 @@ public class ContactListViewModel extends AndroidViewModel {
         mContacts.setValue(new ArrayList<>());
     }
 
+    /**
+     * Obtain access to member JWT from UIVM in Fragment
+     * @param mJwt member JWT.
+     */
     public void setJwt(String mJwt) {
         this.mJwt = mJwt;
+    }
+
+    /**
+     * Obtain access to member ID from UIVM in Fragment
+     * @param mMemberID member ID.
+     */
+    public void setMemberID(String mMemberID) {
+        this.mMemberID = mMemberID;
+    }
+
+    /**
+     * Give access to list of contacts.
+     * @return list of contacts.
+     */
+    public List<Contact> getContactList() {
+        return mContacts.getValue();
+    }
+
+    /**
+     * Returns if list of contacts is empty.
+     * @return true if empty.
+     */
+    public boolean isEmpty() {
+        return mContacts.getValue().isEmpty();
     }
 
     /**
@@ -55,7 +83,7 @@ public class ContactListViewModel extends AndroidViewModel {
      * @param owner the fragments lifecycle owner
      * @param observer the observer
      */
-    public void addContactObserver(@NonNull LifecycleOwner owner,
+    public void addContactListObserver(@NonNull LifecycleOwner owner,
                                    @NonNull Observer<? super List<Contact>> observer) {
         mContacts.observe(owner, observer);
     }
@@ -65,7 +93,7 @@ public class ContactListViewModel extends AndroidViewModel {
      */
     public void getContacts() {
         String url = getApplication().getResources().getString(R.string.url) +
-                "contacts/getfriends";
+                "contacts/getfriends/" + mMemberID;
 
         Request request = new JsonObjectRequest(
                 Request.Method.GET,
@@ -101,24 +129,24 @@ public class ContactListViewModel extends AndroidViewModel {
         Collections.sort(mContacts.getValue());
     }
 
+    /**
+     * Retrieve JSONObject of contacts and parse into list, notify observers.
+     * @param response JSONObject of contacts.
+     */
     private void handleSuccess(final JSONObject response) {
         List<Contact> list = new ArrayList<>();
 
-        //TODO: how to eat from endpoint
-//        if (!response.has("memberId")) {
-//            throw new IllegalStateException("Unexpected response in ContactListViewModel: " + response);
-//        }
         try {
             JSONArray contacts = response.getJSONArray("rows");
             for(int i = 0; i < contacts.length(); i++) {
                 JSONObject message = contacts.getJSONObject(i);
-                Contact c = new Contact.Builder(message.get("firstname").toString()).build();
+                Contact c = new Contact.Builder(message.get("username").toString(), message.getString("memberid")).build();
                 if (!list.contains(c)) {
                     // don't add a duplicate
                     list.add(c);
                 } else {
                     // this shouldn't happen but could with the async nature of the application
-                    Log.wtf("ERROR", "Contact already received: " + c.getUser());
+                    Log.wtf("ERROR", "Contact already received: " + c.getUsername());
                 }
 
             }
@@ -130,6 +158,10 @@ public class ContactListViewModel extends AndroidViewModel {
         }
     }
 
+    /**
+     * Error occurred in server communication to gain contacts.
+     * @param error error that happened.
+     */
     private void handleError(final VolleyError error) {
         if (Objects.isNull(error.networkResponse)) {
             Log.e("NETWORK ERROR", error.getMessage());
