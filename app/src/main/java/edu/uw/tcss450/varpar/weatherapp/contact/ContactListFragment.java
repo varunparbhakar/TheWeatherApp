@@ -33,21 +33,21 @@ public class ContactListFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //initiate contact list.
         mModel = new ViewModelProvider(getActivity()).get(ContactListViewModel.class);
 
-        //could be made one line if it works
-        ViewModelProvider provider = new ViewModelProvider(getActivity());
-        UserInfoViewModel uivm = provider.get(UserInfoViewModel.class);
+        //get user info, give to contact model
+        UserInfoViewModel uivm = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
         mModel.setJwt(uivm.getJwt());
-        mModel.setMemberID("4");
+        mModel.setMemberID(uivm.getMemberID());
 
+        //get contacts from server
         mModel.getContacts();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_contact_list, container, false);
     }
 
@@ -68,10 +68,9 @@ public class ContactListFragment extends Fragment {
             }
         });
 
-        binding.layoutWait.setVisibility(View.GONE); //make the visibility good when stuff broken
+//        binding.layoutWait.setVisibility(View.GONE); //make the visibility good when stuff broken
 
         binding.buttonAddContact.setOnClickListener(v -> {
-//            mModel.addContact(new Contact.Builder("Varun", "420").build());
             Log.wtf("TODO", "Yeah idk man");
         });
     }

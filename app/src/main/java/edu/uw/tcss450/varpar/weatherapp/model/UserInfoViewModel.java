@@ -43,6 +43,9 @@ public class UserInfoViewModel extends AndroidViewModel {
     /** User username. */
     private String mUsername;
 
+    /** User memberID. */
+    private String mMemberID;
+
     /** Network responses, for observer. */
     private MutableLiveData<JSONObject> mResponse;
 
@@ -69,6 +72,7 @@ public class UserInfoViewModel extends AndroidViewModel {
         mFirstName = getInfoJson("firstname");
         mLastName = getInfoJson("lastname");
         mUsername = getInfoJson("username");
+        mMemberID = getInfoJson("memberid");
     }
 
     /**
@@ -198,5 +202,17 @@ public class UserInfoViewModel extends AndroidViewModel {
         return mEmail;
     }
 
+    /**
+     * Get User's JWT.
+     * @return JWT as string
+     */
     public String getJwt(){return mJwt;}
+
+    /**
+     * Get user's Member ID.
+     * @return memberid as string
+     */
+    public String getMemberID() {
+        return mMemberID;
+    }
 }
