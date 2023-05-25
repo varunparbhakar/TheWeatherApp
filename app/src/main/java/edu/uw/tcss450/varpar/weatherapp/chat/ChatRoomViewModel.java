@@ -88,8 +88,11 @@ public class ChatRoomViewModel extends AndroidViewModel {
      * @param jwt the users signed JWT
      */
     public void getFirstMessages(final int chatId, final String jwt) {
-        String url = getApplication().getResources().getString(R.string.url) +
-                "messages/" + chatId;
+        String url =
+                getApplication()
+                    .getResources()
+                    .getString(R.string.url)
+                + "messages/" + chatId;
 
         Request request = new JsonObjectRequest(
                 Request.Method.GET,
@@ -131,17 +134,20 @@ public class ChatRoomViewModel extends AndroidViewModel {
      * @param jwt the users signed JWT
      */
     public void getNextMessages(final int chatId, final String jwt) {
-        String url = getApplication().getResources().getString(R.string.url) +
-                "messages/" + chatId +
-                "/" + mMessages.get(chatId).getValue().get(0).getMessageId();
+        String url =
+                getApplication()
+                    .getResources()
+                    .getString(R.string.url)
+                + "messages/" + chatId + "/"
+                + mMessages.get(chatId).getValue().get(0).getMessageId();
 
         Request request = new JsonObjectRequest(
-                Request.Method.GET,
-                url,
-                null, //no body for this get request
-                this::handleSuccess,
-                this::handleError) {
-
+            Request.Method.GET,
+            url,
+            null, //no body for this get request
+            this::handleSuccess,
+            this::handleError
+        ){
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
@@ -151,13 +157,18 @@ public class ChatRoomViewModel extends AndroidViewModel {
             }
         };
 
-        request.setRetryPolicy(new DefaultRetryPolicy(
+        request.setRetryPolicy(
+            new DefaultRetryPolicy(
                 10_000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+            )
+        );
+
         //Instantiate the RequestQueue and add the request to the queue
-        RequestQueueSingleton.getInstance(getApplication().getApplicationContext())
-                .addToRequestQueue(request);
+        RequestQueueSingleton.getInstance(
+            getApplication().getApplicationContext()
+        ).addToRequestQueue(request);
 
         //code here will run
     }

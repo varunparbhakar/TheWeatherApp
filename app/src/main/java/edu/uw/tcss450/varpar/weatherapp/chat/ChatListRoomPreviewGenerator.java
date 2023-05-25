@@ -13,9 +13,8 @@ public class ChatListRoomPreviewGenerator {
         CHATS = new ChatListRoom[COUNT];
         for (int i = 0; i < CHATS.length; i++) {
             CHATS[i] = new ChatListRoom(
-                    i,
-                    "User_" + i,
-                    "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et."
+                    "" + i,
+                    "User_" + i
             );
         }
     }

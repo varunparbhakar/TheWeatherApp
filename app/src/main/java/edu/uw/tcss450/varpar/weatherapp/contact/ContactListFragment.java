@@ -57,11 +57,11 @@ public class ContactListFragment extends Fragment {
         FragmentContactListBinding binding = FragmentContactListBinding.bind(getView());
 
         myContactAdapter = new ContactRecyclerViewAdapter(mModel.getContactList());
-        binding.recyclerChatMessages.setAdapter(myContactAdapter);
+        binding.recyclerContacts.setAdapter(myContactAdapter);
 
         mModel.addContactListObserver(getViewLifecycleOwner(), contactList -> {
             if (!contactList.isEmpty()) {
-                binding.recyclerChatMessages.setAdapter(
+                binding.recyclerContacts.setAdapter(
                         new ContactRecyclerViewAdapter(contactList)
                 );
                 binding.layoutWait.setVisibility(View.GONE);

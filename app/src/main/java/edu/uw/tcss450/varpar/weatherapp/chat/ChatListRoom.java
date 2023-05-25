@@ -11,23 +11,21 @@ import java.io.Serializable;
 public class ChatListRoom implements Serializable {
 
 
-    private final int mChatId;
+    private final String mChatId;
     //    private final String mTimestamp;
-    private final String mUser;
-    private final String mMessage;
+    private final String mName;
 
-    public ChatListRoom(int chatId, String user, String message) {
+    public ChatListRoom(String chatId, String name) {
         this.mChatId = chatId;
-        this.mUser = user;
-        this.mMessage = message;
+        this.mName = name;
     }
 
-    public String getUser() {
-        return mUser;
+    public String getChatId() {
+        return mChatId;
     }
 
-    public String getMessage() {
-        return mMessage;
+    public String getName() {
+        return mName;
     }
 
 

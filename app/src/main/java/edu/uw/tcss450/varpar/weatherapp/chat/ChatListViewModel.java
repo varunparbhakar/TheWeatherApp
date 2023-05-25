@@ -31,40 +31,97 @@ import java.util.function.IntFunction;
 
 import edu.uw.tcss450.varpar.weatherapp.MainActivityArgs;
 import edu.uw.tcss450.varpar.weatherapp.R;
+import edu.uw.tcss450.varpar.weatherapp.io.RequestQueueSingleton;
 import edu.uw.tcss450.varpar.weatherapp.model.UserInfoViewModel;
 
 public class ChatListViewModel extends AndroidViewModel {
 
     private MutableLiveData<List<ChatListRoom>> mChatList;
 
-    private UserInfoViewModel mUser;
-
     public ChatListViewModel(@NonNull Application application) {
         super(application);
         mChatList = new MutableLiveData<>();
         mChatList.setValue(new ArrayList<>());
-        mUser = new ViewModelProvider(getApplication()).get(UserInfoViewModel.class);
     }
 
-    public void addChatListObserver(@NonNull LifecycleOwner owner,
-                                    @NonNull Observer<? super List<ChatListRoom>> observer) {
+    public void addChatListObserver(
+            @NonNull LifecycleOwner owner,
+            @NonNull Observer<? super List<ChatListRoom>> observer
+    ) {
         mChatList.observe(owner, observer);
     }
 
+    public List<ChatListRoom> getChatList(){
+        return mChatList.getValue();
+    }
+
+    public boolean isEmpty(){
+        return mChatList.getValue().isEmpty();
+    }
+
+    public void getChatIds(final String memberId, final String jwt) {
+        String url =
+                getApplication()
+                    .getResources()
+                    .getString(R.string.url)
+                + "chats/memberId=" + memberId;
+
+        Request request = new JsonObjectRequest(
+            Request.Method.GET,
+            url,
+            null,
+            this::handleSuccessForGetChatIds,
+            this::handleErrorForGetChatIds
+        ){
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                // add headers <key,value>
+                headers.put("Authorization", jwt);
+                return headers;
+            }
+        };
+
+        request.setRetryPolicy(
+            new DefaultRetryPolicy(
+                10_000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+            )
+        );
+
+        //Instantiate the RequestQueue and add the request to the queue
+        RequestQueueSingleton.getInstance(
+                        getApplication().getApplicationContext()
+                ).addToRequestQueue(request);
+
+        //code here will run
+    }
+
     private void handleSuccessForGetChatIds(final JSONObject response) {
-        List<ChatListRoom> list;
-        if (!response.has("chatId")) {
-            throw new IllegalStateException("Unexpected response in ChatViewModel: " + response);
-        }
+        List<ChatListRoom> list = new ArrayList<>();
+
         try {
-            ChatListRoom cRoom = new ChatListRoom(
-                response.getInt("chatId"),
-                response.getString("email"),
-                response.getString("message")
-            );
+            JSONArray rooms = response.getJSONArray("rows");
+            for(int i = 0; i < rooms.length(); i++) {
+                JSONObject room = rooms.getJSONObject(i);
+                ChatListRoom cRoom = new ChatListRoom(
+                    room.getString("chatid"),
+                    room.getString("name")
+                );
+                list.add(cRoom);
+                Log.d(
+                        "Endpoint Response",
+                        "ChatList JSONArray Row: " + cRoom.getChatId() + ", " + cRoom.getName()
+                );
+            }
             //inform observers of the change (setValue)
-//            getOrCreateMapEntry(response.getInt("chatId")).setValue(list);
-        }catch (JSONException e) {
+            mChatList.setValue(list);
+            Log.d(
+                    "Endpoint Response",
+                    "ChatList Array Size: " + mChatList.getValue().size()
+            );
+        } catch (JSONException e) {
             Log.e("JSON PARSE ERROR", "Found in handle Success ChatViewModel");
             Log.e("JSON PARSE ERROR", "Error: " + e.getMessage());
         }

@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,17 +28,16 @@ public class ChatListFragment extends Fragment {
 
     private ChatListViewModel mChatListModel;
 
-    private UserInfoViewModel mUserModel;
-
     private FragmentChatListBinding mBinding;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ViewModelProvider provider = new ViewModelProvider(requireActivity());
-//        mUserModel = provider.get(UserInfoViewModel.class);
-//        mChatListModel = provider.get(ChatListViewModel.class);
-//        mChatListModel.
+        UserInfoViewModel mUserModel = provider.get(UserInfoViewModel.class);
+        mChatListModel = provider.get(ChatListViewModel.class);
+//        mChatListModel.getChatIds(mUserModel.getMemberId(), mUserModel.getJwt());
+        mChatListModel.getChatIds("4", mUserModel.getJwt());
     }
 
     @Override
@@ -55,18 +55,22 @@ public class ChatListFragment extends Fragment {
         mBinding = FragmentChatListBinding.bind(getView());
 
         mBinding.recyclerChatMessages.setAdapter(
-                new ChatListRecyclerViewAdapter(ChatListRoomPreviewGenerator.getChatList())
+            new ChatListRecyclerViewAdapter(
+                mChatListModel.getChatList()
+            )
         );
 
-//
-//        mModel.addChatListObserver(getViewLifecycleOwner(), blogList -> {
-//            if (!blogList.isEmpty()) {
-//                binding.listRoot.setAdapter(
-//                        new ChatRecyclerViewAdapter(blogList)
-//                );
-//                binding.layoutWait.setVisibility(View.GONE);
-//            }
-//        });
+        Log.d("ChatListViewModel:", "" + mChatListModel.getChatList().size());
+
+
+        mChatListModel.addChatListObserver(getViewLifecycleOwner(), chatList -> {
+            if (!chatList.isEmpty()) {
+                mBinding.recyclerChatMessages.setAdapter(
+                        new ChatListRecyclerViewAdapter(chatList)
+                );
+//                mBinding.layoutRoot.setVisibility(View.GONE);
+            }
+        });
     }
 
     @Override
