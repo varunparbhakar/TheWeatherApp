@@ -68,7 +68,9 @@ public class ChatListRecyclerViewAdapter extends RecyclerView.Adapter<ChatListRe
             binding.layoutInner.setOnClickListener(
                 card -> {
                     Navigation.findNavController(mView).navigate(
-                        ChatListFragmentDirections.actionNavigationChatToChatRoom()
+                        ChatListFragmentDirections.actionNavigationChatToChatRoom(
+                                Integer.parseInt(mChat.getChatId())
+                        )
                     );
                 }
             );

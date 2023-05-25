@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
 import edu.uw.tcss450.varpar.weatherapp.R;
 import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentChatRoomBinding;
 import edu.uw.tcss450.varpar.weatherapp.model.UserInfoViewModel;
@@ -24,16 +26,21 @@ public class ChatRoomFragment extends Fragment {
     private ChatRoomViewModel mChatRoomModel;
     private UserInfoViewModel mUserModel;
     private ChatSendViewModel mSendModel;
+    private int mChatId;
+
     public ChatRoomFragment() {
         // Required empty public constructor
     }
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ViewModelProvider provider = new ViewModelProvider(getActivity());
+
+        mChatId = getArguments() != null ? getArguments().getInt("chatId") : HARD_CODED_CHAT_ID;
+
+        ViewModelProvider provider = new ViewModelProvider(requireActivity());
         mUserModel = provider.get(UserInfoViewModel.class);
         mChatRoomModel = provider.get(ChatRoomViewModel.class);
-        mChatRoomModel.getFirstMessages(HARD_CODED_CHAT_ID, mUserModel.getJwt());
+        mChatRoomModel.getFirstMessages(mChatId, mUserModel.getJwt());
 //        mSendModel = provider.get(ChatSendViewModel.class);
     }
 
@@ -54,16 +61,16 @@ public class ChatRoomFragment extends Fragment {
 
         binding.recyclerChatMessages.setAdapter(
             new ChatRoomRecyclerViewAdapter(
-                mChatRoomModel.getMessageListByChatId(HARD_CODED_CHAT_ID),
+                mChatRoomModel.getMessageListByChatId(mChatId),
                 mUserModel.getEmail()
             )
         );
 
         binding.swipeContainer.setOnRefreshListener(() -> {
-            mChatRoomModel.getNextMessages(HARD_CODED_CHAT_ID, mUserModel.getJwt());
+            mChatRoomModel.getNextMessages(mChatId, mUserModel.getJwt());
         });
 
-        mChatRoomModel.addMessageObserver(HARD_CODED_CHAT_ID, getViewLifecycleOwner(),
+        mChatRoomModel.addMessageObserver(mChatId, getViewLifecycleOwner(),
                 list -> {
                     /*
                      * This solution needs work on the scroll position. As a group,

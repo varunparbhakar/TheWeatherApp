@@ -41,6 +41,10 @@
     <fragment
         android:id="@+id/chat_room"
         android:name="edu.uw.tcss450.varpar.weatherapp.chat.ChatRoomFragment"
-        android:label="@string/title_fragment_chat_room" />
+        android:label="@string/title_fragment_chat_room" >
+        <argument
+            android:name="chatId"
+            app:argType="integer" />
+    </fragment>
 
 </navigation>
