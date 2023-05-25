@@ -8,8 +8,6 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -30,8 +28,6 @@ import edu.uw.tcss450.varpar.weatherapp.io.RequestQueueSingleton;
  */
 public class UserInfoViewModel extends AndroidViewModel {
 
-    private String mMemberId;
-
     /** User email. */
     private String mEmail;
 
@@ -47,6 +43,9 @@ public class UserInfoViewModel extends AndroidViewModel {
     /** User username. */
     private String mUsername;
 
+    /** User memberID. */
+    private String mMemberID;
+
     /** Network responses, for observer. */
     private MutableLiveData<JSONObject> mResponse;
 
@@ -61,16 +60,6 @@ public class UserInfoViewModel extends AndroidViewModel {
         mResponse.setValue(new JSONObject());
     }
 
-    private UserInfoViewModel(final @NonNull Application application, String memberid, String email, String jwt, String firstname, String lastname, String username) {
-        super(application);
-        mMemberId = memberid;
-        mEmail = email;
-        mJwt = jwt;
-        mFirstName = firstname;
-        mLastName = lastname;
-        mUsername = username;
-    }
-
     /**
      * Set initial values for user profile.
      * DO NOT USE AFTER MAIN ACTIVITY IS INITIALLY CREATED.
@@ -78,12 +67,12 @@ public class UserInfoViewModel extends AndroidViewModel {
      */
     public void setJSON(final JSONObject json) {
         mResponse.setValue(json);
-        mMemberId = getInfoJson("memberId");
         mEmail = getInfoJson("email");
         mJwt = getInfoJson("token");
         mFirstName = getInfoJson("firstname");
         mLastName = getInfoJson("lastname");
         mUsername = getInfoJson("username");
+        mMemberID = getInfoJson("memberid");
     }
 
     /**
@@ -182,14 +171,6 @@ public class UserInfoViewModel extends AndroidViewModel {
     }
 
     /**
-     * Get memberId
-     * @return memberId as string
-     */
-    public String getMemberId() {
-        return mMemberId;
-    }
-
-    /**
      * Get firstname.
      * @return firstname as string
      */
@@ -221,51 +202,17 @@ public class UserInfoViewModel extends AndroidViewModel {
         return mEmail;
     }
 
+    /**
+     * Get User's JWT.
+     * @return JWT as string
+     */
     public String getJwt(){return mJwt;}
 
     /**
-     * Added as a crutch for teh ChatRoomRecyclerViewAdapter
+     * Get user's Member ID.
+     * @return memberid as string
      */
-    public static class UserInfoViewModelFactory implements ViewModelProvider.Factory {
-
-        private final Application application;
-
-        private final String memberid;
-
-        /** User email. */
-        private final String email;
-
-        /** User jwt token. */
-        private final String jwt;
-
-        /** User first name. */
-        private final String firstname;
-
-        /** User last name. */
-        private final String lastname;
-
-        /** User username. */
-        private final String username;
-
-        public UserInfoViewModelFactory(final @NonNull Application application, String memberid, String email, String jwt, String firstname, String lastname, String username) {
-            this.application = application;
-            this.memberid = memberid;
-            this.email = email;
-            this.jwt = jwt;
-            this.firstname = firstname;
-            this.lastname = lastname;
-            this.username = username;
-        }
-
-        @NonNull
-        @Override
-        public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-            if (modelClass == UserInfoViewModel.class) {
-                return (T) new UserInfoViewModel(application, memberid, email, jwt, firstname, lastname, username);
-            }
-            throw new IllegalArgumentException(
-                    "Argument must be: " + UserInfoViewModel.class);
-        }
+    public String getMemberID() {
+        return mMemberID;
     }
-
 }
