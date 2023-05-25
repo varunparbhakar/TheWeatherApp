@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,18 +29,27 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 import edu.uw.tcss450.varpar.weatherapp.R;
 import edu.uw.tcss450.varpar.weatherapp.chat.ChatListFragmentDirections;
 import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentHomeBinding;
 import edu.uw.tcss450.varpar.weatherapp.model.UserInfoViewModel;
+import edu.uw.tcss450.varpar.weatherapp.weather.WeatherRVAdapter;
+import edu.uw.tcss450.varpar.weatherapp.weather.WeatherRVModel;
 
 /**
  * A simple {@link Fragment} subclass.
+ * Use the {@link HomeFragment} factory method to
+ * create an instance of this fragment.
  */
 public class HomeFragment extends Fragment {
     FragmentHomeBinding mBinding;
     private TextView locationTextView, tempTV, conditionTV;
     private ImageView iconIV;
+    private ArrayList<FriendReqRVModel> friendReqRVModelArrayList;
+    private FriendReqRVAdapter friendReqRVAdapter;
+    private RecyclerView FriendReqRV;
 
     public void onChatPreviewClicked(View view) {
         // Navigate to the messages tab
@@ -70,12 +80,24 @@ public class HomeFragment extends Fragment {
         conditionTV = view.findViewById(R.id.temp_forecast);
         iconIV = view.findViewById(R.id.forecast_image);
 
+        FriendReqRV = getView().findViewById(R.id.idRVIncomingFR);
+        friendReqRVModelArrayList = new ArrayList<>();
+        friendReqRVAdapter = new FriendReqRVAdapter(getActivity(), friendReqRVModelArrayList);
+        FriendReqRV.setAdapter(friendReqRVAdapter);
+
         getWeatherInfo();
 
         super.onViewCreated(view, savedInstanceState);
         UserInfoViewModel model = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
         String welcomeText = getText(R.string.home_fragment_welcome) + " " + model.getFirstName();
         mBinding.textGreeting.setText(welcomeText);
+
+        for(int i = 0;i < 5; i++) {
+            String name = "Random Person " + i;
+            friendReqRVModelArrayList.add(new FriendReqRVModel(name));
+            //day++;
+        }
+        friendReqRVAdapter.notifyDataSetChanged();
     }
 
     private void getWeatherInfo() {

@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import edu.uw.tcss450.varpar.weatherapp.R;
-import edu.uw.tcss450.varpar.weatherapp.contact.Contact;
 import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentContactCardBinding;
 
 public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecyclerViewAdapter.ContactViewHolder> {
@@ -108,7 +107,7 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
 //                        ContactListFragmentDirections
 //                                .ContactFragment(blog));
 //            });
-            binding.textContactUser.setText(contact.getUser());
+            binding.textContactUser.setText(contact.getUsername());
             //Use methods in the HTML class to format the HTML found in the text
 //            final String preview =  Html.fromHtml(
 //                            contact.getTeaser(),

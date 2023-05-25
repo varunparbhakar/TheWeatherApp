@@ -47,7 +47,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_firstName" />
 
-
+    <EditText
+        android:id="@+id/et_userName"
+        android:layout_width="320dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="12dp"
+        android:ems="10"
+        android:hint="@string/hint_activity_auth_login_username"
+        android:inputType="textEmailAddress"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.275"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_lastName" />
     <EditText
         android:id="@+id/et_emailText"
         android:layout_width="320dp"
@@ -59,7 +70,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.275"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_lastName" />
+        app:layout_constraintTop_toBottomOf="@+id/et_userName" />
 
     <EditText
         android:id="@+id/et_password"
@@ -100,16 +111,28 @@
         app:layout_constraintVertical_bias="0.29000002" />
 
     <ImageView
+        android:id="@+id/button_userName_Hint"
+        android:layout_width="32dp"
+        android:layout_height="26dp"
+        android:layout_marginTop="76dp"
+        android:clickable="true"
+        android:src="@drawable/baseline_question_mark_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.47"
+        app:layout_constraintStart_toEndOf="@+id/et_userName"
+        app:layout_constraintTop_toBottomOf="@+id/button_nameHint" />
+
+    <ImageView
         android:id="@+id/button_email_Hint"
         android:layout_width="32dp"
         android:layout_height="26dp"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="32dp"
+        android:clickable="true"
         android:src="@drawable/baseline_question_mark_24"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.463"
+        app:layout_constraintHorizontal_bias="0.47"
         app:layout_constraintStart_toEndOf="@+id/et_emailText"
-        app:layout_constraintTop_toBottomOf="@+id/buttom_nameHint"
-        android:clickable="true"/>
+        app:layout_constraintTop_toBottomOf="@+id/button_userName_Hint" />
 
     <ImageView
         android:id="@+id/imageView3"
@@ -123,7 +146,7 @@
         app:layout_constraintVertical_bias="0.035"
         tools:srcCompat="@drawable/baseline_assignment_24" />
     <ImageView
-        android:id="@+id/buttom_nameHint"
+        android:id="@+id/button_nameHint"
         android:layout_width="32dp"
         android:layout_height="26dp"
         android:src="@drawable/baseline_question_mark_24"

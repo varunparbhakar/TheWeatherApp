@@ -46,7 +46,7 @@ public class LoginViewModel extends AndroidViewModel {
                 Request.Method.GET,
                 url,
                 null, //no body for this get request
-                mResponse::setValue,
+                this::handleResult,
                 this::handleError) {
             @Override
             public Map<String, String> getHeaders() {
@@ -60,6 +60,7 @@ public class LoginViewModel extends AndroidViewModel {
                 return headers;
             }
         };
+        Log.d("CONNECTED", "connect: ");
         request.setRetryPolicy(new DefaultRetryPolicy(
                 10_000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
@@ -90,6 +91,9 @@ public class LoginViewModel extends AndroidViewModel {
                 Log.e("JSON PARSE", "JSON Parse Error in handleError");
             }
         }
+    }
+    private void handleResult(final JSONObject result) {
+        mResponse.setValue(result);
     }
     public boolean getmValidLogin() {
         return mValidLogin.getValue();

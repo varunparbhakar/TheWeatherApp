@@ -8,10 +8,20 @@ import java.io.Serializable;
  * @author Nathan Brown
  * @version 4/30/2023
  */
-public class Contact implements Serializable {
+public class Contact implements Serializable, Comparable<Contact> {
 
-    //    private final String mTimestamp;
-    private final String mUser;
+    private final String mUsername;
+
+    private final String mMemberID;
+
+    @Override
+    public int compareTo(Contact o) {
+        return mUsername.compareTo(o.mUsername);
+    }
+
+    public String getUsername() {
+        return mUsername;
+    }
 
     /**
      * Helper class for building messages.
@@ -22,14 +32,16 @@ public class Contact implements Serializable {
 
         private final String mUser;
 
+        private final String mMemberID;
 
         /**
          * Constructs a new Builder.
          *
          * @param user the sender of the ChatMessage
          */
-        public Builder(String user) {
+        public Builder(String user, String id) {
             this.mUser = user;
+            this.mMemberID = id;
         }
 
         public Contact build() {
@@ -39,12 +51,8 @@ public class Contact implements Serializable {
     }
 
     private Contact(final Builder builder) {
-        this.mUser = builder.mUser;
+        this.mUsername = builder.mUser;
+        this.mMemberID = builder.mMemberID;
     }
-
-    public String getUser() {
-        return mUser;
-    }
-
 
 }

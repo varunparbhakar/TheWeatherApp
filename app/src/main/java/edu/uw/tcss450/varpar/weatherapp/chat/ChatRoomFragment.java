@@ -22,11 +22,8 @@ public class ChatRoomFragment extends Fragment {
     private static final int HARD_CODED_CHAT_ID = 1;
 
     private ChatRoomViewModel mChatRoomModel;
-
     private UserInfoViewModel mUserModel;
-
     private ChatSendViewModel mSendModel;
-
     public ChatRoomFragment() {
         // Required empty public constructor
     }

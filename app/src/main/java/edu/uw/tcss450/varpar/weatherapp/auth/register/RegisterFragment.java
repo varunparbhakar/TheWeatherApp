@@ -46,6 +46,7 @@ public class RegisterFragment extends Fragment {
             .and(checkExcludeWhiteSpace())
             .and(checkPwdSpecialChar("@"));
 
+    private PasswordValidator mUsernameValidator = checkPwdLength(2);
     private PasswordValidator mPassWordValidator =
             checkClientPredicate(pwd -> pwd.equals(mBinding.etPassword.getText().toString()))
                     .and(checkPwdLength(7))
@@ -80,13 +81,27 @@ public class RegisterFragment extends Fragment {
         mRegisterModel.addResponseObserver(getViewLifecycleOwner(),
                 this::observeResponse);
         mBinding.buttonRegister.setOnClickListener(this::attemptRegister);
-        mBinding.buttomNameHint.setOnClickListener(new View.OnClickListener() {
+        mBinding.buttonNameHint.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mBinding.etFirstName.requestFocus();
                 AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(getContext());
                 dlgAlert.setMessage("- You name can has to be at least 1 character");
                 dlgAlert.setTitle("Name Requirements");
+                dlgAlert.setPositiveButton("OK", null);
+                dlgAlert.setCancelable(true);
+                dlgAlert.create().show();
+            }
+        });
+        mBinding.buttonUserNameHint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mBinding.etUserName.requestFocus();
+                AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(getContext());
+                dlgAlert.setMessage("- User name should be at least 3 characters " +
+                        "\n- User name can contain numbers"+
+                        "\n- User name can contain special characters");
+                dlgAlert.setTitle("User Name Requirements");
                 dlgAlert.setPositiveButton("OK", null);
                 dlgAlert.setCancelable(true);
                 dlgAlert.create().show();
@@ -142,12 +157,25 @@ public class RegisterFragment extends Fragment {
     private void validateLast() {
         mNameValidator.processResult(
                 mNameValidator.apply(mBinding.etLastName.getText().toString().trim()),
-                this::validateEmail,
+                this::validateUserName,
                 result -> {
                     if(mBinding.etLastName.getText().toString().length() < 1) {
                         mBinding.etLastName.setError("Name has to be at least 1 character");
                     } else {
                         mBinding.etLastName.setError("Enter a valid name.");
+                    }
+                }
+        );
+    }
+    private void validateUserName() {
+        mUsernameValidator.processResult(
+                mUsernameValidator.apply(mBinding.etUserName.getText().toString().trim()),
+                this::validateEmail,
+                result -> {
+                    if(mBinding.etUserName.getText().toString().length() < 3) {
+                        mBinding.etUserName.setError("Username has to be at least 3 character");
+                    } else {
+                        mBinding.etUserName.setError("Enter a valid name.");
                     }
                 }
         );
@@ -182,6 +210,7 @@ public class RegisterFragment extends Fragment {
         mRegisterModel.connect(
                 mBinding.etFirstName.getText().toString(),
                 mBinding.etLastName.getText().toString(),
+                mBinding.etUserName.getText().toString(),
                 mBinding.etEmailText.getText().toString(),
                 mBinding.etPassword.getText().toString());
         //This is an Asynchronous call. No statements after should rely on the

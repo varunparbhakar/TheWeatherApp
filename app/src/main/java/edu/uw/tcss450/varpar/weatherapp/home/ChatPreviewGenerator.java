@@ -15,7 +15,7 @@ public class ChatPreviewGenerator {
         CONTACTS = new Contact[COUNT];
         for (int i = 0; i < CONTACTS.length; i++) {
             CONTACTS[i] = new Contact
-                    .Builder("User_" + i)
+                    .Builder("User_" + i, String.valueOf(i))
                     .build();
         }
     }
