@@ -37,7 +37,7 @@ public class ChatRoomFragment extends Fragment {
         mUserModel = provider.get(UserInfoViewModel.class);
         mChatRoomModel = provider.get(ChatRoomViewModel.class);
         mChatRoomModel.getFirstMessages(HARD_CODED_CHAT_ID, mUserModel.getJwt());
-        mSendModel = provider.get(ChatSendViewModel.class);
+//        mSendModel = provider.get(ChatSendViewModel.class);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class ChatRoomFragment extends Fragment {
         binding.recyclerChatMessages.setAdapter(
             new ChatRoomRecyclerViewAdapter(
                 mChatRoomModel.getMessageListByChatId(HARD_CODED_CHAT_ID),
-                mUserModel.getUsername()
+                mUserModel.getEmail()
             )
         );
 

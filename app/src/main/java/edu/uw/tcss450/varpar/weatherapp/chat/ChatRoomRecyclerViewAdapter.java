@@ -23,16 +23,16 @@ import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentChatRoomMessageCardB
 public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRecyclerViewAdapter.ChatRoomViewHolder> {
 
     //Store all of the blogs to present
-    private final List<ChatRoomMessage> mChats;
+    private final List<ChatRoomMessage> mMessages;
     private final String mEmail;
 
 //    //Store the expanded state for each List item, true -> expanded, false -> not
 //    private final Map<ChatRoomMessage, Boolean> mExpandedFlags;
 
     public ChatRoomRecyclerViewAdapter(List<ChatRoomMessage> items, String email) {
-        this.mChats = items;
+        this.mMessages = items;
         this.mEmail = email;
-//        mExpandedFlags = mChats.stream()
+//        mExpandedFlags = mMessages.stream()
 //                .collect(Collectors.toMap(Function.identity(), blog -> false));
 
     }
@@ -47,12 +47,12 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
 
     @Override
     public void onBindViewHolder(@NonNull ChatRoomViewHolder holder, int position) {
-        holder.setChat(mChats.get(position));
+        holder.setMessage(mMessages.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return mChats.size();
+        return mMessages.size();
     }
 
     /**
@@ -101,7 +101,7 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
 //            }
 //        }
 
-        void setChat(final ChatRoomMessage message) {
+        void setMessage(final ChatRoomMessage message) {
             final Resources res = mView.getContext().getResources();
             final MaterialCardView card = binding.cardRoot;
 
@@ -113,6 +113,7 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
                 binding.textChatRoomMessage.setText(message.getMessage());
                 ViewGroup.MarginLayoutParams layoutParams =
                         (ViewGroup.MarginLayoutParams) card.getLayoutParams();
+
                 //Set the left margin
                 layoutParams.setMargins(extended, standard, standard, standard);
                 // Set this View to the right (end) side
@@ -120,16 +121,22 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
                         Gravity.END;
 
                 card.setCardBackgroundColor(
-                        ColorUtils.setAlphaComponent(
-                                res.getColor(R.color.colorPrimary, null),
-                                16));
+                    ColorUtils.setAlphaComponent(
+                            res.getColor(R.color.colorPrimary, null),
+                            16
+                    )
+                );
                 binding.textChatRoomMessage.setTextColor(
-                        res.getColor(R.color.colorAccent, null));
+                        res.getColor(R.color.black, null)
+                );
 
                 card.setStrokeWidth(standard / 5);
-                card.setStrokeColor(ColorUtils.setAlphaComponent(
+                card.setStrokeColor(
+                    ColorUtils.setAlphaComponent(
                         res.getColor(R.color.colorPrimary, null),
-                        200));
+                        200
+                    )
+                );
 
                 //Round the corners on the left side
                 card.setShapeAppearanceModel(
@@ -139,13 +146,15 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
                                 .setBottomLeftCorner(CornerFamily.ROUNDED,standard * 2)
                                 .setBottomRightCornerSize(0)
                                 .setTopRightCornerSize(0)
-                                .build());
+                                .build()
+                );
 
                 card.requestLayout();
             } else {
                 //This message is from another user. Format it as such
-                binding.textChatRoomMessage.setText(message.getSender() +
-                        ": " + message.getMessage());
+                binding.textChatRoomMessage.setText(
+                        message.getSender() + ": " + message.getMessage()
+                );
                 ViewGroup.MarginLayoutParams layoutParams =
                         (ViewGroup.MarginLayoutParams) card.getLayoutParams();
 
@@ -156,17 +165,23 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
                         Gravity.START;
 
                 card.setCardBackgroundColor(
-                        ColorUtils.setAlphaComponent(
-                                res.getColor(R.color.colorAccent, null),
-                                16));
+                    ColorUtils.setAlphaComponent(
+                        res.getColor(R.color.colorAccent, null),
+                        16
+                    )
+                );
 
                 card.setStrokeWidth(standard / 5);
-                card.setStrokeColor(ColorUtils.setAlphaComponent(
+                card.setStrokeColor(
+                    ColorUtils.setAlphaComponent(
                         res.getColor(R.color.colorAccent, null),
-                        200));
+                        200
+                    )
+                );
 
                 binding.textChatRoomMessage.setTextColor(
-                        res.getColor(R.color.colorOffWhite, null));
+                        res.getColor(R.color.black, null)
+                );
 
                 //Round the corners on the right side
                 card.setShapeAppearanceModel(

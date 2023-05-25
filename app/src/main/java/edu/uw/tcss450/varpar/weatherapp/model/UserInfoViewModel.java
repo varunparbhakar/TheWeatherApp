@@ -8,6 +8,8 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -57,6 +59,16 @@ public class UserInfoViewModel extends AndroidViewModel {
         super(application);
         mResponse = new MutableLiveData<>();
         mResponse.setValue(new JSONObject());
+    }
+
+    private UserInfoViewModel(final @NonNull Application application, String memberid, String email, String jwt, String firstname, String lastname, String username) {
+        super(application);
+        mMemberId = memberid;
+        mEmail = email;
+        mJwt = jwt;
+        mFirstName = firstname;
+        mLastName = lastname;
+        mUsername = username;
     }
 
     /**
@@ -210,4 +222,50 @@ public class UserInfoViewModel extends AndroidViewModel {
     }
 
     public String getJwt(){return mJwt;}
+
+    /**
+     * Added as a crutch for teh ChatRoomRecyclerViewAdapter
+     */
+    public static class UserInfoViewModelFactory implements ViewModelProvider.Factory {
+
+        private final Application application;
+
+        private final String memberid;
+
+        /** User email. */
+        private final String email;
+
+        /** User jwt token. */
+        private final String jwt;
+
+        /** User first name. */
+        private final String firstname;
+
+        /** User last name. */
+        private final String lastname;
+
+        /** User username. */
+        private final String username;
+
+        public UserInfoViewModelFactory(final @NonNull Application application, String memberid, String email, String jwt, String firstname, String lastname, String username) {
+            this.application = application;
+            this.memberid = memberid;
+            this.email = email;
+            this.jwt = jwt;
+            this.firstname = firstname;
+            this.lastname = lastname;
+            this.username = username;
+        }
+
+        @NonNull
+        @Override
+        public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+            if (modelClass == UserInfoViewModel.class) {
+                return (T) new UserInfoViewModel(application, memberid, email, jwt, firstname, lastname, username);
+            }
+            throw new IllegalArgumentException(
+                    "Argument must be: " + UserInfoViewModel.class);
+        }
+    }
+
 }

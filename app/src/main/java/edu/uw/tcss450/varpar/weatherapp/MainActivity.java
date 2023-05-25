@@ -78,14 +78,14 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
-        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-            if (destination.getId() == R.id.navigation_chat) {
-                //When the user navigates to the chats page, reset the new message count.
-                //This will need some extra logic for your project as it should have
-                //multiple chat rooms.
-//                        mNewMessageModel.reset();
-            }
-        });
+//        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+//            if (destination.getId() == R.id.navigation_chat) {
+//                //When the user navigates to the chats page, reset the new message count.
+//                //This will need some extra logic for your project as it should have
+//                //multiple chat rooms.
+////                        mNewMessageModel.reset();
+//            }
+//        });
 
 //        mNewMessageModel.addMessageCountObserver(this, count -> {
 //            BadgeDrawable badge = binding.navView.getOrCreateBadge(R.id.navigation_chat);
@@ -103,15 +103,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (mPushMessageReceiver == null) {
-            mPushMessageReceiver = new MainPushMessageReceiver();
-        }
-//        IntentFilter iFilter = new IntentFilter(PushReceiver.RECEIVED_NEW_MESSAGE);
-//        registerReceiver(mPushMessageReceiver, iFilter);
-    }
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        if (mPushMessageReceiver == null) {
+//            mPushMessageReceiver = new MainPushMessageReceiver();
+//        }
+////        IntentFilter iFilter = new IntentFilter(PushReceiver.RECEIVED_NEW_MESSAGE);
+////        registerReceiver(mPushMessageReceiver, iFilter);
+//    }
 //
 //    @Override
 //    public void onPause() {
