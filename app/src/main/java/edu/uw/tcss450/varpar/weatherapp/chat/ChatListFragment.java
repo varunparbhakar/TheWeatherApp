@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
@@ -11,7 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
+
 import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentChatListBinding;
+import edu.uw.tcss450.varpar.weatherapp.model.UserInfoViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -20,15 +25,19 @@ import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentChatListBinding;
  */
 public class ChatListFragment extends Fragment {
 
-    private ChatListViewModel mModel;
+    private ChatListViewModel mChatListModel;
+
+    private UserInfoViewModel mUserModel;
 
     private FragmentChatListBinding mBinding;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        mModel = new ViewModelProvider(getActivity()).get(ChatListViewModel.class);
-//        mModel.connectGet();
+        ViewModelProvider provider = new ViewModelProvider(requireActivity());
+//        mUserModel = provider.get(UserInfoViewModel.class);
+//        mChatListModel = provider.get(ChatListViewModel.class);
+//        mChatListModel.
     }
 
     @Override

@@ -24,7 +24,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_chat_user_black_48dp" />
+            app:srcCompat="@drawable/ic_chat_user_48dp" />
 
         <TextView
             android:id="@+id/text_contact_user"

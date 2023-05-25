@@ -2,6 +2,8 @@ package edu.uw.tcss450.varpar.weatherapp.chat;
 
 import android.icu.text.SimpleDateFormat;
 
+import androidx.annotation.Nullable;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -17,14 +19,14 @@ public class ChatRoomMessage implements Serializable {
 
     private final String mMessageBody;
 
-    private final String mUser;
+    private final String mSender;
 
     private final String mTimestamp;
 
     public ChatRoomMessage(int messageId, String messageBody, String user) {
         this.mMessageId = messageId;
         this.mMessageBody = messageBody;
-        this.mUser = user;
+        this.mSender = user;
         this.mTimestamp = new SimpleDateFormat("HH.mm.ss").format(new Date());
     }
 
@@ -36,12 +38,26 @@ public class ChatRoomMessage implements Serializable {
         return mMessageBody;
     }
 
-    public String getUser() {
-        return mUser;
+    public String getSender() {
+        return mSender;
     }
 
     public String getTimestamp() {
         return mTimestamp;
+    }
+
+    /**
+     * Provides equality solely based on MessageId.
+     * @param other the other object to check for equality
+     * @return true if other message ID matches this message ID, false otherwise
+     */
+    @Override
+    public boolean equals(@Nullable Object other) {
+        boolean result = false;
+        if (other instanceof ChatRoomMessage) {
+            result = mMessageId == ((ChatRoomMessage) other).mMessageId;
+        }
+        return result;
     }
 
 
