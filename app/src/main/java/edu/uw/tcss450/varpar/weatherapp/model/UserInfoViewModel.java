@@ -55,7 +55,6 @@ public class UserInfoViewModel extends AndroidViewModel {
      * @param application parent application.
      */
     public UserInfoViewModel(final @NonNull Application application) {
-
         super(application);
         mResponse = new MutableLiveData<>();
         mResponse.setValue(new JSONObject());

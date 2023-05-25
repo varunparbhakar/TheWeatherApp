@@ -68,38 +68,7 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
             super(view);
             mView = view;
             binding = FragmentChatRoomMessageCardBinding.bind(view);
-//            binding.buittonMore.setOnClickListener(this::handleMoreOrLess);
         }
-
-//        /**
-//         * When the button is clicked in the more state, expand the card to display
-//         * the blog preview and switch the icon to the less state.  When the button
-//         * is clicked in the less state, shrink the card and switch the icon to the
-//         * more state.
-//         * @param button the button that was clicked
-//         */
-//        private void handleMoreOrLess(final View button) {
-//            mExpandedFlags.put(mChat, !mExpandedFlags.get(mChat));
-//        }
-
-//        /**
-//         * Helper used to determine if the preview should be displayed or not.
-//         */
-//        private void displayPreview() {
-//            if (mExpandedFlags.get(mChat)) {
-//                binding.textPreview.setVisibility(View.VISIBLE);
-//                binding.buittonMore.setImageIcon(
-//                        Icon.createWithResource(
-//                                mView.getContext(),
-//                                R.drawable.ic_less_grey_24dp));
-//            } else {
-//                binding.textPreview.setVisibility(View.GONE);
-//                binding.buittonMore.setImageIcon(
-//                        Icon.createWithResource(
-//                                mView.getContext(),
-//                                R.drawable.ic_more_grey_24dp));
-//            }
-//        }
 
         void setMessage(final ChatRoomMessage message) {
             final Resources res = mView.getContext().getResources();

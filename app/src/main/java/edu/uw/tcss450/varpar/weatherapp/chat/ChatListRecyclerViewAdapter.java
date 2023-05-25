@@ -16,41 +16,40 @@ import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentChatListCardBinding;
 public class ChatListRecyclerViewAdapter extends RecyclerView.Adapter<ChatListRecyclerViewAdapter.ChatListViewHolder> {
 
     //Store all of the blogs to present
-    private final List<ChatListRoom> mChats;
+    private final List<ChatListRoom> mChatListItems;
 
 //    //Store the expanded state for each List item, true -> expanded, false -> not
 //    private final Map<ChatMessage, Boolean> mExpandedFlags;
 
     public ChatListRecyclerViewAdapter(List<ChatListRoom> items) {
-        this.mChats = items;
-//        mExpandedFlags = mChats.stream()
-//                .collect(Collectors.toMap(Function.identity(), blog -> false));
-
+        this.mChatListItems = items;
     }
 
     @NonNull
     @Override
     public ChatListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ChatListViewHolder(LayoutInflater
-                .from(parent.getContext())
-                .inflate(R.layout.fragment_chat_list_card, parent, false));
+        return new ChatListViewHolder(
+                LayoutInflater
+                        .from(parent.getContext())
+                        .inflate(R.layout.fragment_chat_list_card, parent, false)
+        );
     }
 
     @Override
     public void onBindViewHolder(@NonNull ChatListViewHolder holder, int position) {
-        holder.setChat(mChats.get(position));
+        holder.setChat(mChatListItems.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return mChats.size();
+        return mChatListItems.size();
     }
 
     /**
      * Objects from this class represent an Individual row View from the List
      * of rows in the Chat Recycler View.
      */
-    public class ChatListViewHolder extends RecyclerView.ViewHolder {
+    public static class ChatListViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public FragmentChatListCardBinding binding;
         private ChatListRoom mChat;
@@ -59,67 +58,20 @@ public class ChatListRecyclerViewAdapter extends RecyclerView.Adapter<ChatListRe
             super(view);
             mView = view;
             binding = FragmentChatListCardBinding.bind(view);
-//            binding.layoutInner.setOnClickListener(
-//                    card -> Navigation.findNavController(view).navigate(
-//                                    ChatListFragmentDirections.actionNavigationChatToChatRoom()
-//                            )
-//            );
-//            binding.buittonMore.setOnClickListener(this::handleMoreOrLess);
         }
 
-//        /**
-//         * When the button is clicked in the more state, expand the card to display
-//         * the blog preview and switch the icon to the less state.  When the button
-//         * is clicked in the less state, shrink the card and switch the icon to the
-//         * more state.
-//         * @param button the button that was clicked
-//         */
-//        private void handleMoreOrLess(final View button) {
-//            mExpandedFlags.put(mChat, !mExpandedFlags.get(mChat));
-//        }
+        void setChat(final ChatListRoom chatListItem) {
+            mChat = chatListItem;
 
-//        /**
-//         * Helper used to determine if the preview should be displayed or not.
-//         */
-//        private void displayPreview() {
-//            if (mExpandedFlags.get(mChat)) {
-//                binding.textPreview.setVisibility(View.VISIBLE);
-//                binding.buittonMore.setImageIcon(
-//                        Icon.createWithResource(
-//                                mView.getContext(),
-//                                R.drawable.ic_less_grey_24dp));
-//            } else {
-//                binding.textPreview.setVisibility(View.GONE);
-//                binding.buittonMore.setImageIcon(
-//                        Icon.createWithResource(
-//                                mView.getContext(),
-//                                R.drawable.ic_more_grey_24dp));
-//            }
-//        }
-
-        void setChat(final ChatListRoom chat) {
-            mChat = chat;
-//            binding.buttonFullPost.setOnClickListener(view -> {
-//                Navigation.findNavController(mView).navigate(
-//                        ChatListFragmentDirections
-//                                .actionNavigationChatsToChatMessageFragment(blog));
-//            });
-            binding.textChatUser.setText(chat.getUser());
-            binding.textChatMessage.setText(chat.getMessage());
+            binding.textChatUser.setText(chatListItem.getName());
+            binding.textChatMessage.setText(R.string.chat_card_text);
             binding.layoutInner.setOnClickListener(
-                    card -> {
-                        Navigation.findNavController(mView).navigate(
-                            ChatListFragmentDirections.actionNavigationChatToChatRoom());
-                    }
+                card -> {
+                    Navigation.findNavController(mView).navigate(
+                        ChatListFragmentDirections.actionNavigationChatToChatRoom()
+                    );
+                }
             );
-            //Use methods in the HTML class to format the HTML found in the text
-//            final String preview =  Html.fromHtml(
-//                            chat.getTeaser(),
-//                            Html.FROM_HTML_MODE_COMPACT)
-//                    .toString().substring(0,100) //just a preview of the teaser
-//                    + "...";
-//            binding.textPreview.setText(preview);
-//            displayPreview();
         }
     }
 
