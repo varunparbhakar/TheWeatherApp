@@ -2,8 +2,6 @@ package edu.uw.tcss450.varpar.weatherapp.home;
 
 import java.io.Serializable;
 
-import edu.uw.tcss450.varpar.weatherapp.contact.Contact;
-
 /**
  * Class to encapsulate a chat message from a contact.
  *
@@ -23,7 +21,6 @@ public class ChatPreview implements Serializable {
     public static class Builder {
 
         private final String mUser;
-
 
         /**
          * Constructs a new Builder.

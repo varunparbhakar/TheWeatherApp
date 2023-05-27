@@ -1,6 +1,12 @@
 package edu.uw.tcss450.varpar.weatherapp.home;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -10,13 +16,6 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -25,18 +24,14 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 import edu.uw.tcss450.varpar.weatherapp.R;
-import edu.uw.tcss450.varpar.weatherapp.chat.ChatListFragmentDirections;
 import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentHomeBinding;
 import edu.uw.tcss450.varpar.weatherapp.model.UserInfoViewModel;
-import edu.uw.tcss450.varpar.weatherapp.weather.WeatherRVAdapter;
-import edu.uw.tcss450.varpar.weatherapp.weather.WeatherRVModel;
 
 /**
  * A simple {@link Fragment} subclass.

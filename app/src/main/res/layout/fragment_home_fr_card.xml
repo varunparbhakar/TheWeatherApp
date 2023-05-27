@@ -55,7 +55,9 @@
             android:layout_marginBottom="5dp"
             android:clickable="true"
             android:padding="4dp"
-            android:src="@drawable/ic_home_fr_accept" />
+            android:src="@drawable/ic_home_fr_accept"
+            android:onClick="acceptOnClick" />
+
         <ImageView
             android:id="@+id/idIVDecline"
             android:layout_width="40dp"
@@ -68,7 +70,8 @@
             android:layout_marginBottom="5dp"
             android:clickable="true"
             android:padding="4dp"
-            android:src="@drawable/ic_home_fr_decline" />
+            android:src="@drawable/ic_home_fr_decline"
+            android:onClick="declineOnClick" />
 
         <TextView
             android:layout_width="wrap_content"

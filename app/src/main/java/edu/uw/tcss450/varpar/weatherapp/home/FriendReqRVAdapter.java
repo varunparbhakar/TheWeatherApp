@@ -10,13 +10,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
 
 import edu.uw.tcss450.varpar.weatherapp.R;
-import edu.uw.tcss450.varpar.weatherapp.weather.WeatherRVAdapter;
-import edu.uw.tcss450.varpar.weatherapp.weather.WeatherRVModel;
 
 public class FriendReqRVAdapter extends RecyclerView.Adapter<FriendReqRVAdapter.ViewHolder> {
     private Context context;
@@ -50,9 +46,50 @@ public class FriendReqRVAdapter extends RecyclerView.Adapter<FriendReqRVAdapter.
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView usernameTV;
+        private ImageView acceptButton;
+        private ImageView declineButton;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             usernameTV = itemView.findViewById(R.id.idTVUser);
+            acceptButton = itemView.findViewById(R.id.idIVAccept);
+            declineButton = itemView.findViewById(R.id.idIVDecline);
+
+            acceptButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // you can get item position if you want to handle it
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        // handle your click event here
+                        acceptOnClick(position);
+                    }
+                }
+            });
+
+            declineButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // you can get item position if you want to handle it
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        // handle your click event here
+                        declineOnClick(position);
+                    }
+                }
+            });
         }
+    }
+
+    private void acceptOnClick(int position) {
+        // handle accept button click
+        FriendReqRVModel model = FriendReqRVModelArrayList.get(position);
+        // now you have the clicked model, you can do anything with it
+    }
+
+    private void declineOnClick(int position) {
+        // handle decline button click
+        FriendReqRVModel model = FriendReqRVModelArrayList.get(position);
+        // now you have the clicked model, you can do anything with it
     }
 }

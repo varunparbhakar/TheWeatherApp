@@ -38,6 +38,7 @@
         android:name="edu.uw.tcss450.varpar.weatherapp.home.HomeFragment"
         android:label="@string/title_activity_home"
         tools:layout="@layout/fragment_home" />
+
     <fragment
         android:id="@+id/chat_room"
         android:name="edu.uw.tcss450.varpar.weatherapp.chat.ChatRoomFragment"
