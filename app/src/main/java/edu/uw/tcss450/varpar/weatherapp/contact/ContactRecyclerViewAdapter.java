@@ -1,30 +1,69 @@
 package edu.uw.tcss450.varpar.weatherapp.contact;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import edu.uw.tcss450.varpar.weatherapp.R;
 import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentContactCardBinding;
+import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentContactListBinding;
+import edu.uw.tcss450.varpar.weatherapp.io.RequestQueueSingleton;
+import edu.uw.tcss450.varpar.weatherapp.model.UserInfoViewModel;
 
 public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecyclerViewAdapter.ContactViewHolder> {
 
-    //Store all of the blogs to present
+    /** Store all of the Contacts to present. */
     private final List<Contact> mContacts;
+    /** Store copy all of the Contacts to present for safe search. */
+    private List<Contact> mContactsCopy;
 
-//    //Store the expanded state for each List item, true -> expanded, false -> not
-//    private final Map<Contact, Boolean> mExpandedFlags;
+    public String mMemberID;
 
     public ContactRecyclerViewAdapter(List<Contact> items) {
         this.mContacts = items;
-//        mExpandedFlags = mContacts.stream()
-//                .collect(Collectors.toMap(Function.identity(), blog -> false));
+        this.mContactsCopy = new ArrayList<>();
+        this.mContactsCopy.addAll(items);
+    }
 
+    public void filter(String text) {
+        mContacts.clear();
+        if(text.isEmpty()){
+            mContacts.addAll(mContactsCopy);
+        } else{
+            text = text.toLowerCase();
+            for(Contact item: mContactsCopy){
+                if(item.getUsername().toLowerCase().contains(text)){
+                    mContacts.add(item);
+                }
+            }
+        }
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -46,15 +85,6 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
     }
 
     /**
-     * Adding a contact to the contact list
-     * @param myContact
-     * @return
-     */
-    public boolean addContact(Contact myContact){
-        return mContacts.add(myContact);
-    }
-
-    /**
      * Objects from this class represent an Individual row View from the List
      * of rows in the Contact Recycler View.
      */
@@ -67,56 +97,16 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
             super(view);
             mView = view;
             binding = FragmentContactCardBinding.bind(view);
-//            binding.buittonMore.setOnClickListener(this::handleMoreOrLess);
         }
 
-//        /**
-//         * When the button is clicked in the more state, expand the card to display
-//         * the blog preview and switch the icon to the less state.  When the button
-//         * is clicked in the less state, shrink the card and switch the icon to the
-//         * more state.
-//         * @param button the button that was clicked
-//         */
-//        private void handleMoreOrLess(final View button) {
-//            mExpandedFlags.put(mContact, !mExpandedFlags.get(mContact));
-//        }
+        private void deleteUser(final View button) {
 
-//        /**
-//         * Helper used to determine if the preview should be displayed or not.
-//         */
-//        private void displayPreview() {
-//            if (mExpandedFlags.get(mContact)) {
-//                binding.textPreview.setVisibility(View.VISIBLE);
-//                binding.buittonMore.setImageIcon(
-//                        Icon.createWithResource(
-//                                mView.getContext(),
-//                                R.drawable.ic_less_grey_24dp));
-//            } else {
-//                binding.textPreview.setVisibility(View.GONE);
-//                binding.buittonMore.setImageIcon(
-//                        Icon.createWithResource(
-//                                mView.getContext(),
-//                                R.drawable.ic_more_grey_24dp));
-//            }
-//        }
+        }
 
         void setContact(final Contact contact) {
             mContact = contact;
-//            binding.buttonFullPost.setOnClickListener(view -> {
-//                Navigation.findNavController(mView).navigate(
-//                        ContactListFragmentDirections
-//                                .ContactFragment(blog));
-//            });
             binding.textContactUser.setText(contact.getUsername());
-            //Use methods in the HTML class to format the HTML found in the text
-//            final String preview =  Html.fromHtml(
-//                            contact.getTeaser(),
-//                            Html.FROM_HTML_MODE_COMPACT)
-//                    .toString().substring(0,100) //just a preview of the teaser
-//                    + "...";
-//            binding.textPreview.setText(preview);
-//            displayPreview();
+            binding.deleteUser.setOnClickListener(this::deleteUser);
         }
     }
-
 }

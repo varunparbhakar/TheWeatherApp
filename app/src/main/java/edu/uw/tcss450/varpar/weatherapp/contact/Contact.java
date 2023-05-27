@@ -23,6 +23,10 @@ public class Contact implements Serializable, Comparable<Contact> {
         return mUsername;
     }
 
+    public String getMemberID() {
+        return mMemberID;
+    }
+
     /**
      * Helper class for building messages.
      *

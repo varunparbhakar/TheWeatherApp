@@ -40,10 +40,36 @@ public class ContactListViewModel extends AndroidViewModel {
     /** User's memberID. */
     private String mMemberID;
 
+    /** Network responses, for observer. */
+    private MutableLiveData<JSONObject> mResponse;
+
     public ContactListViewModel(@NonNull Application application) {
         super(application);
         mContacts = new MutableLiveData<>();
         mContacts.setValue(new ArrayList<>());
+    }
+
+    public void deleteInmodel(String memberID) {
+        return;
+    }
+
+    /**
+     * Add observer to network responses.
+     * @param owner Lifecycle parent.
+     * @param observer UserInfoViewModel.class
+     */
+    public void addResponseObserver(final @NonNull LifecycleOwner owner,
+                                    final @NonNull Observer<? super JSONObject> observer) {
+        mResponse = new MutableLiveData<>();
+        mResponse.observe(owner, observer);
+    }
+
+    /**
+     * Remove observer to network responses.
+     * @param observer UserInfoViewModel.class
+     */
+    public void removeResponseObserver(final @NonNull Observer<? super JSONObject> observer) {
+        mResponse.removeObserver(observer);
     }
 
     /**
@@ -60,6 +86,10 @@ public class ContactListViewModel extends AndroidViewModel {
      */
     public void setMemberID(String mMemberID) {
         this.mMemberID = mMemberID;
+    }
+
+    public String getMemberID() {
+        return mMemberID;
     }
 
     /**
@@ -122,11 +152,86 @@ public class ContactListViewModel extends AndroidViewModel {
 
     /**
      * When a contact is received externally to this ViewModel, add it with this method.
-     * @param cont Contact being added.
+     * @param username Contact being added.
      */
-    public void addContact(final Contact cont) {
-        mContacts.getValue().add(cont);
-        Collections.sort(mContacts.getValue());
+    public void connectAddContact(final String username) {
+        String url = getApplication().getResources().getString(R.string.url) +
+                "contacts/sendfriendrequest/";
+
+        JSONObject body = new JSONObject();
+        try {
+            body.put("sender", mMemberID);
+            body.put("receiver", username);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Request request = new JsonObjectRequest(
+                Request.Method.POST,
+                url,
+                body,
+                this::postHandleSuccess,
+                this::postHandleError) {
+
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                // add headers <key,value>
+                headers.put("Authorization", mJwt);
+                return headers;
+            }
+        };
+
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                10_000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        //Instantiate the RequestQueue and add the request to the queue
+        RequestQueueSingleton.getInstance(getApplication().getApplicationContext())
+                .addToRequestQueue(request);
+    }
+
+    private void postHandleSuccess(final JSONObject response) {
+        try { //note what type of connection happened
+            response.put("type", "post");
+        } catch(JSONException e) {
+            Log.e("JSON Error", e.getMessage());
+        }
+        mResponse.setValue(response);
+    }
+
+    private void postHandleError(final VolleyError error) {
+        JSONObject resp = new JSONObject();
+        try { //note what type of connection happened
+            resp.put("type", "post");
+        } catch(JSONException e) {
+            Log.e("JSON Error", e.getMessage());
+        }
+
+        if (Objects.isNull(error.networkResponse)) { //server error?
+            Log.e("NETWORK ERROR", error.getMessage());
+            try {
+                resp.put("message", "Network Error");
+            } catch(JSONException e) {
+                Log.e("JSON Error", e.getMessage());
+            }
+        }
+        else { //client error?
+            String data = new String(error.networkResponse.data, Charset.defaultCharset());
+            Log.e("CLIENT ERROR",
+                    error.networkResponse.statusCode +
+                            " " +
+                            data);
+            try {
+                JSONObject dat = new JSONObject(new String(error.networkResponse.data, Charset.defaultCharset()));
+                resp.put("message", dat.getString("message"));
+            } catch(JSONException e) {
+                Log.e("JSON Error", e.getMessage());
+            }
+        }
+
+        //notify
+        mResponse.setValue(resp);
     }
 
     /**
