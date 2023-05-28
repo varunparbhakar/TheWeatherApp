@@ -1,56 +1,45 @@
 package edu.uw.tcss450.varpar.weatherapp.contact;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 import edu.uw.tcss450.varpar.weatherapp.R;
 import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentContactCardBinding;
-import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentContactListBinding;
-import edu.uw.tcss450.varpar.weatherapp.io.RequestQueueSingleton;
-import edu.uw.tcss450.varpar.weatherapp.model.UserInfoViewModel;
 
+/**
+ * Visual logic for Contacts and ContactList.
+ * @author Nathan Brown, James Deal
+ */
 public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecyclerViewAdapter.ContactViewHolder> {
 
     /** Store all of the Contacts to present. */
     private final List<Contact> mContacts;
+
     /** Store copy all of the Contacts to present for safe search. */
     private List<Contact> mContactsCopy;
 
-    public String mMemberID;
+    /** Host fragment to bounce view actions to. */
+    private final ContactListFragment mFragment;
 
-    public ContactRecyclerViewAdapter(List<Contact> items) {
+    public ContactRecyclerViewAdapter(List<Contact> items, ContactListFragment frag) {
         this.mContacts = items;
         this.mContactsCopy = new ArrayList<>();
         this.mContactsCopy.addAll(items);
+        this.mFragment = frag;
     }
 
+    /**
+     * Filter list contents during live search.
+     * Refresh to full list once search is empty.
+     * @param text current search text.
+     */
     public void filter(String text) {
         mContacts.clear();
         if(text.isEmpty()){
@@ -99,14 +88,27 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
             binding = FragmentContactCardBinding.bind(view);
         }
 
+        /**
+         * Dials out to fragment for friend deletion.
+         * @param button button that houses functionality.
+         */
         private void deleteUser(final View button) {
+            mFragment.deleteContact(mContact.getMemberID());
+        }
 
+        /**
+         * Dials out to fragment for adding a chat with chosen friend.
+         * @param button button that houses functionality.
+         */
+        private void addChat(final View button) {
+            mFragment.addContactChat(mContact.getMemberID());
         }
 
         void setContact(final Contact contact) {
             mContact = contact;
             binding.textContactUser.setText(contact.getUsername());
             binding.deleteUser.setOnClickListener(this::deleteUser);
+            binding.contactUser.setOnClickListener(this::addChat);
         }
     }
 }

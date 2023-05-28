@@ -23,10 +23,14 @@ import edu.uw.tcss450.varpar.weatherapp.model.UserInfoViewModel;
 
 /**
  * Logic for contact list visual.
+ * @author Nathan Brown, James Deal
  */
-public class ContactListFragment extends Fragment{
+public class ContactListFragment extends Fragment {
 
+    /** Model for Contact List state. */
     private ContactListViewModel mModel;
+
+    /** Adapter to hold Contact List. */
     private ContactRecyclerViewAdapter myContactAdapter;
 
     public ContactListFragment() {
@@ -60,12 +64,14 @@ public class ContactListFragment extends Fragment{
         super.onViewCreated(view, savedInstanceState);
         FragmentContactListBinding binding = FragmentContactListBinding.bind(getView());
 
-        myContactAdapter = new ContactRecyclerViewAdapter(mModel.getContactList());
+        //default just in case
+        myContactAdapter = new ContactRecyclerViewAdapter(mModel.getContactList(), this);
         binding.recyclerContacts.setAdapter(myContactAdapter);
 
+        //Connect data from server to views.
         mModel.addContactListObserver(getViewLifecycleOwner(), contactList -> {
             if (!contactList.isEmpty()) {
-                myContactAdapter = new ContactRecyclerViewAdapter(mModel.getContactList());
+                myContactAdapter = new ContactRecyclerViewAdapter(mModel.getContactList(), this);
                 binding.recyclerContacts.setAdapter(myContactAdapter);
 
                 binding.layoutWait.setVisibility(View.GONE);
@@ -74,19 +80,22 @@ public class ContactListFragment extends Fragment{
 
 //        binding.layoutWait.setVisibility(View.GONE); //make the visibility good when stuff broken
 
-        binding.buttonAddContact.setOnClickListener(v -> {
-            mModel.connectAddContact(binding.textContactSearch.getText().toString());
-        });
+        //Add friend functionality
+        binding.buttonAddContact.setOnClickListener(v ->
+                mModel.connectAddContact(binding.textContactSearch.getText().toString()));
 
         mModel.addResponseObserver(getViewLifecycleOwner(), this::observeResponse);
 
+        //Live search functionality
         binding.textContactSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                //Unused
             }
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                //Unused
             }
 
             @Override
@@ -94,28 +103,82 @@ public class ContactListFragment extends Fragment{
                 myContactAdapter.filter(s.toString());
             }
         });
-
-        myContactAdapter.mMemberID = mModel.getMemberID();
-
-
-
-
     }
 
-    public void deleteContact() {
-
+    /**
+     * Passes intention of deleting contact from View to Model.
+     * @param memberID friend to remove.
+     */
+    public void deleteContact(String memberID) {
+        mModel.connectDeleteContact(memberID);
     }
 
+    /**
+     * Passes intention of adding chat with contact from View to Model.
+     * @param memberID friend to remove.
+     */
+    public void addContactChat(String memberID) {
+        mModel.connectAddContactChat(memberID);
+    }
 
-
+    /**
+     * Observe response from Contact model server connection.
+     * @param jsonObject adjusted server response.
+     */
     private void observeResponse(final JSONObject jsonObject) {
         if (jsonObject.has("type")) {
-            if (getFromJson("type", jsonObject).equals("post")) {
-                String resp = getFromJson("message",jsonObject);
-                createAlertDialogue(resp);
-            } else if (getFromJson("type", jsonObject).equals("delete")) {
-                Log.wtf("delete", "not implemented yet");
+            String type = getFromJson("type", jsonObject);
+            switch (type) {
+                case "post":
+                    addContactResponse(jsonObject);
+                    break;
+                case "delete":
+                    deleteContactResponse(jsonObject);
+                    break;
+                case "chat":
+                    chatContactResponse(jsonObject);
+                    break;
+                default :
+                    break;
             }
+        }
+    }
+
+    /**
+     * Action for server response of contact add.
+     * @param jsonObject adjusted server response
+     */
+    private void addContactResponse(final JSONObject jsonObject) {
+        String resp = getFromJson("message", jsonObject);
+        createAlertDialogue(resp);
+    }
+
+    /**
+     * Action for server response of contact delete.
+     * @param jsonObject adjusted server response
+     */
+    private void deleteContactResponse(final JSONObject jsonObject) {
+        String resp;
+        if (getFromJson("success", jsonObject).equals("true")) {
+            mModel.getContacts();
+            resp = getFromJson("message", jsonObject);
+        } else {
+            resp = getFromJson("message", jsonObject);
+        }
+        createAlertDialogue(resp);
+    }
+
+    /**
+     * Action for server response of contact add chat.
+     * @param jsonObject adjusted server response
+     */
+    private void chatContactResponse(final JSONObject jsonObject) {
+        if (getFromJson("success", jsonObject).equals("true")) {
+            Log.wtf("contacts", "make chat, go to fragment");
+            createAlertDialogue("Not implemented yet.");
+        } else {
+            String resp = getFromJson("message", jsonObject);
+            createAlertDialogue(resp);
         }
     }
 
