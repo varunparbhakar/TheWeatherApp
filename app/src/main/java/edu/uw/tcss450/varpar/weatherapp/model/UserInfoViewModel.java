@@ -18,6 +18,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import edu.uw.tcss450.varpar.weatherapp.io.RequestQueueSingleton;
@@ -127,18 +129,28 @@ public class UserInfoViewModel extends AndroidViewModel {
 
         JSONObject body = new JSONObject();
         try {
+            body.put("memberid", mMemberID);
             body.put("oldpassword", oldPassword);
             body.put("newpassword", newPassword);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        Request request = new JsonObjectRequest(
+        Request request =  new JsonObjectRequest(
                 Request.Method.PUT,
                 url,
                 body, //JSON body for this get request
                 mResponse::setValue,
-                this::handleError);
+                this::handleError) {
+
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                // add headers <key,value>
+                headers.put("Authorization", mJwt);
+                return headers;
+            }
+        };
 
         request.setRetryPolicy(new DefaultRetryPolicy(
                 10_000,
