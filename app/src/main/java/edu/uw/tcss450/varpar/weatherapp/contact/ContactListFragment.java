@@ -70,15 +70,11 @@ public class ContactListFragment extends Fragment {
 
         //Connect data from server to views.
         mModel.addContactListObserver(getViewLifecycleOwner(), contactList -> {
-            if (!contactList.isEmpty()) {
-                myContactAdapter = new ContactRecyclerViewAdapter(mModel.getContactList(), this);
-                binding.recyclerContacts.setAdapter(myContactAdapter);
+            myContactAdapter = new ContactRecyclerViewAdapter(mModel.getContactList(), this);
+            binding.recyclerContacts.setAdapter(myContactAdapter);
 
-                binding.layoutWait.setVisibility(View.GONE);
-            }
+            binding.layoutWait.setVisibility(View.GONE);
         });
-
-//        binding.layoutWait.setVisibility(View.GONE); //make the visibility good when stuff broken
 
         //Add friend functionality
         binding.buttonAddContact.setOnClickListener(v ->
@@ -161,10 +157,8 @@ public class ContactListFragment extends Fragment {
         String resp;
         if (getFromJson("success", jsonObject).equals("true")) {
             mModel.getContacts();
-            resp = getFromJson("message", jsonObject);
-        } else {
-            resp = getFromJson("message", jsonObject);
         }
+        resp = getFromJson("message", jsonObject);
         createAlertDialogue(resp);
     }
 
