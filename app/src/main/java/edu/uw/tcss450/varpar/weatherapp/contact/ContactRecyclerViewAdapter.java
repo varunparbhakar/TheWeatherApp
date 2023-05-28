@@ -7,24 +7,52 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.uw.tcss450.varpar.weatherapp.R;
 import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentContactCardBinding;
 
+/**
+ * Visual logic for Contacts and ContactList.
+ * @author Nathan Brown, James Deal
+ */
 public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecyclerViewAdapter.ContactViewHolder> {
 
-    //Store all of the blogs to present
+    /** Store all of the Contacts to present. */
     private final List<Contact> mContacts;
 
-//    //Store the expanded state for each List item, true -> expanded, false -> not
-//    private final Map<Contact, Boolean> mExpandedFlags;
+    /** Store copy all of the Contacts to present for safe search. */
+    private List<Contact> mContactsCopy;
 
-    public ContactRecyclerViewAdapter(List<Contact> items) {
+    /** Host fragment to bounce view actions to. */
+    private final ContactListFragment mFragment;
+
+    public ContactRecyclerViewAdapter(List<Contact> items, ContactListFragment frag) {
         this.mContacts = items;
-//        mExpandedFlags = mContacts.stream()
-//                .collect(Collectors.toMap(Function.identity(), blog -> false));
+        this.mContactsCopy = new ArrayList<>();
+        this.mContactsCopy.addAll(items);
+        this.mFragment = frag;
+    }
 
+    /**
+     * Filter list contents during live search.
+     * Refresh to full list once search is empty.
+     * @param text current search text.
+     */
+    public void filter(String text) {
+        mContacts.clear();
+        if(text.isEmpty()){
+            mContacts.addAll(mContactsCopy);
+        } else{
+            text = text.toLowerCase();
+            for(Contact item: mContactsCopy){
+                if(item.getUsername().toLowerCase().contains(text)){
+                    mContacts.add(item);
+                }
+            }
+        }
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -46,15 +74,6 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
     }
 
     /**
-     * Adding a contact to the contact list
-     * @param myContact
-     * @return
-     */
-    public boolean addContact(Contact myContact){
-        return mContacts.add(myContact);
-    }
-
-    /**
      * Objects from this class represent an Individual row View from the List
      * of rows in the Contact Recycler View.
      */
@@ -67,56 +86,29 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
             super(view);
             mView = view;
             binding = FragmentContactCardBinding.bind(view);
-//            binding.buittonMore.setOnClickListener(this::handleMoreOrLess);
         }
 
-//        /**
-//         * When the button is clicked in the more state, expand the card to display
-//         * the blog preview and switch the icon to the less state.  When the button
-//         * is clicked in the less state, shrink the card and switch the icon to the
-//         * more state.
-//         * @param button the button that was clicked
-//         */
-//        private void handleMoreOrLess(final View button) {
-//            mExpandedFlags.put(mContact, !mExpandedFlags.get(mContact));
-//        }
+        /**
+         * Dials out to fragment for friend deletion.
+         * @param button button that houses functionality.
+         */
+        private void deleteUser(final View button) {
+            mFragment.deleteContact(mContact.getMemberID());
+        }
 
-//        /**
-//         * Helper used to determine if the preview should be displayed or not.
-//         */
-//        private void displayPreview() {
-//            if (mExpandedFlags.get(mContact)) {
-//                binding.textPreview.setVisibility(View.VISIBLE);
-//                binding.buittonMore.setImageIcon(
-//                        Icon.createWithResource(
-//                                mView.getContext(),
-//                                R.drawable.ic_less_grey_24dp));
-//            } else {
-//                binding.textPreview.setVisibility(View.GONE);
-//                binding.buittonMore.setImageIcon(
-//                        Icon.createWithResource(
-//                                mView.getContext(),
-//                                R.drawable.ic_more_grey_24dp));
-//            }
-//        }
+        /**
+         * Dials out to fragment for adding a chat with chosen friend.
+         * @param button button that houses functionality.
+         */
+        private void addChat(final View button) {
+            mFragment.addContactChat(mContact.getMemberID());
+        }
 
         void setContact(final Contact contact) {
             mContact = contact;
-//            binding.buttonFullPost.setOnClickListener(view -> {
-//                Navigation.findNavController(mView).navigate(
-//                        ContactListFragmentDirections
-//                                .ContactFragment(blog));
-//            });
             binding.textContactUser.setText(contact.getUsername());
-            //Use methods in the HTML class to format the HTML found in the text
-//            final String preview =  Html.fromHtml(
-//                            contact.getTeaser(),
-//                            Html.FROM_HTML_MODE_COMPACT)
-//                    .toString().substring(0,100) //just a preview of the teaser
-//                    + "...";
-//            binding.textPreview.setText(preview);
-//            displayPreview();
+            binding.deleteUser.setOnClickListener(this::deleteUser);
+            binding.contactUser.setOnClickListener(this::addChat);
         }
     }
-
 }

@@ -4,16 +4,26 @@ import java.io.Serializable;
 
 /**
  * Class to encapsulate a chat message from a contact.
- *
- * @author Nathan Brown
- * @version 4/30/2023
+ * @author Nathan Brown, James Deal
  */
 public class Contact implements Serializable, Comparable<Contact> {
 
+    /** User's username. */
     private final String mUsername;
 
+    /** User's memberID. */
     private final String mMemberID;
 
+    private Contact(final Builder builder) {
+        this.mUsername = builder.mUser;
+        this.mMemberID = builder.mMemberID;
+    }
+
+    /**
+     * Ability to compare users based on name.
+     * @param o the object to be compared.
+     * @return Normal alphabetic order.
+     */
     @Override
     public int compareTo(Contact o) {
         return mUsername.compareTo(o.mUsername);
@@ -23,10 +33,12 @@ public class Contact implements Serializable, Comparable<Contact> {
         return mUsername;
     }
 
+    public String getMemberID() {
+        return mMemberID;
+    }
+
     /**
      * Helper class for building messages.
-     *
-     * @author Charles Bryan
      */
     public static class Builder {
 
@@ -36,7 +48,6 @@ public class Contact implements Serializable, Comparable<Contact> {
 
         /**
          * Constructs a new Builder.
-         *
          * @param user the sender of the ChatMessage
          */
         public Builder(String user, String id) {
@@ -47,12 +58,5 @@ public class Contact implements Serializable, Comparable<Contact> {
         public Contact build() {
             return new Contact(this);
         }
-
     }
-
-    private Contact(final Builder builder) {
-        this.mUsername = builder.mUser;
-        this.mMemberID = builder.mMemberID;
-    }
-
 }
