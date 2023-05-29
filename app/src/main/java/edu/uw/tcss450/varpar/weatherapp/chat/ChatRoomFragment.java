@@ -41,7 +41,7 @@ public class ChatRoomFragment extends Fragment {
         mUserModel = provider.get(UserInfoViewModel.class);
         mChatRoomModel = provider.get(ChatRoomViewModel.class);
         mChatRoomModel.getFirstMessages(mChatId, mUserModel.getJwt());
-//        mSendModel = provider.get(ChatSendViewModel.class);
+        mSendModel = provider.get(ChatSendViewModel.class);
     }
 
     @Override
@@ -85,15 +85,15 @@ public class ChatRoomFragment extends Fragment {
                 }
         );
 
-//        //Send button was clicked. Send the message via the SendViewModel
-//        binding.buttonSend.setOnClickListener(button -> {
-//            mSendModel.sendMessage(HARD_CODED_CHAT_ID,
-//                    mUserModel.getmJwt(),
-//                    binding.editMessage.getText().toString());
-//        });
-//        //when we get the response back from the server, clear the edittext
-//        mSendModel.addResponseObserver(getViewLifecycleOwner(), response ->
-//                binding.editMessage.setText("")
-//        );
+        //Send button was clicked. Send the message via the SendViewModel
+        binding.buttonSend.setOnClickListener(button -> {
+            mSendModel.sendMessage(mChatId,
+                    mUserModel.getJwt(),
+                    binding.editMessage.getText().toString());
+        });
+        //when we get the response back from the server, clear the edittext
+        mSendModel.addResponseObserver(getViewLifecycleOwner(), response ->
+                binding.editMessage.setText("")
+        );
     }
 }
