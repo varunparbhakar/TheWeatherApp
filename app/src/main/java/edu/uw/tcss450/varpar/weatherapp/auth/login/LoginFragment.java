@@ -1,6 +1,9 @@
 package edu.uw.tcss450.varpar.weatherapp.auth.login;
 
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import static edu.uw.tcss450.varpar.weatherapp.util.PasswordValidator.*;
 import androidx.annotation.NonNull;
@@ -9,15 +12,21 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.Toast;
 
+
+import com.auth0.android.jwt.JWT;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import edu.uw.tcss450.varpar.weatherapp.R;
 import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentLoginBinding;
 import edu.uw.tcss450.varpar.weatherapp.model.UserInfoViewModel;
 import edu.uw.tcss450.varpar.weatherapp.util.PasswordValidator;
@@ -80,16 +89,91 @@ public class LoginFragment extends Fragment {
 //                        edu.uw.tcss450.varpar.weatherapp.auth.login.LoginFragmentDirections.actionLoginFragmentToMainActivity2());
 //            }
 //        });
+        mBinding.buttonForgotpassword.setOnClickListener(button -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+            builder.setTitle("Forget you password");
+
+            // Create an EditText view to accept email input
+            final EditText emailEditText = new EditText(requireContext());
+            emailEditText.setHint(getResources().getString(R.string.profile_fragment_username));
+            builder.setView(emailEditText);
+
+            // Set up the Submit button
+            builder.setPositiveButton(getResources().getString(R.string.text_activity_auth_forget_password_submit), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    String email = emailEditText.getText().toString();
+                    mLoginVModel.forgetpasswordconnect(email);
+                    Toast.makeText(requireContext(), "Please check you email", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                }
+            });
+
+            // Set up the Cancel button
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+
+            // Show the dialog
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
+        });
 
         autoLogin(); //REMOVE WHEN DONE
     }
     private void autoLogin() {
         //EASE OF LOGGIN IN
+//        mBinding.etEmail.setText("test1@test.com");
+//        mBinding.etPassword.setText("test12345");
         mBinding.etEmail.setText("mom@gmail.com");
         mBinding.etPassword.setText("Test123!");
 //        attemptSignIn(mBinding.buttonLogin);
         //EASE OF LOGGING IN
     }
+
+    @Override
+    public void onStart() {
+        Log.i("On Start","onStart was invoked");
+        super.onStart();
+        SharedPreferences prefs =
+                getActivity().getSharedPreferences(
+                        getString(R.string.keys_shared_prefs),
+                        Context.MODE_PRIVATE);
+        if (prefs.contains(getString(R.string.keys_prefs_jwt))) {
+            Log.i("Local Data","There was data stored on the phone");
+            JSONObject json = null;
+            String token = null;
+            try {
+
+                json = new JSONObject(prefs.getString(getString(R.string.keys_prefs_jwt), ""));
+                Log.i("DISPLAYING STORED JSON", json.toString());
+
+                token = json.getString("token");
+                JWT jwt = new JWT(token);
+                // Check to see if the web token is still valid or not. To make a JWT expire after a
+                // longer or shorter time period, change the expiration time when the JWT is
+                // created on the web service.
+                if(!jwt.isExpired(0)) {
+                    Log.i("Token is not EXPIRED", String.valueOf(jwt.isExpired(0)));
+                    navigateToSuccess(json.toString());
+                    return;
+                }
+                Log.i("Token is EXPIRED", String.valueOf(jwt.isExpired(0)));
+
+            } catch (JSONException e) {
+//                e.printStackTrace();
+                Log.e("ERROR", "Error converting string back into JSON");
+                prefs.edit().remove(getString(R.string.keys_prefs_jwt)).apply();
+            }
+
+        }
+        Log.i("Local Data","There was no data stored on the phone");
+    }
+
     private void attemptSignIn(final View button) {
         validateEmail();
     }
@@ -136,8 +220,21 @@ public class LoginFragment extends Fragment {
                 } catch (JSONException e) {
                     Log.e("JSON Parse Error in login response observer", e.getMessage());
                 }
+            } else if(response.has("message")){
+                try{
+                    if(String.valueOf(response.getString("message")).equals("A password recovery email has been sent")){
+                        Log.i("Login", "User forgot their password");
+                    } else if ((response.getString("message")).equals("Authentication successful!")) {
+                        navigateToSuccess(response.toString());
+                    }
+
+                } catch (JSONException e) {
+                    Log.e("JSON Parse Error in login response observer", e.getMessage());
+                }
+
             }else {
                 //Taking the user's json and passing to the other activity
+                Log.i("Login", "Logging in from the response observer");
                 navigateToSuccess(response.toString());
 
             }
@@ -147,7 +244,20 @@ public class LoginFragment extends Fragment {
 
     }
     private void navigateToSuccess(final String json) {
+        if (mBinding.switchSignin.isChecked()) {
+            Log.i("Remember me Switch", "Switch is on");
+            SharedPreferences prefs =
+                    getActivity().getSharedPreferences(
+                            getString(R.string.keys_shared_prefs),
+                            Context.MODE_PRIVATE);
+            //Store the credentials in SharedPrefs
+            prefs.edit().putString(getString(R.string.keys_prefs_jwt), json).apply();
+        }
         Navigation.findNavController(getView()).navigate(LoginFragmentDirections.actionLoginFragmentToMainActivity2(json));
+
+        //Remove THIS activity from the Task list. Pops off the backstack
+        getActivity().finish();
     }
+
 
 }
