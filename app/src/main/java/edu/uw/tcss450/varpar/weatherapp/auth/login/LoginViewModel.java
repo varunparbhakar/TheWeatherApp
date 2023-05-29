@@ -41,6 +41,7 @@ public class LoginViewModel extends AndroidViewModel {
         mResponse.observe(owner, observer);
     }
     public void connect(final String email, final String password) {
+        Log.d("Connect", "Connect is being called");
         String url = getApplication().getResources().getString(R.string.url)+"auth";
         Request request = new JsonObjectRequest(
                 Request.Method.GET,
@@ -60,10 +61,10 @@ public class LoginViewModel extends AndroidViewModel {
                 return headers;
             }
         };
-        Log.d("CONNECTED", "connect: ");
+
         request.setRetryPolicy(new DefaultRetryPolicy(
                 10_000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                0,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         //Instantiate the RequestQueue and add the request to the queue
         RequestQueueSingleton.getInstance(getApplication().getApplicationContext())

@@ -191,7 +191,7 @@ public class LoginFragment extends Fragment {
     }
     private void verifyAuthWithServer() {
 
-
+        Log.i("Connect", "Connect is being called here ");
                 mLoginVModel.connect(
                 mBinding.etEmail.getText().toString(),
                 mBinding.etPassword.getText().toString());
