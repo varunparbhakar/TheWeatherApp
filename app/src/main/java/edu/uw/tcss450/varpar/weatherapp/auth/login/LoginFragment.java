@@ -77,7 +77,8 @@ public class LoginFragment extends Fragment {
 
         mLoginVModel.addResponseObserver(
                 getViewLifecycleOwner(),
-                this::loginResponseObserver);
+                this::loginResponseObserver
+        );
 
 
 
