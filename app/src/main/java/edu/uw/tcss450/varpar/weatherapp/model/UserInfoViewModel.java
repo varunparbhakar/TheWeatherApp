@@ -126,11 +126,11 @@ public class UserInfoViewModel extends AndroidViewModel {
      * @param newPassword new password to set.
      */
     public void connectValidatePassword(final String oldPassword, final String newPassword) {
-        String url = getApplication().getResources().getString(R.string.url)+"password/changepass"; //TODO wrong, what creds
+        String url = getApplication().getResources().getString(R.string.url)+"password/changepass";
 
         JSONObject body = new JSONObject();
         try {
-            body.put("username", getUsername());
+            body.put("username", getEmail());
             body.put("oldpassword", oldPassword);
             body.put("newpassword", newPassword);
         } catch (JSONException e) {
@@ -138,7 +138,7 @@ public class UserInfoViewModel extends AndroidViewModel {
         }
 
         Request request =  new JsonObjectRequest(
-                Request.Method.PUT,
+                Request.Method.POST,
                 url,
                 body, //JSON body for this get request
                 mResponse::setValue,

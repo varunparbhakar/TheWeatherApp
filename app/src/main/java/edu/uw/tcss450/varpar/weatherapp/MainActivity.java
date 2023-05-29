@@ -29,7 +29,9 @@ import edu.uw.tcss450.varpar.weatherapp.auth.login.LoginFragmentDirections;
 import edu.uw.tcss450.varpar.weatherapp.chat.ChatRoomMessage;
 import edu.uw.tcss450.varpar.weatherapp.chat.ChatRoomViewModel;
 import edu.uw.tcss450.varpar.weatherapp.databinding.ActivityMainBinding;
+import edu.uw.tcss450.varpar.weatherapp.model.NewMessageCountViewModel;
 import edu.uw.tcss450.varpar.weatherapp.model.UserInfoViewModel;
+import edu.uw.tcss450.varpar.weatherapp.services.PushReceiver;
 
 /**
  * Activity that holds all the main content for the app.
@@ -44,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
     private MainPushMessageReceiver mPushMessageReceiver;
 
-//    private NewMessageCountViewModel mNewMessageModel;
+    private NewMessageCountViewModel mNewMessageModel;
 
     /**
      * Creates activity and performs setup of bottom navigation.
@@ -80,28 +82,30 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
-//        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-//            if (destination.getId() == R.id.navigation_chat) {
-//                //When the user navigates to the chats page, reset the new message count.
-//                //This will need some extra logic for your project as it should have
-//                //multiple chat rooms.
-////                        mNewMessageModel.reset();
-//            }
-//        });
+        mNewMessageModel = new ViewModelProvider(this).get(NewMessageCountViewModel.class);
 
-//        mNewMessageModel.addMessageCountObserver(this, count -> {
-//            BadgeDrawable badge = binding.navView.getOrCreateBadge(R.id.navigation_chat);
-//            badge.setMaxCharacterCount(2);
-//            if (count > 0) {
-//                //new messages! update and show the notification badge.
-//                badge.setNumber(count);
-//                badge.setVisible(true);
-//            } else {
-//                //user did some action to clear the new messages, remove the badge
-//                badge.clearNumber();
-//                badge.setVisible(false);
-//            }
-//        });
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            if (destination.getId() == R.id.navigation_chat) {
+                //When the user navigates to the chats page, reset the new message count.
+                //This will need some extra logic for your project as it should have
+                //multiple chat rooms.
+                mNewMessageModel.reset();
+            }
+        });
+
+        mNewMessageModel.addMessageCountObserver(this, count -> {
+            BadgeDrawable badge = binding.navView.getOrCreateBadge(R.id.navigation_chat);
+            badge.setMaxCharacterCount(2);
+            if (count > 0) {
+                //new messages! update and show the notification badge.
+                badge.setNumber(count);
+                badge.setVisible(true);
+            } else {
+                //user did some action to clear the new messages, remove the badge
+                badge.clearNumber();
+                badge.setVisible(false);
+            }
+        });
 
         // This is the code for the add chat button
         // TODO: add chat button to chat fragment functionality
@@ -112,23 +116,23 @@ public class MainActivity extends AppCompatActivity {
 //        });
     }
 
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        if (mPushMessageReceiver == null) {
-//            mPushMessageReceiver = new MainPushMessageReceiver();
-//        }
-////        IntentFilter iFilter = new IntentFilter(PushReceiver.RECEIVED_NEW_MESSAGE);
-////        registerReceiver(mPushMessageReceiver, iFilter);
-//    }
-//
-//    @Override
-//    public void onPause() {
-//        super.onPause();
-//        if (mPushMessageReceiver != null){
-//            unregisterReceiver(mPushMessageReceiver);
-//        }
-//    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mPushMessageReceiver == null) {
+            mPushMessageReceiver = new MainPushMessageReceiver();
+        }
+        IntentFilter iFilter = new IntentFilter(PushReceiver.RECEIVED_NEW_MESSAGE);
+        registerReceiver(mPushMessageReceiver, iFilter);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mPushMessageReceiver != null){
+            unregisterReceiver(mPushMessageReceiver);
+        }
+    }
 
     /**
      * Allows for back-navigation when digging into fragments.
@@ -193,9 +197,6 @@ public class MainActivity extends AppCompatActivity {
         Intent i = new Intent(getApplicationContext(),AuthActivity.class);
         startActivity(i);
         setContentView(R.layout.activity_auth);
-
-
-
     }
 
     /**
@@ -219,15 +220,14 @@ public class MainActivity extends AppCompatActivity {
                 ChatRoomMessage cm = (ChatRoomMessage) intent.getSerializableExtra("chatMessage");
 
                 //If the user is not on the chat screen, update the
-                // NewMessageCountView Model
-//                if (nd.getId() != R.id.navigation_chat) {
-//                    mNewMessageModel.increment();
-//                }
+                //NewMessageCountView Model
+                if (nd.getId() != R.id.navigation_chat) {
+                    mNewMessageModel.increment();
+                }
                 //Inform the view model holding chatroom messages of the new
                 //message.
                 mModel.addMessage(intent.getIntExtra("chatid", -1), cm);
             }
         }
     }
-
 }

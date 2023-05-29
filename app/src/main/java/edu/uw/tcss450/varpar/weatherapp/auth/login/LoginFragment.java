@@ -28,18 +28,18 @@ import org.json.JSONObject;
 
 import edu.uw.tcss450.varpar.weatherapp.R;
 import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentLoginBinding;
+import edu.uw.tcss450.varpar.weatherapp.model.PushyTokenViewModel;
 import edu.uw.tcss450.varpar.weatherapp.model.UserInfoViewModel;
 import edu.uw.tcss450.varpar.weatherapp.util.PasswordValidator;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link LoginFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Login fragment
  */
 public class LoginFragment extends Fragment {
     private FragmentLoginBinding mBinding;
     private LoginViewModel mLoginVModel;
-    private UserInfoViewModel model;
+    private UserInfoViewModel mUserViewModel;;
+    private PushyTokenViewModel mPushyTokenViewModel;
 
     private PasswordValidator mEmailValidator = checkPwdLength(2)
             .and(checkExcludeWhiteSpace())
@@ -52,7 +52,8 @@ public class LoginFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        mPushyTokenViewModel = new ViewModelProvider(getActivity())
+                .get(PushyTokenViewModel.class);
     }
 
     @Override
@@ -124,8 +125,44 @@ public class LoginFragment extends Fragment {
 
         });
 
+        //don't allow sign in until pushy token retrieved
+        mPushyTokenViewModel.addTokenObserver(getViewLifecycleOwner(), token ->
+                mBinding.buttonLogin.setEnabled(!token.isEmpty()));
+
+        mPushyTokenViewModel.addResponseObserver(
+                getViewLifecycleOwner(),
+                this::observePushyPutResponse);
+
         autoLogin(); //REMOVE WHEN DONE
     }
+
+    /**
+     * Helper to abstract the request to send the pushy token to the web service
+     */
+    private void sendPushyToken() {
+        mPushyTokenViewModel.sendTokenToWebservice(mUserViewModel.getJwt());
+    }
+
+    /**
+     * An observer on the HTTP Response from the web server. This observer should be
+     * attached to PushyTokenViewModel.
+     *
+     * @param response the Response from the server
+     */
+    private void observePushyPutResponse(final JSONObject response) {
+        if (response.length() > 0) {
+            if (response.has("code")) {
+                //this error cannot be fixed by the user changing credentials...
+                mBinding.etEmail.setError(
+                        "Error Authenticating on Push Token. Please contact support");
+            } else {
+                navigateToSuccess(
+                        response.toString()
+                );
+            }
+        }
+    }
+
     private void autoLogin() {
         //EASE OF LOGGIN IN
 //        mBinding.etEmail.setText("test1@test.com");
@@ -191,8 +228,6 @@ public class LoginFragment extends Fragment {
                 result -> mBinding.etPassword.setError("Please enter a valid Password."));
     }
     private void verifyAuthWithServer() {
-
-
                 mLoginVModel.connect(
                 mBinding.etEmail.getText().toString(),
                 mBinding.etPassword.getText().toString());
@@ -236,7 +271,16 @@ public class LoginFragment extends Fragment {
             }else {
                 //Taking the user's json and passing to the other activity
                 Log.i("Login", "Logging in from the response observer");
-                navigateToSuccess(response.toString());
+                try {
+                    mUserViewModel = new ViewModelProvider(getActivity())
+                            .get(UserInfoViewModel.class);
+                    mUserViewModel.setJSON(response);
+//                    mBinding.etEmail.getText().toString(),response.getString("token");
+                } catch (Exception e) {
+                    Log.e("bad", "bad");
+                }
+                sendPushyToken();
+//                navigateToSuccess(response.toString());
 
             }
         } else {
