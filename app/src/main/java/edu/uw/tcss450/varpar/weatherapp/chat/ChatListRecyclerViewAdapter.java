@@ -50,7 +50,7 @@ public class ChatListRecyclerViewAdapter extends RecyclerView.Adapter<ChatListRe
      * Objects from this class represent an Individual row View from the List
      * of rows in the Chat Recycler View.
      */
-    public static class ChatListViewHolder extends RecyclerView.ViewHolder {
+    public class ChatListViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public FragmentChatListCardBinding binding;
         private ChatListRoom mChat;
@@ -59,6 +59,14 @@ public class ChatListRecyclerViewAdapter extends RecyclerView.Adapter<ChatListRe
             super(view);
             mView = view;
             binding = FragmentChatListCardBinding.bind(view);
+        }
+
+        /**
+         * Dials out to fragment for chat deletion.
+         * @param button button that houses functionality.
+         */
+        private void deleteUser(final View button) {
+            mFragment.deleteUserFromChat(mChat.getChatId());
         }
 
         void setChat(final ChatListRoom chatListItem) {
@@ -75,6 +83,7 @@ public class ChatListRecyclerViewAdapter extends RecyclerView.Adapter<ChatListRe
                     );
                 }
             );
+            binding.deleteChat.setOnClickListener(this::deleteUser);
         }
     }
 

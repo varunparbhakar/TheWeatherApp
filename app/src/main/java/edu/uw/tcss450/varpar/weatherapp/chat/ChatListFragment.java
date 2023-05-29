@@ -34,11 +34,13 @@ public class ChatListFragment extends Fragment {
 
     private ChatListRecyclerViewAdapter myChatListAdapter;
 
+    private UserInfoViewModel mUserModel;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ViewModelProvider provider = new ViewModelProvider(requireActivity());
-        UserInfoViewModel mUserModel = provider.get(UserInfoViewModel.class);
+        mUserModel = provider.get(UserInfoViewModel.class);
         mChatListModel = provider.get(ChatListViewModel.class);
         mChatListModel.getChatIds(mUserModel.getMemberID(), mUserModel.getJwt());
     }
@@ -91,10 +93,9 @@ public class ChatListFragment extends Fragment {
     /**
      * Passes intention of deleting user in a chat from View to Model.
      * @param chatId identifies chat to remove user from
-     * @param email identifies user to be removed
      */
-    public void deleteUserFromChat(String chatId, String email) {
-        mChatRoomModel.connectDeleteUserFromChat(chatId, email);
+    public void deleteUserFromChat(String chatId) {
+        mChatListModel.connectDeleteUserFromChat(chatId, mUserModel.getEmail());
     }
 
     /**
