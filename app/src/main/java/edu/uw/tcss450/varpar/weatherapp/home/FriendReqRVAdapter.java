@@ -84,12 +84,10 @@ public class FriendReqRVAdapter extends RecyclerView.Adapter<FriendReqRVAdapter.
     private void acceptOnClick(int position) {
         // handle accept button click
         FriendReqRVModel model = FriendReqRVModelArrayList.get(position);
-        // now you have the clicked model, you can do anything with it
     }
 
     private void declineOnClick(int position) {
         // handle decline button click
         FriendReqRVModel model = FriendReqRVModelArrayList.get(position);
-        // now you have the clicked model, you can do anything with it
     }
 }

@@ -18,12 +18,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -87,51 +86,75 @@ public class HomeFragment extends Fragment {
         String welcomeText = getText(R.string.home_fragment_welcome) + " " + model.getFirstName();
         mBinding.textGreeting.setText(welcomeText);
 
-        for(int i = 0;i < 5; i++) {
-            String name = "Random Person " + i;
-            friendReqRVModelArrayList.add(new FriendReqRVModel(name));
-            //day++;
-        }
-        friendReqRVAdapter.notifyDataSetChanged();
+        // pulls freinds requests from the database
+        getAcceptFriendRequests();
     }
+
+
+//        for(int i = 0;i < 5; i++) {
+//            String name = "Random Person " + i;
+//            friendReqRVModelArrayList.add(new FriendReqRVModel(name));
+//            //day++;
+//        }
+//        friendReqRVAdapter.notifyDataSetChanged();
+//    }
 
     private void getWeatherInfo() {
         String URL = "http://api.weatherapi.com/v1/forecast.json?key=9953bd3e0e9448fba21212344231405 &q=Tacoma&days=5&aqi=no&alerts=no";
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, URL, null,
-                new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
+                response -> {
 //                loadingPB.setVisibility(View.GONE);
 //                homeRL.setVisibility(View.VISIBLE);
 
-                try {
-                    String cityName = response.getJSONObject("location").getString("name");
-                    locationTextView.setText(cityName);
-                    String temp = response.getJSONObject("current").getString("temp_f");
-                    tempTV.setText(temp);
-                    String condition = response.getJSONObject("current").getJSONObject("condition").getString("text");
-                    String conditionIcon = response.getJSONObject("current").getJSONObject("condition").getString("icon");
-                    Picasso.get().load("http:".concat(conditionIcon)).into(iconIV);
-                    conditionTV.setText(condition);
+                    try {
+                        String cityName = response.getJSONObject("location").getString("name");
+                        locationTextView.setText(cityName);
+                        String temp = response.getJSONObject("current").getString("temp_f");
+                        tempTV.setText(temp);
+                        String condition = response.getJSONObject("current").getJSONObject("condition").getString("text");
+                        String conditionIcon = response.getJSONObject("current").getJSONObject("condition").getString("icon");
+                        Picasso.get().load("http:".concat(conditionIcon)).into(iconIV);
+                        conditionTV.setText(condition);
 
-                    JSONObject forecastObj = response.getJSONObject("forecast");
-                    JSONObject forecast0 = forecastObj.getJSONArray("forecastday").getJSONObject(0);
+                        JSONObject forecastObj = response.getJSONObject("forecast");
+                        JSONObject forecast0 = forecastObj.getJSONArray("forecastday").getJSONObject(0);
 //                    JSONArray hourArray = forecast0.getJSONArray("hour");
 
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        },
-                new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getActivity(), "Please enter valid city name...", Toast.LENGTH_SHORT).show();
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                },
+                error -> Toast.makeText(getActivity(), "Please enter valid city name...", Toast.LENGTH_SHORT).show());
+        requestQueue.add(jsonObjectRequest);
+    }
 
-            }
-        });
+    public void getAcceptFriendRequests() {
+        String URL = "https://theweatherapp.herokuapp.com/contacts/acceptfriendrequest/";
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, URL, null,
+                response -> {
+                    try {
+                        JSONArray friendRequestsArray = response.getJSONArray("friendRequests");
+
+                        for (int i = 0; i < friendRequestsArray.length(); i++) {
+                            JSONObject friendRequestObject = friendRequestsArray.getJSONObject(i);
+                            String friendName = friendRequestObject.getString("name");
+                            String senderName = friendRequestObject.getString("senderName");  // Get the sender's name
+                            friendReqRVModelArrayList.add(new FriendReqRVModel(senderName));  // Include the sender's name when creating a new FriendReqRVModel
+                        }
+
+                        // Notify the adapter that the data has changed
+                        friendReqRVAdapter.notifyDataSetChanged();
+
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                },
+                error -> Toast.makeText(getActivity(), "Failed to get friend requests...", Toast.LENGTH_SHORT).show());
+
         requestQueue.add(jsonObjectRequest);
     }
 }

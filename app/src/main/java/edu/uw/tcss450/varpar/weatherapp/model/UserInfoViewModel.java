@@ -18,8 +18,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
+import edu.uw.tcss450.varpar.weatherapp.R;
 import edu.uw.tcss450.varpar.weatherapp.io.RequestQueueSingleton;
 
 /**
@@ -123,17 +126,18 @@ public class UserInfoViewModel extends AndroidViewModel {
      * @param newPassword new password to set.
      */
     public void connectValidatePassword(final String oldPassword, final String newPassword) {
-        String url = "https://theweatherapp.herokuapp.com/infotemp"; //TODO wrong, what creds
+        String url = getApplication().getResources().getString(R.string.url)+"password/changepass"; //TODO wrong, what creds
 
         JSONObject body = new JSONObject();
         try {
+            body.put("username", getUsername());
             body.put("oldpassword", oldPassword);
             body.put("newpassword", newPassword);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        Request request = new JsonObjectRequest(
+        Request request =  new JsonObjectRequest(
                 Request.Method.PUT,
                 url,
                 body, //JSON body for this get request
