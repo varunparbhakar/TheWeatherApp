@@ -18,6 +18,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import edu.uw.tcss450.varpar.weatherapp.R;
@@ -135,7 +137,7 @@ public class UserInfoViewModel extends AndroidViewModel {
             e.printStackTrace();
         }
 
-        Request request = new JsonObjectRequest(
+        Request request =  new JsonObjectRequest(
                 Request.Method.PUT,
                 url,
                 body, //JSON body for this get request
