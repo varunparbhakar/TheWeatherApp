@@ -18,11 +18,12 @@ public class ChatListRecyclerViewAdapter extends RecyclerView.Adapter<ChatListRe
     //Store all of the blogs to present
     private final List<ChatListRoom> mChatListItems;
 
-//    //Store the expanded state for each List item, true -> expanded, false -> not
-//    private final Map<ChatMessage, Boolean> mExpandedFlags;
+    /** Host fragment to bounce view actions to. */
+    private final ChatListFragment mFragment;
 
-    public ChatListRecyclerViewAdapter(List<ChatListRoom> items) {
+    public ChatListRecyclerViewAdapter(List<ChatListRoom> items, ChatListFragment frag) {
         this.mChatListItems = items;
+        this.mFragment = frag;
     }
 
     @NonNull
