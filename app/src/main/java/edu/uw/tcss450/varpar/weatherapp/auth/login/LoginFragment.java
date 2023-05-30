@@ -51,11 +51,13 @@ public class LoginFragment extends Fragment {
     }
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.i("Oncreate", "OnCreate just started");
         super.onCreate(savedInstanceState);
         mPushyTokenViewModel = new ViewModelProvider(getActivity())
                 .get(PushyTokenViewModel.class);
         mLoginVModel = new ViewModelProvider(getActivity())
                 .get(LoginViewModel.class);
+
     }
 
     @Override
@@ -157,6 +159,7 @@ public class LoginFragment extends Fragment {
                 mBinding.etEmail.setError(
                         "Error Authenticating on Push Token. Please contact support");
             } else {
+                Log.i("Pushy Observer", response.toString());
                 navigateToSuccess(
                         response.toString()
                 );
