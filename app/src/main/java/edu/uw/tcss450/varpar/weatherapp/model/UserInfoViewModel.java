@@ -99,25 +99,34 @@ public class UserInfoViewModel extends AndroidViewModel {
      * @param error error given from network call.
      */
     private void handleError(final VolleyError error) {
-        if (Objects.isNull(error.networkResponse)) {
+        JSONObject resp = new JSONObject();
+        try { //note what type of connection happened
+            resp.put("type", "error");
+        } catch (JSONException e) {
+            Log.e("JSON Error", e.getMessage());
+        }
+
+        if (Objects.isNull(error.networkResponse)) { //server error?
+            Log.e("NETWORK ERROR", error.getMessage());
             try {
-                mResponse.setValue(new JSONObject("{"
-                        + "error:\"" + error.getMessage()
-                        + "\"}"));
+                resp.put("message", "Network Error");
             } catch (JSONException e) {
-                Log.e("JSON PARSE", "JSON Parse Error in handleError");
+                Log.e("JSON Error", e.getMessage());
             }
-        } else {
-            String data = new String(error.networkResponse.data, Charset.defaultCharset())
-                    .replace('\"', '\'');
+        } else { //client error?
+            String data = new String(error.networkResponse.data, Charset.defaultCharset());
+            Log.e("CLIENT ERROR", error.networkResponse.statusCode + " " + data);
             try {
-                mResponse.setValue(new JSONObject("{"
-                        + "code:" + error.networkResponse.statusCode
-                        + ", data:\"" + data + "\"}"));
+                JSONObject dat = new JSONObject(data);
+                resp.put("message", dat.getString("message"));
+                resp.put("code", error.networkResponse.statusCode);
             } catch (JSONException e) {
-                Log.e("JSON PARSE", "JSON Parse Error in handleError");
+                Log.e("JSON Error", e.getMessage());
             }
         }
+
+        //notify
+        mResponse.setValue(resp);
     }
 
     /**
@@ -126,19 +135,19 @@ public class UserInfoViewModel extends AndroidViewModel {
      * @param newPassword new password to set.
      */
     public void connectValidatePassword(final String oldPassword, final String newPassword) {
-        String url = getApplication().getResources().getString(R.string.url)+"password/changepass"; //TODO wrong, what creds
+        String url = getApplication().getResources().getString(R.string.url)+"password/changepass";
 
         JSONObject body = new JSONObject();
         try {
-            body.put("username", getUsername());
-            body.put("oldpassword", oldPassword);
-            body.put("newpassword", newPassword);
+            body.put("username", getEmail());
+            body.put("oldpass", oldPassword);
+            body.put("newpass", newPassword);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         Request request =  new JsonObjectRequest(
-                Request.Method.PUT,
+                Request.Method.POST,
                 url,
                 body, //JSON body for this get request
                 mResponse::setValue,
