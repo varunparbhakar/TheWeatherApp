@@ -123,6 +123,7 @@ public class LoginFragment extends Fragment {
 
         });
 
+
         autoLogin(); //REMOVE WHEN DONE
     }
     private void autoLogin() {
