@@ -141,7 +141,7 @@ public class ProfileFragment extends Fragment {
             if (response.has("code")) {
                 try {
                     mBinding.newPassword1.setError("Error Authenticating: "
-                            + response.getJSONObject("data").getString("message"));
+                            + response.getString("message"));
                 } catch (JSONException e) {
                     Log.e("JSON Parse Error", e.getMessage());
                     createAlertDialogue(getText(R.string.profile_fragment_serverError).toString());

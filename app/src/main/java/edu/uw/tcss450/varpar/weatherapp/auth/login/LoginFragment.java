@@ -28,18 +28,18 @@ import org.json.JSONObject;
 
 import edu.uw.tcss450.varpar.weatherapp.R;
 import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentLoginBinding;
+import edu.uw.tcss450.varpar.weatherapp.model.PushyTokenViewModel;
 import edu.uw.tcss450.varpar.weatherapp.model.UserInfoViewModel;
 import edu.uw.tcss450.varpar.weatherapp.util.PasswordValidator;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link LoginFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Login fragment
  */
 public class LoginFragment extends Fragment {
     private FragmentLoginBinding mBinding;
     private LoginViewModel mLoginVModel;
-    private UserInfoViewModel model;
+    private UserInfoViewModel mUserViewModel;;
+    private PushyTokenViewModel mPushyTokenViewModel;
 
     private PasswordValidator mEmailValidator = checkPwdLength(2)
             .and(checkExcludeWhiteSpace())
@@ -52,7 +52,10 @@ public class LoginFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        mPushyTokenViewModel = new ViewModelProvider(getActivity())
+                .get(PushyTokenViewModel.class);
+        mLoginVModel = new ViewModelProvider(getActivity())
+                .get(LoginViewModel.class);
     }
 
     @Override
@@ -60,8 +63,7 @@ public class LoginFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mBinding = FragmentLoginBinding.inflate(inflater);
-        mLoginVModel = new ViewModelProvider(getActivity())
-                .get(LoginViewModel.class);
+
         return mBinding.getRoot();
     }
 
@@ -77,7 +79,8 @@ public class LoginFragment extends Fragment {
 
         mLoginVModel.addResponseObserver(
                 getViewLifecycleOwner(),
-                this::loginResponseObserver);
+                this::loginResponseObserver
+        );
 
 
 
@@ -123,8 +126,44 @@ public class LoginFragment extends Fragment {
 
         });
 
+        //don't allow sign in until pushy token retrieved
+        mPushyTokenViewModel.addTokenObserver(getViewLifecycleOwner(), token ->
+                mBinding.buttonLogin.setEnabled(!token.isEmpty()));
+
+        mPushyTokenViewModel.addResponseObserver(
+                getViewLifecycleOwner(),
+                this::observePushyPutResponse);
+
         autoLogin(); //REMOVE WHEN DONE
     }
+
+    /**
+     * Helper to abstract the request to send the pushy token to the web service
+     */
+    private void sendPushyToken() {
+        mPushyTokenViewModel.sendTokenToWebservice(mUserViewModel.getJwt());
+    }
+
+    /**
+     * An observer on the HTTP Response from the web server. This observer should be
+     * attached to PushyTokenViewModel.
+     *
+     * @param response the Response from the server
+     */
+    private void observePushyPutResponse(final JSONObject response) {
+        if (response.length() > 0) {
+            if (response.has("code")) {
+                //this error cannot be fixed by the user changing credentials...
+                mBinding.etEmail.setError(
+                        "Error Authenticating on Push Token. Please contact support");
+            } else {
+                navigateToSuccess(
+                        response.toString()
+                );
+            }
+        }
+    }
+
     private void autoLogin() {
         //EASE OF LOGGIN IN
 //        mBinding.etEmail.setText("test1@test.com");
@@ -190,9 +229,7 @@ public class LoginFragment extends Fragment {
                 result -> mBinding.etPassword.setError("Please enter a valid Password."));
     }
     private void verifyAuthWithServer() {
-
-
-                mLoginVModel.connect(
+        mLoginVModel.connect(
                 mBinding.etEmail.getText().toString(),
                 mBinding.etPassword.getText().toString());
 
@@ -211,9 +248,9 @@ public class LoginFragment extends Fragment {
                         dlgAlert.setCancelable(true);
                         dlgAlert.create().show();
                     }else{
-                    mBinding.etEmail.setError(
-                            "Error Authenticating: " +
-                                    response.getJSONObject("data").getString("message"));
+                        mBinding.etEmail.setError(
+                                "Error Authenticating: " +
+                                        response.getJSONObject("data").getString("message"));
 
                     }
 
@@ -225,7 +262,15 @@ public class LoginFragment extends Fragment {
                     if(String.valueOf(response.getString("message")).equals("A password recovery email has been sent")){
                         Log.i("Login", "User forgot their password");
                     } else if ((response.getString("message")).equals("Authentication successful!")) {
-                        navigateToSuccess(response.toString());
+                            mUserViewModel = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
+                        try {
+                            mUserViewModel.setJSON(response);
+                            sendPushyToken();
+                        } catch (Exception e) {
+                            Log.e("Login", "Error setting the JSON to the user model in response");
+                        }
+
+//                            navigateToSuccess(response.toString());
                     }
 
                 } catch (JSONException e) {
@@ -253,7 +298,7 @@ public class LoginFragment extends Fragment {
             //Store the credentials in SharedPrefs
             prefs.edit().putString(getString(R.string.keys_prefs_jwt), json).apply();
         }
-        Navigation.findNavController(getView()).navigate(LoginFragmentDirections.actionLoginFragmentToMainActivity2(json));
+        Navigation.findNavController(getView()).navigate(LoginFragmentDirections.actionLoginFragmentToMainActivity2(mUserViewModel.getJsonString()));
 
         //Remove THIS activity from the Task list. Pops off the backstack
         getActivity().finish();
