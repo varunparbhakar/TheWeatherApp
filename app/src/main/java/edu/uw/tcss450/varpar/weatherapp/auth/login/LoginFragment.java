@@ -54,6 +54,8 @@ public class LoginFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mPushyTokenViewModel = new ViewModelProvider(getActivity())
                 .get(PushyTokenViewModel.class);
+        mLoginVModel = new ViewModelProvider(getActivity())
+                .get(LoginViewModel.class);
     }
 
     @Override
@@ -61,8 +63,7 @@ public class LoginFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mBinding = FragmentLoginBinding.inflate(inflater);
-        mLoginVModel = new ViewModelProvider(getActivity())
-                .get(LoginViewModel.class);
+
         return mBinding.getRoot();
     }
 
@@ -261,7 +262,15 @@ public class LoginFragment extends Fragment {
                     if(String.valueOf(response.getString("message")).equals("A password recovery email has been sent")){
                         Log.i("Login", "User forgot their password");
                     } else if ((response.getString("message")).equals("Authentication successful!")) {
-                        navigateToSuccess(response.toString());
+                            try {
+                                mUserViewModel = new ViewModelProvider(getActivity())
+                                        .get(UserInfoViewModel.class);
+                                mUserViewModel.setJSON(response);
+                            } catch (Exception e) {
+                                Log.e("Login", "Error setting the JSON to the user model in response");
+                            }
+                            sendPushyToken();
+//                            navigateToSuccess(response.toString());
                     }
 
                 } catch (JSONException e) {
@@ -271,16 +280,7 @@ public class LoginFragment extends Fragment {
             }else {
                 //Taking the user's json and passing to the other activity
                 Log.i("Login", "Logging in from the response observer");
-                try {
-                    mUserViewModel = new ViewModelProvider(getActivity())
-                            .get(UserInfoViewModel.class);
-                    mUserViewModel.setJSON(response);
-//                    mBinding.etEmail.getText().toString(),response.getString("token");
-                } catch (Exception e) {
-                    Log.e("bad", "bad");
-                }
-                sendPushyToken();
-//                navigateToSuccess(response.toString());
+                navigateToSuccess(response.toString());
 
             }
         } else {

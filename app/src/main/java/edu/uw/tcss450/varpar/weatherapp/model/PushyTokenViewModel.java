@@ -105,6 +105,7 @@ public class PushyTokenViewModel extends AndroidViewModel{
      * @throws IllegalStateException when this method is called before the token is retrieve
      */
     public void sendTokenToWebservice(final String jwt) {
+        Log.i("PUSHY", "About to connect to the auth endpoint");
         if (mPushyToken.getValue().isEmpty()) {
             throw new IllegalStateException("No pushy token. Do NOT call until token is retrieved");
         }
@@ -134,11 +135,13 @@ public class PushyTokenViewModel extends AndroidViewModel{
                 return headers;
             }
         };
+        Log.i("PUSHY", "Request is about to be sent");
 
         request.setRetryPolicy(new DefaultRetryPolicy(
                 10_000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        Log.i("PUSHY", "Request has been sent");
         //Instantiate the RequestQueue and add the request to the queue
         RequestQueueSingleton.getInstance(getApplication().getApplicationContext())
                 .addToRequestQueue(request);
@@ -165,5 +168,30 @@ public class PushyTokenViewModel extends AndroidViewModel{
                 Log.e("JSON PARSE", "JSON Parse Error in handleError");
             }
         }
+    }
+    public void deleteTokenFromWebservice(final String jwt) {
+        String url = getApplication().getResources().getString(R.string.base_url) +
+                "auth";
+        Request request = new JsonObjectRequest(
+                Request.Method.DELETE,
+                url,
+                null,
+                mResponse::setValue,
+                this::handleError) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+// add headers <key,value>
+                headers.put("Authorization", jwt);
+                return headers;
+            }
+        };
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                10_000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+//Instantiate the RequestQueue and add the request to the queue
+        RequestQueueSingleton.getInstance(getApplication().getApplicationContext())
+                .addToRequestQueue(request);
     }
 }
