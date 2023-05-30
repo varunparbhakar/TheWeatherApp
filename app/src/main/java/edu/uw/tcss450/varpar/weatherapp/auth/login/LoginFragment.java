@@ -134,7 +134,6 @@ public class LoginFragment extends Fragment {
                 getViewLifecycleOwner(),
                 this::observePushyPutResponse);
 
-
         autoLogin(); //REMOVE WHEN DONE
     }
 
@@ -230,9 +229,7 @@ public class LoginFragment extends Fragment {
                 result -> mBinding.etPassword.setError("Please enter a valid Password."));
     }
     private void verifyAuthWithServer() {
-
-        Log.i("Connect", "Connect is being called here ");
-                mLoginVModel.connect(
+        mLoginVModel.connect(
                 mBinding.etEmail.getText().toString(),
                 mBinding.etPassword.getText().toString());
 
@@ -251,9 +248,9 @@ public class LoginFragment extends Fragment {
                         dlgAlert.setCancelable(true);
                         dlgAlert.create().show();
                     }else{
-                    mBinding.etEmail.setError(
-                            "Error Authenticating: " +
-                                    response.getJSONObject("data").getString("message"));
+                        mBinding.etEmail.setError(
+                                "Error Authenticating: " +
+                                        response.getJSONObject("data").getString("message"));
 
                     }
 
@@ -265,14 +262,14 @@ public class LoginFragment extends Fragment {
                     if(String.valueOf(response.getString("message")).equals("A password recovery email has been sent")){
                         Log.i("Login", "User forgot their password");
                     } else if ((response.getString("message")).equals("Authentication successful!")) {
-                            try {
-                                mUserViewModel = new ViewModelProvider(getActivity())
-                                        .get(UserInfoViewModel.class);
-                                mUserViewModel.setJSON(response);
-                            } catch (Exception e) {
-                                Log.e("Login", "Error setting the JSON to the user model in response");
-                            }
+                            mUserViewModel = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
+                        try {
+                            mUserViewModel.setJSON(response);
                             sendPushyToken();
+                        } catch (Exception e) {
+                            Log.e("Login", "Error setting the JSON to the user model in response");
+                        }
+
 //                            navigateToSuccess(response.toString());
                     }
 
@@ -301,7 +298,7 @@ public class LoginFragment extends Fragment {
             //Store the credentials in SharedPrefs
             prefs.edit().putString(getString(R.string.keys_prefs_jwt), json).apply();
         }
-        Navigation.findNavController(getView()).navigate(LoginFragmentDirections.actionLoginFragmentToMainActivity2(json));
+        Navigation.findNavController(getView()).navigate(LoginFragmentDirections.actionLoginFragmentToMainActivity2(mUserViewModel.getJsonString()));
 
         //Remove THIS activity from the Task list. Pops off the backstack
         getActivity().finish();

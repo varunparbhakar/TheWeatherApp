@@ -52,6 +52,10 @@ public class UserInfoViewModel extends AndroidViewModel {
     /** Network responses, for observer. */
     private MutableLiveData<JSONObject> mResponse;
 
+
+    /** String representation of the json object. */
+    private String jsonString;
+
     /**
      * Default constructor.
      * @param application parent application.
@@ -61,6 +65,9 @@ public class UserInfoViewModel extends AndroidViewModel {
         mResponse = new MutableLiveData<>();
         mResponse.setValue(new JSONObject());
     }
+    public String getJsonString() {
+        return jsonString;
+    }
 
     /**
      * Set initial values for user profile.
@@ -68,6 +75,7 @@ public class UserInfoViewModel extends AndroidViewModel {
      * @param json user profile values.
      */
     public void setJSON(final JSONObject json) {
+        jsonString = json.toString();
         mResponse.setValue(json);
         mEmail = getInfoJson("email");
         mJwt = getInfoJson("token");
