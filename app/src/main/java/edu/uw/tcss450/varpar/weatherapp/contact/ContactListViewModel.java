@@ -371,13 +371,13 @@ public class ContactListViewModel extends AndroidViewModel {
      * @param memberID memberID to chat with
      */
     public void connectAddContactChat(final String memberID) {
-        String url = getApplication().getResources().getString(R.string.url) + "chats/";
+        String url = getApplication().getResources().getString(R.string.url) + "chats/createchat";
 
         JSONObject body = new JSONObject();
         try {
-            body.put("user", mMemberID);
-            body.put("friend", memberID);
-//            body.put("name", mMemberID + "," + memberID);
+            body.put("userone", mMemberID);
+            body.put("usertwo", memberID);
+            body.put("chatname", mMemberID + "," + memberID);
         } catch (JSONException e) {
             e.printStackTrace();
         }
