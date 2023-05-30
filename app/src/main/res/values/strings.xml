@@ -14,8 +14,11 @@
     <string name="hint_fragment_auth_register_confirmPassword">Confirm Password</string>
     <string name="action_sign_out">Sign Out</string>
     <string name="keys_shared_prefs">My Auth App Shared Prefs</string>
-    <string name="keys_prefs_jwt">Sharded Prefs JWT</string>
+    <string name="keys_prefs_jwt">Sharded Prefs Response</string>
     <string name="switch_sign_in">Stay Signed in</string>
+    <string name="text_activity_auth_forgot_password_button">Forgot password</string>
+    <string name="text_activity_auth_forget_password_submit">Submit</string>
+
 
     <!--Activity Names-->
     <string name="title_activity_auth">Main Activity</string>

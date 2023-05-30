@@ -25,6 +25,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import edu.uw.tcss450.varpar.weatherapp.auth.login.LoginFragmentDirections;
 import edu.uw.tcss450.varpar.weatherapp.chat.ChatRoomMessage;
 import edu.uw.tcss450.varpar.weatherapp.chat.ChatRoomViewModel;
 import edu.uw.tcss450.varpar.weatherapp.databinding.ActivityMainBinding;
@@ -162,6 +163,7 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         if (item.getItemId() == R.id.action_sign_out) {
             signOut();
+//            return true;
         }
         return NavigationUI.onNavDestinationSelected(item, navController)
                 || super.onOptionsItemSelected(item);
@@ -172,13 +174,28 @@ public class MainActivity extends AppCompatActivity {
      * Commented out code may be used later to store user being able to sign in again automatically.
      */
     private void signOut() {
-//        SharedPreferences prefs =
-//                getSharedPreferences(
-//                        getString(R.string.keys_shared_prefs),
-//                        Context.MODE_PRIVATE);
-//        prefs.edit().remove(getString(R.string.keys_prefs_jwt)).apply();
-        //End the app completely
+        SharedPreferences prefs =
+                getSharedPreferences(
+                        getString(R.string.keys_shared_prefs),
+                        Context.MODE_PRIVATE);
+        prefs.edit().remove(getString(R.string.keys_prefs_jwt)).apply();
+//        End the app completely
+//        PushyTokenViewModel model = new ViewModelProvider(this)
+//                .get(PushyTokenViewModel.class);
+////when we hear back from the web service quit
+//        model.addResponseObserver(this, result -> finishAndRemoveTask());
+//        model.deleteTokenFromWebservice(
+//                new ViewModelProvider(this)
+//                        .get(UserInfoViewModel.class)
+//                        .getmJwt()
+//        );
         finishAndRemoveTask();
+        Intent i = new Intent(getApplicationContext(),AuthActivity.class);
+        startActivity(i);
+        setContentView(R.layout.activity_auth);
+
+
+
     }
 
     /**

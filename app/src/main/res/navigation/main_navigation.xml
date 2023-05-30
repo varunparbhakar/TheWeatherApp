@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_navigation_chat_to_chat_room"
             app:destination="@id/chat_room" />
+        <action
+            android:id="@+id/action_navigation_chat_to_authActivity"
+            app:destination="@id/authActivity" />
     </fragment>
 
     <fragment
@@ -23,25 +26,40 @@
         <action
             android:id="@+id/action_navigation_contacts_to_chat_room"
             app:destination="@id/chat_room" />
+        <action
+            android:id="@+id/action_navigation_contacts_to_authActivity"
+            app:destination="@id/authActivity" />
     </fragment>
 
     <fragment
         android:id="@+id/navigation_profile"
         android:name="edu.uw.tcss450.varpar.weatherapp.profile.ProfileFragment"
         android:label="@string/title_activity_profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_navigation_profile_to_authActivity"
+            app:destination="@id/authActivity" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_weather"
         android:name="edu.uw.tcss450.varpar.weatherapp.weather.WeatherFragment"
         android:label="Weather"
-        tools:layout="@layout/fragment_weather" />
+        tools:layout="@layout/fragment_weather" >
+        <action
+            android:id="@+id/action_navigation_weather_to_authActivity"
+            app:destination="@id/authActivity" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_home"
         android:name="edu.uw.tcss450.varpar.weatherapp.home.HomeFragment"
         android:label="@string/title_activity_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_navigation_home_to_authActivity"
+            app:destination="@id/authActivity" />
+    </fragment>
     <fragment
         android:id="@+id/chat_room"
         android:name="edu.uw.tcss450.varpar.weatherapp.chat.ChatRoomFragment"
@@ -49,6 +67,14 @@
         <argument
             android:name="chatId"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_chat_room_to_authActivity"
+            app:destination="@id/authActivity" />
     </fragment>
+    <activity
+        android:id="@+id/authActivity"
+        android:name="edu.uw.tcss450.varpar.weatherapp.AuthActivity"
+        android:label="activity_auth"
+        tools:layout="@layout/activity_auth" />
 
 </navigation>

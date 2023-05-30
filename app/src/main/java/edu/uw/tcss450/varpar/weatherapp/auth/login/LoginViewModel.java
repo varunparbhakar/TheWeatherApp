@@ -102,6 +102,52 @@ public class LoginViewModel extends AndroidViewModel {
     public void setmValidLogin(boolean value) {
         mValidLogin.setValue(value);
     }
+    public void forgetpasswordconnect(final String email) {
+        String url = getApplication().getResources().getString(R.string.url)+"password/recovery/" + email;
+        Request request = new JsonObjectRequest(
+                Request.Method.GET,
+                url,
+                null, //no body for this get request
+                this::handleForgetPasswordResult,
+                this::handleForgotPasswordError) {
+        };
+
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                10_000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        //Instantiate the RequestQueue and add the request to the queue
+        RequestQueueSingleton.getInstance(getApplication().getApplicationContext())
+                .addToRequestQueue(request);
+    }
+
+    private void handleForgetPasswordResult(final JSONObject result) {
+        mResponse.setValue(result);
+    }
+    private void handleForgotPasswordError(final VolleyError error) {
+        if (Objects.isNull(error.networkResponse)) {
+            try {
+                mResponse.setValue(new JSONObject("{" +
+                        "error:\"" + error.getMessage() +
+                        "\"}"));
+            } catch (JSONException e) {
+                Log.e("JSON PARSE", "JSON Parse Error in handleError");
+            }
+        }
+        else {
+            String data = new String(error.networkResponse.data, Charset.defaultCharset())
+                    .replace('\"', '\'');
+            try {
+                JSONObject response = new JSONObject();
+                response.put("code", error.networkResponse.statusCode);
+                response.put("data", new JSONObject(data));
+                mResponse.setValue(response);
+            } catch (JSONException e) {
+                Log.e("JSON PARSE", "JSON Parse Error in handleError");
+            }
+        }
+    }
+
 
 
 }
