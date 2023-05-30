@@ -24,6 +24,9 @@
         android:label="@string/title_activity_contacts"
         tools:layout="@layout/fragment_contact_list" >
         <action
+            android:id="@+id/action_navigation_contacts_to_chat_room"
+            app:destination="@id/chat_room" />
+        <action
             android:id="@+id/action_navigation_contacts_to_authActivity"
             app:destination="@id/authActivity" />
     </fragment>

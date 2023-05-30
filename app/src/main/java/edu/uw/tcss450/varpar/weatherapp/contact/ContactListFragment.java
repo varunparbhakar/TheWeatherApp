@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -18,6 +19,7 @@ import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
 import edu.uw.tcss450.varpar.weatherapp.R;
+import edu.uw.tcss450.varpar.weatherapp.chat.ChatListFragmentDirections;
 import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentContactListBinding;
 import edu.uw.tcss450.varpar.weatherapp.model.UserInfoViewModel;
 
@@ -169,7 +171,14 @@ public class ContactListFragment extends Fragment {
     private void chatContactResponse(final JSONObject jsonObject) {
         if (getFromJson("success", jsonObject).equals("true")) {
             Log.wtf("contacts", "make chat, go to fragment");
-            createAlertDialogue("Not implemented yet.");
+//            createAlertDialogue("Not implemented yet.");
+            String idString = getFromJson("chatid", jsonObject);
+
+            Navigation.findNavController(getView()).navigate(
+                    ContactListFragmentDirections.actionNavigationContactsToChatRoom(
+                            Integer.parseInt(idString)
+                    )
+            );
         } else {
             String resp = getFromJson("message", jsonObject);
             createAlertDialogue(resp);
