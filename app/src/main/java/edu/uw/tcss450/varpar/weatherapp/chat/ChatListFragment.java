@@ -6,7 +6,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,9 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.jetbrains.annotations.Nullable;
+import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.Objects;
 
 import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentChatListBinding;
 import edu.uw.tcss450.varpar.weatherapp.model.UserInfoViewModel;
@@ -42,7 +40,7 @@ public class ChatListFragment extends Fragment {
         ViewModelProvider provider = new ViewModelProvider(requireActivity());
         mUserModel = provider.get(UserInfoViewModel.class);
         mChatListModel = provider.get(ChatListViewModel.class);
-        mChatListModel.getChatIds(mUserModel.getMemberID(), mUserModel.getJwt());
+        mChatListModel.connectGetChatIds(mUserModel.getMemberID(), mUserModel.getJwt());
     }
 
     @Override
@@ -74,28 +72,32 @@ public class ChatListFragment extends Fragment {
             mBinding.layoutWait.setVisibility(View.GONE);
         });
 
+        mChatListModel.addResponseObserver(getViewLifecycleOwner(), this::observeResponse);
+
         // Set button behavior to Add Chat
         mBinding.buttonAddChat.setOnClickListener(
-            button -> mChatListModel.connectAddChat(mBinding.textChatSearch.getText().toString())
+            button -> addChatWithName(mBinding.textChatSearch.getText().toString())
         );
-
-        mChatListModel.addResponseObserver(getViewLifecycleOwner(), this::observeResponse);
     }
 
     /**
      * Passes intention of adding chat with given name from View to Model.
      * @param chatName name of chat
      */
-    public void addChatWithName(String chatName) {
-        mChatListModel.connectAddChatWithName(chatName);
+    private void addChatWithName(final String chatName) {
+        mChatListModel.connectAddChatWithName(chatName, mUserModel.getJwt());
+    }
+
+    private void putMeInChat(final String chatId) {
+        mChatListModel.connectPutMeInChat(chatId, mUserModel.getJwt());
     }
 
     /**
      * Passes intention of deleting user in a chat from View to Model.
      * @param chatId identifies chat to remove user from
      */
-    public void deleteUserFromChat(String chatId) {
-        mChatListModel.connectDeleteUserFromChat(chatId, mUserModel.getEmail());
+    public void deleteUserFromChat(final String chatId) {
+        mChatListModel.connectDeleteUserFromChat(chatId, mUserModel.getEmail(), mUserModel.getJwt());
     }
 
     /**
@@ -108,12 +110,15 @@ public class ChatListFragment extends Fragment {
             switch (type) {
                 case "post":
                     addChatResponse(jsonObject);
+                    try {
+                        putMeInChat(jsonObject.getString("chatID"));
+                        Log.wtf("OOOYEEEAH", "called putMeInChat");
+                    } catch (JSONException e){
+                        Log.e("JSON Error", e.getMessage());
+                    }
                     break;
                 case "delete":
                     deleteChatResponse(jsonObject);
-                    break;
-                case "chat":
-                    chatChatResponse(jsonObject);
                     break;
                 default :
                     break;
@@ -137,24 +142,10 @@ public class ChatListFragment extends Fragment {
     private void deleteChatResponse(final JSONObject jsonObject) {
         String resp;
         if (getFromJson("success", jsonObject).equals("true")) {
-            mChatListModel.getChats();
+            mChatListModel.getChatList();
         }
         resp = getFromJson("message", jsonObject);
         createAlertDialogue(resp);
-    }
-
-    /**
-     * Action for server response of contact add chat.
-     * @param jsonObject adjusted server response
-     */
-    private void chatChatResponse(final JSONObject jsonObject) {
-        if (getFromJson("success", jsonObject).equals("true")) {
-            Log.wtf("contacts", "make chat, go to fragment");
-            createAlertDialogue("Not implemented yet.");
-        } else {
-            String resp = getFromJson("message", jsonObject);
-            createAlertDialogue(resp);
-        }
     }
 
     /**
