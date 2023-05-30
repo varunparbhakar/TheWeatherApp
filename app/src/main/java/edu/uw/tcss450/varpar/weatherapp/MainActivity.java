@@ -211,9 +211,9 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            NavController nc =
-                    Navigation.findNavController(
-                            MainActivity.this, R.id.nav_host_fragment);
+            NavController nc = Navigation.findNavController(
+                MainActivity.this, R.id.nav_host_fragment
+            );
             NavDestination nd = nc.getCurrentDestination();
 
             if (intent.hasExtra("chatMessage")) {
