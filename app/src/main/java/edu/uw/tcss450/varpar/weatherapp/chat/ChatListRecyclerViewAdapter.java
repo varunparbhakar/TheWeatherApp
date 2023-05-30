@@ -18,11 +18,12 @@ public class ChatListRecyclerViewAdapter extends RecyclerView.Adapter<ChatListRe
     //Store all of the blogs to present
     private final List<ChatListRoom> mChatListItems;
 
-//    //Store the expanded state for each List item, true -> expanded, false -> not
-//    private final Map<ChatMessage, Boolean> mExpandedFlags;
+    /** Host fragment to bounce view actions to. */
+    private final ChatListFragment mFragment;
 
-    public ChatListRecyclerViewAdapter(List<ChatListRoom> items) {
+    public ChatListRecyclerViewAdapter(List<ChatListRoom> items, ChatListFragment frag) {
         this.mChatListItems = items;
+        this.mFragment = frag;
     }
 
     @NonNull
@@ -49,7 +50,7 @@ public class ChatListRecyclerViewAdapter extends RecyclerView.Adapter<ChatListRe
      * Objects from this class represent an Individual row View from the List
      * of rows in the Chat Recycler View.
      */
-    public static class ChatListViewHolder extends RecyclerView.ViewHolder {
+    public class ChatListViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public FragmentChatListCardBinding binding;
         private ChatListRoom mChat;
@@ -58,6 +59,14 @@ public class ChatListRecyclerViewAdapter extends RecyclerView.Adapter<ChatListRe
             super(view);
             mView = view;
             binding = FragmentChatListCardBinding.bind(view);
+        }
+
+        /**
+         * Dials out to fragment for chat deletion.
+         * @param button button that houses functionality.
+         */
+        private void deleteUser(final View button) {
+            mFragment.deleteUserFromChat(mChat.getChatId());
         }
 
         void setChat(final ChatListRoom chatListItem) {
@@ -74,6 +83,7 @@ public class ChatListRecyclerViewAdapter extends RecyclerView.Adapter<ChatListRe
                     );
                 }
             );
+            binding.deleteChat.setOnClickListener(this::deleteUser);
         }
     }
 
