@@ -55,27 +55,21 @@ public class FriendReqRVAdapter extends RecyclerView.Adapter<FriendReqRVAdapter.
             acceptButton = itemView.findViewById(R.id.idIVAccept);
             declineButton = itemView.findViewById(R.id.idIVDecline);
 
-            acceptButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // you can get item position if you want to handle it
-                    int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION) {
-                        // handle your click event here
-                        acceptOnClick(position);
-                    }
+            acceptButton.setOnClickListener(v -> {
+                // you can get item position if you want to handle it
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    // handle your click event here
+                    acceptOnClick(position);
                 }
             });
 
-            declineButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // you can get item position if you want to handle it
-                    int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION) {
-                        // handle your click event here
-                        declineOnClick(position);
-                    }
+            declineButton.setOnClickListener(v -> {
+                // you can get item position if you want to handle it
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    // handle your click event here
+                    declineOnClick(position);
                 }
             });
         }

@@ -27,6 +27,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import edu.uw.tcss450.varpar.weatherapp.R;
 import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentHomeBinding;
@@ -88,16 +90,16 @@ public class HomeFragment extends Fragment {
 
         // pulls freinds requests from the database
         getAcceptFriendRequests();
+
+
+
+        for(int i = 0;i < 5; i++) {
+            String name = "Friend " + i;
+            friendReqRVModelArrayList.add(new FriendReqRVModel(name));
+            //day++;
+        }
+        friendReqRVAdapter.notifyDataSetChanged();
     }
-
-
-//        for(int i = 0;i < 5; i++) {
-//            String name = "Random Person " + i;
-//            friendReqRVModelArrayList.add(new FriendReqRVModel(name));
-//            //day++;
-//        }
-//        friendReqRVAdapter.notifyDataSetChanged();
-//    }
 
     private void getWeatherInfo() {
         String URL = "http://api.weatherapi.com/v1/forecast.json?key=9953bd3e0e9448fba21212344231405 &q=Tacoma&days=5&aqi=no&alerts=no";
@@ -134,7 +136,7 @@ public class HomeFragment extends Fragment {
         String URL = "https://theweatherapp.herokuapp.com/contacts/acceptfriendrequest/";
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, URL, null,
+        Request request = new JsonObjectRequest(Request.Method.GET, URL, null,
                 response -> {
                     try {
                         JSONArray friendRequestsArray = response.getJSONArray("friendRequests");
@@ -155,6 +157,6 @@ public class HomeFragment extends Fragment {
                 },
                 error -> Toast.makeText(getActivity(), "Failed to get friend requests...", Toast.LENGTH_SHORT).show());
 
-        requestQueue.add(jsonObjectRequest);
+        requestQueue.add(request);
     }
 }
