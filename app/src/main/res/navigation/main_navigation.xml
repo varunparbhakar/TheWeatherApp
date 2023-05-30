@@ -19,7 +19,11 @@
         android:id="@+id/navigation_contacts"
         android:name="edu.uw.tcss450.varpar.weatherapp.contact.ContactListFragment"
         android:label="@string/title_activity_contacts"
-        tools:layout="@layout/fragment_contact_list" />
+        tools:layout="@layout/fragment_contact_list" >
+        <action
+            android:id="@+id/action_navigation_contacts_to_chat_room"
+            app:destination="@id/chat_room" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_profile"
