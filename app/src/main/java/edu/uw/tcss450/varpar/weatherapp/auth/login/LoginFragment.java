@@ -134,6 +134,7 @@ public class LoginFragment extends Fragment {
                 getViewLifecycleOwner(),
                 this::observePushyPutResponse);
 
+
         autoLogin(); //REMOVE WHEN DONE
     }
 
@@ -229,6 +230,8 @@ public class LoginFragment extends Fragment {
                 result -> mBinding.etPassword.setError("Please enter a valid Password."));
     }
     private void verifyAuthWithServer() {
+
+        Log.i("Connect", "Connect is being called here ");
                 mLoginVModel.connect(
                 mBinding.etEmail.getText().toString(),
                 mBinding.etPassword.getText().toString());
