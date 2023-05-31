@@ -180,6 +180,7 @@ public class WeatherFragment extends Fragment {
                 }
             }
         });
+        //getWeatherInfo("98375");
 
     }
 
@@ -196,12 +197,12 @@ public class WeatherFragment extends Fragment {
             Location l = mLocationManager.getLastKnownLocation(provider);
             Log.d("l", "l is " + l);
             Geocoder geo = new Geocoder(getActivity(), Locale.getDefault());
-            try {
-                List<Address> addresses = geo.getFromLocation(l.getLatitude(), l.getLongitude(), 1);
-                Log.d("address", "address is " + addresses);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+//            try {
+//                List<Address> addresses = geo.getFromLocation(l.getLatitude(), l.getLongitude(), 1);
+//                Log.d("address", "address is " + addresses);
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
             if (l == null) {
                 continue;
             }
@@ -212,6 +213,7 @@ public class WeatherFragment extends Fragment {
         }
         return bestLocation;
     }
+
     private void requestLocationUpdates() {
         LocationRequest mLocationRequest = LocationRequest.create();
         mLocationRequest.setInterval(60000);
@@ -239,19 +241,11 @@ public class WeatherFragment extends Fragment {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                getLastLocation();
-            //getCurrentLocation();
+               getLastKnownLocation();
         } else {
             Log.wtf("uwu", "permission request failed");
         }
     }
-
-    //    public void registerForActivityResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.registerForActivityResult(requestCode, permissions, grantResults);
-//        if(requestCode==PERMISSION_CODE){
-//          if(grant
-//        }
-//    }
 
     private String getCityName(double longitude, double latitide) {
         String cityName = "Not Found";
