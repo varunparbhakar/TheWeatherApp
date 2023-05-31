@@ -19,7 +19,6 @@ import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
 import edu.uw.tcss450.varpar.weatherapp.R;
-import edu.uw.tcss450.varpar.weatherapp.chat.ChatListFragmentDirections;
 import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentContactListBinding;
 import edu.uw.tcss450.varpar.weatherapp.model.UserInfoViewModel;
 
@@ -107,7 +106,7 @@ public class ContactListFragment extends Fragment {
      * Passes intention of deleting contact from View to Model.
      * @param memberID friend to remove.
      */
-    public void deleteContact(String memberID) {
+    public void deleteContact(final String memberID) {
         mModel.connectDeleteContact(memberID);
     }
 
@@ -115,7 +114,7 @@ public class ContactListFragment extends Fragment {
      * Passes intention of adding chat with contact from View to Model.
      * @param memberID friend to remove.
      */
-    public void addContactChat(String memberID) {
+    public void addContactChat(final String memberID) {
         mModel.connectAddContactChat(memberID);
     }
 
