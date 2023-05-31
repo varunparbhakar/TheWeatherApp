@@ -194,6 +194,8 @@ public class MainActivity extends AppCompatActivity {
                         .get(UserInfoViewModel.class)
                         .getJwt()
         );
+        getViewModelStore().clear();
+
         finishAndRemoveTask();
         Intent i = new Intent(getApplicationContext(),AuthActivity.class);
         startActivity(i);

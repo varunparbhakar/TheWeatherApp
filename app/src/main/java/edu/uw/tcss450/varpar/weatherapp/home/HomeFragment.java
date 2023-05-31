@@ -1,12 +1,6 @@
 package edu.uw.tcss450.varpar.weatherapp.home;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,8 +10,17 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.squareup.picasso.Picasso;
@@ -27,12 +30,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import edu.uw.tcss450.varpar.weatherapp.R;
+import edu.uw.tcss450.varpar.weatherapp.chat.ChatListFragmentDirections;
 import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentHomeBinding;
 import edu.uw.tcss450.varpar.weatherapp.model.UserInfoViewModel;
+import edu.uw.tcss450.varpar.weatherapp.weather.WeatherRVAdapter;
+import edu.uw.tcss450.varpar.weatherapp.weather.WeatherRVModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -88,13 +92,9 @@ public class HomeFragment extends Fragment {
         String welcomeText = getText(R.string.home_fragment_welcome) + " " + model.getFirstName();
         mBinding.textGreeting.setText(welcomeText);
 
-        // pulls freinds requests from the database
-        getAcceptFriendRequests();
-
-
-
+        //call a method that pulls friend requests from the SQL data
         for(int i = 0;i < 5; i++) {
-            String name = "Friend " + i;
+            String name = "Random Person " + i;
             friendReqRVModelArrayList.add(new FriendReqRVModel(name));
             //day++;
         }
@@ -106,57 +106,38 @@ public class HomeFragment extends Fragment {
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, URL, null,
-                response -> {
+                new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
 //                loadingPB.setVisibility(View.GONE);
 //                homeRL.setVisibility(View.VISIBLE);
 
-                    try {
-                        String cityName = response.getJSONObject("location").getString("name");
-                        locationTextView.setText(cityName);
-                        String temp = response.getJSONObject("current").getString("temp_f");
-                        tempTV.setText(temp);
-                        String condition = response.getJSONObject("current").getJSONObject("condition").getString("text");
-                        String conditionIcon = response.getJSONObject("current").getJSONObject("condition").getString("icon");
-                        Picasso.get().load("http:".concat(conditionIcon)).into(iconIV);
-                        conditionTV.setText(condition);
+                try {
+                    String cityName = response.getJSONObject("location").getString("name");
+                    locationTextView.setText(cityName);
+                    String temp = response.getJSONObject("current").getString("temp_f");
+                    tempTV.setText(temp);
+                    String condition = response.getJSONObject("current").getJSONObject("condition").getString("text");
+                    String conditionIcon = response.getJSONObject("current").getJSONObject("condition").getString("icon");
+                    Picasso.get().load("http:".concat(conditionIcon)).into(iconIV);
+                    conditionTV.setText(condition);
 
-                        JSONObject forecastObj = response.getJSONObject("forecast");
-                        JSONObject forecast0 = forecastObj.getJSONArray("forecastday").getJSONObject(0);
+                    JSONObject forecastObj = response.getJSONObject("forecast");
+                    JSONObject forecast0 = forecastObj.getJSONArray("forecastday").getJSONObject(0);
 //                    JSONArray hourArray = forecast0.getJSONArray("hour");
 
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
-                    }
-                },
-                error -> Toast.makeText(getActivity(), "Please enter valid city name...", Toast.LENGTH_SHORT).show());
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        },
+                new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getActivity(), "Please enter valid city name...", Toast.LENGTH_SHORT).show();
+
+            }
+        });
         requestQueue.add(jsonObjectRequest);
-    }
-
-    public void getAcceptFriendRequests() {
-        String URL = "https://theweatherapp.herokuapp.com/contacts/acceptfriendrequest/";
-        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-
-        Request request = new JsonObjectRequest(Request.Method.GET, URL, null,
-                response -> {
-                    try {
-                        JSONArray friendRequestsArray = response.getJSONArray("friendRequests");
-
-                        for (int i = 0; i < friendRequestsArray.length(); i++) {
-                            JSONObject friendRequestObject = friendRequestsArray.getJSONObject(i);
-                            String friendName = friendRequestObject.getString("name");
-                            String senderName = friendRequestObject.getString("senderName");  // Get the sender's name
-                            friendReqRVModelArrayList.add(new FriendReqRVModel(senderName));  // Include the sender's name when creating a new FriendReqRVModel
-                        }
-
-                        // Notify the adapter that the data has changed
-                        friendReqRVAdapter.notifyDataSetChanged();
-
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
-                    }
-                },
-                error -> Toast.makeText(getActivity(), "Failed to get friend requests...", Toast.LENGTH_SHORT).show());
-
-        requestQueue.add(request);
     }
 }
