@@ -14,6 +14,12 @@ import java.util.ArrayList;
 
 import edu.uw.tcss450.varpar.weatherapp.R;
 
+/**
+ * Class to encapsulate a chat message from a contact.
+ *
+ * @Author Jashanpreet Jandu & Deep Singh
+ * @version 5/30/2023
+ */
 public class FriendReqRVAdapter extends RecyclerView.Adapter<FriendReqRVAdapter.ViewHolder> {
     private Context context;
     private ArrayList<FriendReqRVModel> FriendReqRVModelArrayList;
