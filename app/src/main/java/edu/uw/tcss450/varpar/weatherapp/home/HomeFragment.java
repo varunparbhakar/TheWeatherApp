@@ -92,6 +92,7 @@ public class HomeFragment extends Fragment {
         String welcomeText = getText(R.string.home_fragment_welcome) + " " + model.getFirstName();
         mBinding.textGreeting.setText(welcomeText);
 
+        //call a method that pulls friend requests from the SQL data
         for(int i = 0;i < 5; i++) {
             String name = "Random Person " + i;
             friendReqRVModelArrayList.add(new FriendReqRVModel(name));
