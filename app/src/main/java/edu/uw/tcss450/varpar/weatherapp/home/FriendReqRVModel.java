@@ -10,17 +10,17 @@ package edu.uw.tcss450.varpar.weatherapp.home;
  * @version 5/30/2023
  */
 public class FriendReqRVModel {
-    private String name;
+    private String username;
 
-    public FriendReqRVModel(String name) {
-        this.name = name;
+    public FriendReqRVModel(String username) {
+        this.username = username;
     }
 
     public String getName() {
-        return name;
+        return username;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setName(String username) {
+        this.username = username;
     }
 }

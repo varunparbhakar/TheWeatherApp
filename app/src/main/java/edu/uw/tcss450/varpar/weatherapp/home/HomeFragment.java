@@ -1,6 +1,7 @@
 package edu.uw.tcss450.varpar.weatherapp.home;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.squareup.picasso.Picasso;
@@ -26,7 +28,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 import edu.uw.tcss450.varpar.weatherapp.R;
 import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentHomeBinding;
@@ -44,7 +50,7 @@ public class HomeFragment extends Fragment {
     private ArrayList<FriendReqRVModel> friendReqRVModelArrayList;
     private FriendReqRVAdapter friendReqRVAdapter;
     private RecyclerView FriendReqRV;
-    private UserInfoViewModel mUVI;
+    private UserInfoViewModel mUserModel;
 
     public void onChatPreviewClicked(View view) {
         // Navigate to the messages tab
@@ -83,19 +89,20 @@ public class HomeFragment extends Fragment {
         getWeatherInfo();
 
         super.onViewCreated(view, savedInstanceState);
-        UserInfoViewModel model = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
-        String welcomeText = getText(R.string.home_fragment_welcome) + " " + model.getFirstName();
+        mUserModel = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
+        String welcomeText = getText(R.string.home_fragment_welcome) + " " + mUserModel.getFirstName();
         mBinding.textGreeting.setText(welcomeText);
 
         // Get the friend requests and display them
         getFriendsRequests();
-        getAcceptFriendRequests();
-        getRemoveFriendRequests();
+//        getAcceptFriendRequests();
+//        getRemoveFriendRequests();
 
         //call a method that pulls friend requests from the SQL data
-        for(int i = 0;i < 5; i++) {
-            String name = "Random Person " + i;
-            friendReqRVModelArrayList.add(new FriendReqRVModel(name));
+        // TODO: work on this dummy data and make it real data!!!!!!!!!!
+        for (int i = 0; i < 5; i++) {
+            String username = "Random Person " + i;
+            friendReqRVModelArrayList.add(new FriendReqRVModel(username));
             //day++;
         }
         friendReqRVAdapter.notifyDataSetChanged();
@@ -107,8 +114,8 @@ public class HomeFragment extends Fragment {
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, URL, null,
                 response -> {
-    //                loadingPB.setVisibility(View.GONE);
-    //                homeRL.setVisibility(View.VISIBLE);
+                    //                loadingPB.setVisibility(View.GONE);
+                    //                homeRL.setVisibility(View.VISIBLE);
 
                     try {
                         String cityName = response.getJSONObject("location").getString("name");
@@ -122,7 +129,7 @@ public class HomeFragment extends Fragment {
 
                         JSONObject forecastObj = response.getJSONObject("forecast");
                         JSONObject forecast0 = forecastObj.getJSONArray("forecastday").getJSONObject(0);
-    //                    JSONArray hourArray = forecast0.getJSONArray("hour");
+                        //                    JSONArray hourArray = forecast0.getJSONArray("hour");
 
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
@@ -132,20 +139,22 @@ public class HomeFragment extends Fragment {
         requestQueue.add(jsonObjectRequest);
     }
 
-    private void getAcceptFriendRequests() {
+    public void getAcceptFriendRequests() {
         String URL = "https://theweatherapp.herokuapp.com/contacts/acceptfriendrequest/";
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
 
-        Request request = new JsonObjectRequest(Request.Method.GET, URL, null,
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, URL, null,
                 response -> {
                     try {
                         JSONArray friendRequestsArray = response.getJSONArray("friendRequests");
 
                         for (int i = 0; i < friendRequestsArray.length(); i++) {
                             JSONObject friendRequestObject = friendRequestsArray.getJSONObject(i);
-                            String friendName = friendRequestObject.getString("name");
-                            String senderName = friendRequestObject.getString("senderName");  // Get the sender's name
-                            friendReqRVModelArrayList.add(new FriendReqRVModel(senderName));  // Include the sender's name when creating a new FriendReqRVModel
+                            String friendName = friendRequestObject.getString("username");
+                            String idName = friendRequestObject.getString("memberid");
+//                            String senderName = friendRequestObject.getString("senderName");  // Get the sender's name
+//                            friendReqRVModelArrayList.add(new FriendReqRVModel(senderName));  // Include the sender's name when creating a new FriendReqRVModel
                         }
 
                         // Notify the adapter that the data has changed
@@ -155,52 +164,92 @@ public class HomeFragment extends Fragment {
                         throw new RuntimeException(e);
                     }
                 },
-                error -> Toast.makeText(getActivity(), "Failed to get friend requests...", Toast.LENGTH_SHORT).show());
+                error -> Toast.makeText(getActivity(), "Failed to get friend requests...", Toast.LENGTH_SHORT).show()) {
 
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", mUserModel.getJwt());
+                return headers;
+            }
+        };
+
+        requestQueue.add(jsonObjectRequest);
+    }
+
+
+    public void getFriendsRequests() {
+        String URL = "https://theweatherapp.herokuapp.com/contacts/getrequests";
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+
+        String Jwt = mUserModel.getJwt();
+        Request request = new JsonObjectRequest(Request.Method.GET,
+                URL + "?user=" + mUserModel.getMemberID(),
+                null,
+                this::handleResult,
+                this::handleError) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", Jwt);
+                return headers;
+            }
+        };
 
         requestQueue.add(request);
     }
 
-    private void getFriendsRequests() {
-        String URL = "https://theweatherapp.herokuapp.com/contacts/getfriendrequests/";
-        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+    ;
 
-        Request request = new JsonObjectRequest(Request.Method.GET, URL, null,
-                response -> {
-                    try {
-                        JSONArray friendRequestsArray = response.getJSONArray("friendRequests");
-
-                        for (int i = 0; i < friendRequestsArray.length(); i++) {
-                            JSONObject friendRequestObject = friendRequestsArray.getJSONObject(i);
-                            String friendName = friendRequestObject.getString("name");
-                            String senderName = friendRequestObject.getString("senderName");  // Get the sender's name
-                            friendReqRVModelArrayList.add(new FriendReqRVModel(senderName));  // Include the sender's name when creating a new FriendReqRVModel
-                        }
-
-                        // Notify the adapter that the data has changed
-                        friendReqRVAdapter.notifyDataSetChanged();
-
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
-                    }
-                },
-                error -> Toast.makeText(getActivity(), "Failed to get friend requests...", Toast.LENGTH_SHORT).show());
+    private void handleError(final VolleyError error) {
+        Log.wtf("ERROR", error.getMessage());
+        if (Objects.isNull(error.networkResponse)) {
+            Log.e("NETWORK ERROR", error.getMessage());
+        } else {
+            String data = new String(error.networkResponse.data, Charset.defaultCharset());
+            Log.e("CLIENT ERROR",
+                    error.networkResponse.statusCode + " " + data);
+        }
     }
 
-    private void getRemoveFriendRequests() {
+    private void handleResult(final JSONObject response) {
+        Log.wtf("RESULT", response.toString());
+        try {
+            JSONArray friendRequestsArray = response.getJSONArray("friendRequests");
+
+            for (int i = 0; i < friendRequestsArray.length(); i++) {
+                JSONObject friendRequestObject = friendRequestsArray.getJSONObject(i);
+                String friendName = friendRequestObject.getString("username");
+                String idName = friendRequestObject.getString("memberid");  // Get the sender's name
+//                    String senderName = friendRequestObject.getString("senderName");  // Get the sender's name
+//                    friendReqRVModelArrayList.add(new FriendReqRVModel());  // Include the sender's name when creating a new FriendReqRVModel
+            }
+
+            // Notify the adapter that the data has changed
+            friendReqRVAdapter.notifyDataSetChanged();
+
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public void getRemoveFriendRequests() {
         String URL = "https://theweatherapp.herokuapp.com/contacts/remove/";
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
 
-        Request request = new JsonObjectRequest(Request.Method.GET, URL, null,
+        Request request = new JsonObjectRequest(Request.Method.POST, URL, null,
                 response -> {
+
                     try {
                         JSONArray friendRequestsArray = response.getJSONArray("friendRequests");
 
                         for (int i = 0; i < friendRequestsArray.length(); i++) {
                             JSONObject friendRequestObject = friendRequestsArray.getJSONObject(i);
-                            String friendName = friendRequestObject.getString("name");
-                            String senderName = friendRequestObject.getString("senderName");  // Get the sender's name
-                            friendReqRVModelArrayList.add(new FriendReqRVModel(senderName));  // Include the sender's name when creating a new FriendReqRVModel
+                            String friendName = friendRequestObject.getString("username");
+                            String idName = friendRequestObject.getString("memberid");
+//                            String senderName = friendRequestObject.getString("senderName");  // Get the sender's name
+//                            friendReqRVModelArrayList.add(new FriendReqRVModel(senderName));  // Include the sender's name when creating a new FriendReqRVModel
                         }
 
                         // Notify the adapter that the data has changed
@@ -211,5 +260,7 @@ public class HomeFragment extends Fragment {
                     }
                 },
                 error -> Toast.makeText(getActivity(), "Failed to get friend requests...", Toast.LENGTH_SHORT).show());
+
+        requestQueue.add(request);
     }
 }
