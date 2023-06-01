@@ -7,8 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -16,8 +14,6 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
@@ -43,53 +39,25 @@ import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentHomeBinding;
 import edu.uw.tcss450.varpar.weatherapp.model.UserInfoViewModel;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link HomeFragment} factory method to
- * create an instance of this fragment.
+ * Home fragment for app, contains current location weather and friend requests.
  */
 public class HomeFragment extends Fragment {
     private static final int PERMISSION_CODE = 1;
-    FragmentHomeBinding mBinding;
-    private TextView locationTextView, tempTV, conditionTV;
-    private ImageView iconIV;
-    private ArrayList<FriendReqRVModel> friendReqRVModelArrayList;
+    private FragmentHomeBinding mBinding;
     private FriendReqRVAdapter friendReqRVAdapter;
     private RecyclerView FriendReqRV;
     private UserInfoViewModel mUserModel;
 
-    public void onChatPreviewClicked(View view) {
-        // Navigate to the messages tab
-        NavController navController = Navigation.findNavController(view);
-        navController.navigate(R.id.chat_user);
-//        mBinding.frameLayout2.setVisibility(View.GONE);
-//        mBinding.frameLayout2.setOnClickListener(
-//                card -> {
-//                    Navigation.findNavController().navigate(
-//                            edu.uw.tcss450.varpar.weatherapp.chat.ChatListFragmentDirections.actionNavigationChatToChatRoom());
-//                }
-//        );
-    }
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         mBinding = FragmentHomeBinding.inflate(inflater, container, false);
         return mBinding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-
-        locationTextView = view.findViewById(R.id.location_text);
-        tempTV = view.findViewById(R.id.temperature_text);
-        conditionTV = view.findViewById(R.id.temp_forecast);
-        iconIV = view.findViewById(R.id.forecast_image);
-
         FriendReqRV = getView().findViewById(R.id.idRVIncomingFR);
-        friendReqRVModelArrayList = new ArrayList<>();
-//        friendReqRVAdapter = new FriendReqRVAdapter(getActivity(), friendReqRVModelArrayList);
-//        FriendReqRV.setAdapter(friendReqRVAdapter);
 
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_CODE);
@@ -104,17 +72,6 @@ public class HomeFragment extends Fragment {
 
         // Get the friend requests and display them
         getFriendsRequests();
-//        getAcceptFriendRequests;
-//        getRemoveFriendRequests();
-
-        //call a method that pulls friend requests from the SQL data
-//        // TODO: work on this dummy data and make it real data!!!!!!!!!!
-//        for (int i = 0; i < 5; i++) {
-//            String username = "Random Person " + i;
-//            friendReqRVModelArrayList.add(new FriendReqRVModel(username));
-//            //day++;
-//        }
-//        friendReqRVAdapter.notifyDataSetChanged();
     }
 
     private void getWeatherInfo() {
@@ -123,23 +80,15 @@ public class HomeFragment extends Fragment {
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, URL, null,
                 response -> {
-                    //                loadingPB.setVisibility(View.GONE);
-                    //                homeRL.setVisibility(View.VISIBLE);
-
                     try {
                         String cityName = response.getJSONObject("location").getString("name");
-                        locationTextView.setText(cityName);
+                        mBinding.locationText.setText(cityName);
                         String temp = response.getJSONObject("current").getString("temp_f");
-                        tempTV.setText(temp);
+                        mBinding.temperatureText.setText(temp);
                         String condition = response.getJSONObject("current").getJSONObject("condition").getString("text");
                         String conditionIcon = response.getJSONObject("current").getJSONObject("condition").getString("icon");
-                        Picasso.get().load("http:".concat(conditionIcon)).into(iconIV);
-                        conditionTV.setText(condition);
-
-                        JSONObject forecastObj = response.getJSONObject("forecast");
-                        JSONObject forecast0 = forecastObj.getJSONArray("forecastday").getJSONObject(0);
-                        //                    JSONArray hourArray = forecast0.getJSONArray("hour");
-
+                        Picasso.get().load("http:".concat(conditionIcon)).into(mBinding.forecastImage);
+                        mBinding.tempForecast.setText(condition);
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
@@ -149,12 +98,7 @@ public class HomeFragment extends Fragment {
     }
 
     /**
-     * Get the friend requests from the database
-     *
-     * @return
-     * @throws JSONException
-     * @throws RuntimeException
-     * @throws VolleyError
+     * Get the friend requests from the database.
      */
     public void getFriendsRequests() {
         String URL = "https://theweatherapp.herokuapp.com/contacts/getrequests";
@@ -181,10 +125,10 @@ public class HomeFragment extends Fragment {
     private void handleError(final VolleyError error) {
         Log.wtf("ERROR", error.getMessage());
         if (Objects.isNull(error.networkResponse)) {
-            Log.e("NETWORK ERROR", error.getMessage());
+            Log.wtf("NETWORK ERROR", error.getMessage());
         } else {
             String data = new String(error.networkResponse.data, Charset.defaultCharset());
-            Log.e("CLIENT ERROR",
+            Log.wtf("CLIENT ERROR",
                     error.networkResponse.statusCode + " " + data);
         }
     }
@@ -200,12 +144,10 @@ public class HomeFragment extends Fragment {
                 String friendName = friendRequestObject.getString("username");
                 String idName = friendRequestObject.getString("memberid");
 
-//                ArrayList<Contact> friendReqInfo = new ArrayList<>();
                 friendReqInfo.add(new Contact.Builder(friendName, idName).build());
             }
 
             friendReqRVAdapter = new FriendReqRVAdapter(getActivity(), this, friendReqInfo);
-
             FriendReqRV.setAdapter(friendReqRVAdapter);
 
             friendReqRVAdapter.notifyDataSetChanged();
@@ -235,14 +177,9 @@ public class HomeFragment extends Fragment {
     }
 
     /**
-     * Accept the friend requests from the database
-     *
-     * @return
-     * @throws JSONException
-     * @throws RuntimeException
-     * @throws VolleyError
+     * Accept the friend requests from the database.
      */
-    public void getAcceptFriendRequests(String friendID) {
+    public void getAcceptFriendRequests(final String friendID) {
         String URL = "https://theweatherapp.herokuapp.com/contacts/acceptfriendrequest";
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
 
