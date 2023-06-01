@@ -16,14 +16,19 @@
         app:layout_constraintTop_toTopOf="@+id/idTVcityName">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="@string/weather_fav_city"
+            android:id="@+id/idTVFavCityName"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:text="Fav City"
             android:textStyle="bold"
+            android:textSize="25dp"
+            android:gravity="center_vertical"
+            android:contextClickable="true"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
-            android:id="@+id/delete_chat"
+            android:id="@+id/idIBdelete"
             style="@style/Widget.AppCompat.ImageButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
