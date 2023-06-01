@@ -194,7 +194,6 @@ public class WeatherFragment extends Fragment {
             todayWeatherTV.setVisibility(View.GONE);
         }
 
-
         searchIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -277,6 +276,7 @@ public class WeatherFragment extends Fragment {
         }
         LocationServices.getFusedLocationProviderClient(getActivity()).requestLocationUpdates(mLocationRequest, mLocationCallback, null);
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -298,11 +298,11 @@ public class WeatherFragment extends Fragment {
         String cityName = "Not Found";
         Geocoder gcd = new Geocoder(getActivity().getBaseContext(), Locale.getDefault());
         try {
-            List<Address> addressList = gcd.getFromLocation(latitide,longitude,10);
-            for(Address adr : addressList) {
-                if(adr!=null) {
+            List<Address> addressList = gcd.getFromLocation(latitide, longitude, 10);
+            for (Address adr : addressList) {
+                if (adr != null) {
                     String city = adr.getLocality();
-                    if(city!=null && !city.equals("")) {
+                    if (city != null && !city.equals("")) {
                         cityName = city;
                     } else {
                         Log.d("Tag", "City not found");
@@ -338,13 +338,13 @@ public class WeatherFragment extends Fragment {
                     String cityName = response.getJSONObject("location").getString("name");
                     cityNameTV.setText(cityName);
                     String temp = response.getJSONObject("current").getString("temp_f");
-                    tempTV.setText(temp+"°F");
+                    tempTV.setText(temp + "°F");
                     int isDay = response.getJSONObject("current").getInt("is_day");
                     String condition = response.getJSONObject("current").getJSONObject("condition").getString("text");
                     String conditionIcon = response.getJSONObject("current").getJSONObject("condition").getString("icon");
                     Picasso.get().load("http:".concat(conditionIcon)).into(iconIV);
                     conditionTV.setText(condition);
-                    if(isDay==1){
+                    if (isDay == 1) {
                         //Picasso.get().load();
                     } else {
                         //Picasso.get().load();
@@ -354,7 +354,7 @@ public class WeatherFragment extends Fragment {
                     JSONObject forecast0 = forecastObj.getJSONArray("forecastday").getJSONObject(0);
                     JSONArray hourArray = forecast0.getJSONArray("hour");
 
-                    for(int i = 0;i < 24; i++) {
+                    for (int i = 0; i < 24; i++) {
                         JSONObject hourObj = hourArray.getJSONObject(i);
                         String time = hourObj.getString("time");
                         String temper = hourObj.getString("temp_f");
@@ -367,7 +367,7 @@ public class WeatherFragment extends Fragment {
                     int day = 1;
                     JSONArray forecastArray = forecastObj.getJSONArray("forecastday");
 
-                    for(int i = 0;i < 5; i++) {
+                    for (int i = 0; i < 5; i++) {
                         JSONObject forecastDayObj = forecastArray.getJSONObject(i);
                         JSONObject dayObj = forecastDayObj.getJSONObject("day");
                         String date = forecastDayObj.getString("date");
