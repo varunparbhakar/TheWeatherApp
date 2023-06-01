@@ -1,5 +1,7 @@
 package edu.uw.tcss450.varpar.weatherapp.home;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -44,6 +47,7 @@ import edu.uw.tcss450.varpar.weatherapp.model.UserInfoViewModel;
  * create an instance of this fragment.
  */
 public class HomeFragment extends Fragment {
+    private static final int PERMISSION_CODE = 1;
     FragmentHomeBinding mBinding;
     private TextView locationTextView, tempTV, conditionTV;
     private ImageView iconIV;
@@ -85,6 +89,10 @@ public class HomeFragment extends Fragment {
         friendReqRVModelArrayList = new ArrayList<>();
         friendReqRVAdapter = new FriendReqRVAdapter(getActivity(), friendReqRVModelArrayList);
         FriendReqRV.setAdapter(friendReqRVAdapter);
+
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_CODE);
+        }
 
         getWeatherInfo();
 

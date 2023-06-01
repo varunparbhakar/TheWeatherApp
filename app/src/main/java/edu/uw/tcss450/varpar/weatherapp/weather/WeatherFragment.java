@@ -21,10 +21,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentResultListener;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
@@ -59,23 +64,30 @@ public class WeatherFragment extends Fragment {
 
     private RelativeLayout homeRL;
     private ProgressBar loadingPB;
-    private TextView cityNameTV, tempTV, conditionTV;
+    private TextView cityNameTV, tempTV, conditionTV, todayWeatherTV;
     private RecyclerView weatherRV, hourlyRV;
     private TextInputEditText cityEDT;
-    private ImageView backIV, iconIV, searchIV;
+    private ImageView backIV, iconIV, searchIV, starIV;
     private ArrayList<WeatherRVModel> weatherRVModelArrayList;
     private WeatherRVAdapter weatherRVAdapter;
     private ArrayList<WeatherRVModel> weatherRVHourlyArrayList;
     private WeatherRVHourly weatherRVHourlyAdapter;
     private LocationManager locationManager;
     private int PERMISSION_CODE = 1;
-    private String zipCode;
+    public String zipCode;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        getParentFragmentManager().setFragmentResultListener("requestKey", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
+                // We use a String here, but any type that can be put in a Bundle is supported.
+                zipCode = bundle.getString("bundleKey");
+                // Do something with the result.
+            }
+        });
 //        //getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 //
 //        //getActivity().setContentView(R.layout.activity_main);
@@ -143,6 +155,8 @@ public class WeatherFragment extends Fragment {
         backIV = getView().findViewById(R.id.idIVBack);
         iconIV = getView().findViewById(R.id.idIVIcon);
         searchIV = getView().findViewById(R.id.idIVSearch);
+        starIV = getView().findViewById(R.id.idIVstar);
+        todayWeatherTV = getView().findViewById(R.id.idTVTodayWeather);
         weatherRVModelArrayList = new ArrayList<>();
         weatherRVAdapter = new WeatherRVAdapter(getActivity(), weatherRVModelArrayList);
 
@@ -155,18 +169,31 @@ public class WeatherFragment extends Fragment {
 //        weatherRVModelArrayList.clear();
 //        weatherRVHourlyArrayList.clear();
         requestLocationUpdates();
-        locationManager = (LocationManager) getContext().getSystemService(LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_CODE);
+//        locationManager = (LocationManager) getContext().getSystemService(LOCATION_SERVICE);
+
+//        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_CODE);
+//        }
+
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            locationManager = (LocationManager) getContext().getSystemService(LOCATION_SERVICE);
+            Location location = getLastKnownLocation();
+            if (location == null) {
+                requestLocationUpdates();
+            }
+            zipCode = getCityName(location.getLongitude(), location.getLatitude());
+            getWeatherInfo(zipCode); //this is all to get current location so the app displays it when opned
+        }
+        else {
+            loadingPB.setVisibility(View.GONE);
+            homeRL.setVisibility(View.VISIBLE);
+            cityNameTV.setText("Search for City");
+            tempTV.setVisibility(View.GONE);
+            iconIV.setVisibility(View.GONE);
+            conditionTV.setVisibility(View.GONE);
+            todayWeatherTV.setVisibility(View.GONE);
         }
 
-        //Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        Location location = getLastKnownLocation();
-        if (location == null) {
-            requestLocationUpdates();
-        }
-        zipCode = getCityName(location.getLongitude(), location.getLatitude());
-        getWeatherInfo(zipCode); //this is all to get current location so the app displays it when opned
 
         searchIV.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -180,8 +207,21 @@ public class WeatherFragment extends Fragment {
                 }
             }
         });
+        starIV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String city = cityNameTV.getText().toString();
+                WeatherFavCityDialog dialog = new WeatherFavCityDialog();
+                //dialog.setTargetFragment(WeatherFragment.this, 1);
+                dialog.show(getChildFragmentManager(), "Favorite Cities");
+                if (city.isEmpty()) {
+                    Toast.makeText(getActivity(), "AYOOO BRO TYPE SOMETHING FIRST GAWD", Toast.LENGTH_SHORT).show();
+                } else {
+                    //wfcd.favCityTV.setText(city);
+                }
+            }
+        });
         //getWeatherInfo("98375");
-
     }
 
     private Location getLastKnownLocation() {
@@ -192,7 +232,7 @@ public class WeatherFragment extends Fragment {
         for (String provider : providers) {
             requestLocationUpdates();
             if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_CODE);
+                //ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_CODE);
             }
             Location l = mLocationManager.getLastKnownLocation(provider);
             Log.d("l", "l is " + l);
@@ -233,7 +273,7 @@ public class WeatherFragment extends Fragment {
             }
         };
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_CODE);
+            //ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_CODE);
         }
         LocationServices.getFusedLocationProviderClient(getActivity()).requestLocationUpdates(mLocationRequest, mLocationCallback, null);
     }
@@ -241,7 +281,14 @@ public class WeatherFragment extends Fragment {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-               getLastKnownLocation();
+            locationManager = (LocationManager) getContext().getSystemService(LOCATION_SERVICE);
+            Location location = getLastKnownLocation();
+            if (location == null) {
+                requestLocationUpdates();
+            }
+            zipCode = getCityName(location.getLongitude(), location.getLatitude());
+            getWeatherInfo(zipCode); //this is all to get current location so the app displays it when opned
+            //getLastKnownLocation();
         } else {
             Log.wtf("uwu", "permission request failed");
         }
@@ -279,6 +326,11 @@ public class WeatherFragment extends Fragment {
             public void onResponse(JSONObject response) {
                 loadingPB.setVisibility(View.GONE);
                 homeRL.setVisibility(View.VISIBLE);
+                tempTV.setVisibility(View.VISIBLE);
+                iconIV.setVisibility(View.VISIBLE);
+                conditionTV.setVisibility(View.VISIBLE);
+                todayWeatherTV.setVisibility(View.VISIBLE);
+
                 weatherRVModelArrayList.clear();
                 weatherRVHourlyArrayList.clear(); //do the same for hourly data
 
