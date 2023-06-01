@@ -377,7 +377,6 @@ public class ContactListViewModel extends AndroidViewModel {
         try {
             body.put("userone", mMemberID);
             body.put("usertwo", memberID);
-            body.put("chatname", mMemberID + "," + memberID);
         } catch (JSONException e) {
             e.printStackTrace();
         }

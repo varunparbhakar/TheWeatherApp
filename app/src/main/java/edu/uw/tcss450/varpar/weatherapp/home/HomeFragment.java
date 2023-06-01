@@ -1,9 +1,12 @@
 package edu.uw.tcss450.varpar.weatherapp.home;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -44,6 +47,7 @@ import edu.uw.tcss450.varpar.weatherapp.weather.WeatherRVModel;
  * create an instance of this fragment.
  */
 public class HomeFragment extends Fragment {
+    private static final int PERMISSION_CODE = 1;
     FragmentHomeBinding mBinding;
     private TextView locationTextView, tempTV, conditionTV;
     private ImageView iconIV;
@@ -85,6 +89,10 @@ public class HomeFragment extends Fragment {
         friendReqRVAdapter = new FriendReqRVAdapter(getActivity(), friendReqRVModelArrayList);
         FriendReqRV.setAdapter(friendReqRVAdapter);
 
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_CODE);
+        }
+
         getWeatherInfo();
 
         super.onViewCreated(view, savedInstanceState);
@@ -92,6 +100,7 @@ public class HomeFragment extends Fragment {
         String welcomeText = getText(R.string.home_fragment_welcome) + " " + model.getFirstName();
         mBinding.textGreeting.setText(welcomeText);
 
+        //call a method that pulls friend requests from the SQL data
         for(int i = 0;i < 5; i++) {
             String name = "Random Person " + i;
             friendReqRVModelArrayList.add(new FriendReqRVModel(name));
