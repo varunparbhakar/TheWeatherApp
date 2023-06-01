@@ -95,7 +95,7 @@ public class HomeFragment extends Fragment {
 
         // Get the friend requests and display them
         getFriendsRequests();
-//        getAcceptFriendRequests();
+        getAcceptFriendRequests();
 //        getRemoveFriendRequests();
 
         //call a method that pulls friend requests from the SQL data
@@ -139,45 +139,14 @@ public class HomeFragment extends Fragment {
         requestQueue.add(jsonObjectRequest);
     }
 
-    public void getAcceptFriendRequests() {
-        String URL = "https://theweatherapp.herokuapp.com/contacts/acceptfriendrequest/";
-        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, URL, null,
-                response -> {
-                    try {
-                        JSONArray friendRequestsArray = response.getJSONArray("friendRequests");
-
-                        for (int i = 0; i < friendRequestsArray.length(); i++) {
-                            JSONObject friendRequestObject = friendRequestsArray.getJSONObject(i);
-                            String friendName = friendRequestObject.getString("username");
-                            String idName = friendRequestObject.getString("memberid");
-//                            String senderName = friendRequestObject.getString("senderName");  // Get the sender's name
-//                            friendReqRVModelArrayList.add(new FriendReqRVModel(senderName));  // Include the sender's name when creating a new FriendReqRVModel
-                        }
-
-                        // Notify the adapter that the data has changed
-                        friendReqRVAdapter.notifyDataSetChanged();
-
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
-                    }
-                },
-                error -> Toast.makeText(getActivity(), "Failed to get friend requests...", Toast.LENGTH_SHORT).show()) {
-
-            @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", mUserModel.getJwt());
-                return headers;
-            }
-        };
-
-        requestQueue.add(jsonObjectRequest);
-    }
-
-
+    /**
+     * Get the friend requests from the database
+     *
+     * @return
+     * @throws JSONException
+     * @throws RuntimeException
+     * @throws VolleyError
+     */
     public void getFriendsRequests() {
         String URL = "https://theweatherapp.herokuapp.com/contacts/getrequests";
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
@@ -198,8 +167,6 @@ public class HomeFragment extends Fragment {
 
         requestQueue.add(request);
     }
-
-    ;
 
     private void handleError(final VolleyError error) {
         Log.wtf("ERROR", error.getMessage());
@@ -233,6 +200,27 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    public void getAcceptFriendRequests() {
+        String URL = "https://theweatherapp.herokuapp.com/contacts/acceptfriendrequest/";
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+
+        String Jwt = mUserModel.getJwt();
+
+        Request request = new JsonObjectRequest(Request.Method.GET,
+                URL + "?user=" + mUserModel.getMemberID(),
+                null,
+                this::handleResult,
+                this::handleError) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", Jwt);
+                return headers;
+            }
+        };
+
+        requestQueue.add(request);
+    }
 
     public void getRemoveFriendRequests() {
         String URL = "https://theweatherapp.herokuapp.com/contacts/remove/";
