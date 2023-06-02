@@ -37,6 +37,9 @@ public class ChatRoomViewModel extends AndroidViewModel {
      */
     private Map<Integer, MutableLiveData<List<ChatRoomMessage>>> mMessages;
 
+    /** Network responses, for observer. */
+    private MutableLiveData<String> mAddedUser;
+
     public ChatRoomViewModel(@NonNull Application application) {
         super(application);
         mMessages = new HashMap<>();
@@ -53,6 +56,17 @@ public class ChatRoomViewModel extends AndroidViewModel {
                                    @NonNull Observer<? super List<ChatRoomMessage>> observer) {
         getOrCreateMapEntry(chatId).observe(owner, observer);
     }
+
+//    /**
+//     * Add observer to network responses.
+//     * @param owner Lifecycle parent.
+//     * @param observer the observer
+//     */
+//    public void addAddChatUserObserver(final @NonNull LifecycleOwner owner,
+//                                    final @NonNull Observer<? super JSONObject> observer) {
+//        mAddedUser = new MutableLiveData<>();
+//        mAddedUser.observe(owner, observer);
+//    }
 
     /**
      * Return a reference to the List<> associated with the chat room. If the View Model does
@@ -98,8 +112,8 @@ public class ChatRoomViewModel extends AndroidViewModel {
                 Request.Method.GET,
                 url,
                 null, //no body for this get request
-                this::handleSuccess,
-                this::handleError) {
+                this::handleSuccessForGetFirstOrNextMessages,
+                this::handleErrorForGetFirstOrNextMessages) {
 
             @Override
             public Map<String, String> getHeaders() {
@@ -145,8 +159,8 @@ public class ChatRoomViewModel extends AndroidViewModel {
             Request.Method.GET,
             url,
             null, //no body for this get request
-            this::handleSuccess,
-            this::handleError
+            this::handleSuccessForGetFirstOrNextMessages,
+            this::handleErrorForGetFirstOrNextMessages
         ){
             @Override
             public Map<String, String> getHeaders() {
@@ -185,7 +199,7 @@ public class ChatRoomViewModel extends AndroidViewModel {
         getOrCreateMapEntry(chatId).setValue(list);
     }
 
-    private void handleSuccess(final JSONObject response) {
+    private void handleSuccessForGetFirstOrNextMessages(final JSONObject response) {
         List<ChatRoomMessage> list;
         if (!response.has("chatId")) {
             throw new IllegalStateException("Unexpected response in ChatRoomViewModel: " + response);
@@ -219,7 +233,7 @@ public class ChatRoomViewModel extends AndroidViewModel {
         }
     }
 
-    private void handleError(final VolleyError error) {
+    private void handleErrorForGetFirstOrNextMessages(final VolleyError error) {
         if (Objects.isNull(error.networkResponse)) {
             Log.e("NETWORK ERROR", error.getMessage());
         }
@@ -229,6 +243,89 @@ public class ChatRoomViewModel extends AndroidViewModel {
                     error.networkResponse.statusCode +
                             " " +
                             data);
+        }
+    }
+
+    /**
+     * Connect to server to add new chat.
+     * @param chatId Name of chat to add.
+     */
+    public void connectPutUserInChatByEmail(final int chatId, final String email, final String jwt) {
+        String url =
+                getApplication().getResources().getString(R.string.url)
+                        + "chats/"
+                        + chatId;
+
+        Request<JSONObject> request = new JsonObjectRequest(
+                Request.Method.PUT,
+                url,
+                null,
+                this::handleSuccessForPut,
+                this::handleErrorForPut
+        ){
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                // add headers <key,value>
+                headers.put("Authorization", jwt);
+                return headers;
+            }
+        };
+
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                10_000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        ));
+
+        //Instantiate the RequestQueue and add the request to the queue
+        RequestQueueSingleton.getInstance(
+                getApplication().getApplicationContext()
+        ).addToRequestQueue(request);
+    }
+
+    /**
+     * Success handler for adding contact.
+     * @param response server response.
+     */
+    private void handleSuccessForPut(final JSONObject response) {
+        try { //note what type of connection happened
+            response.put("type", "put");
+            mAddedUser.setValue(response.getString("email"));
+        } catch (JSONException e) {
+            Log.e("JSON Error", e.getMessage());
+        }
+    }
+
+    /**
+     * Error handler for adding contact.
+     * @param error server response.
+     */
+    private void handleErrorForPut(final VolleyError error) {
+        JSONObject resp = new JSONObject();
+        try { //note what type of connection happened
+            resp.put("type", "put");
+        } catch (JSONException e) {
+            Log.e("JSON Error", e.getMessage());
+        }
+
+        if (Objects.isNull(error.networkResponse)) { //server error?
+            Log.e("NETWORK ERROR", error.getMessage());
+            try {
+                resp.put("message", "Network Error");
+            } catch (JSONException e) {
+                Log.e("JSON Error", e.getMessage());
+            }
+        } else { //client error?
+            String data = new String(error.networkResponse.data, Charset.defaultCharset());
+            Log.e("CLIENT ERROR",
+                    error.networkResponse.statusCode + " " + data);
+            try {
+                JSONObject dat = new JSONObject(new String(error.networkResponse.data, Charset.defaultCharset()));
+                resp.put("message", dat.getString("message"));
+            } catch (JSONException e) {
+                Log.e("JSON Error", e.getMessage());
+            }
         }
     }
 }

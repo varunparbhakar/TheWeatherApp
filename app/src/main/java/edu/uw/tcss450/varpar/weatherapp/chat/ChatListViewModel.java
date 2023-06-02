@@ -287,8 +287,6 @@ public class ChatListViewModel extends AndroidViewModel {
         ).addToRequestQueue(request);
     }
 
-
-
     /**
      * Success handler for adding contact.
      * @param response server response.

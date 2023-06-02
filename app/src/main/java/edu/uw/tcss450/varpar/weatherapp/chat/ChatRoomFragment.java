@@ -6,11 +6,14 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import org.jetbrains.annotations.Nullable;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Objects;
 
@@ -22,11 +25,13 @@ public class ChatRoomFragment extends Fragment {
 
     //The chat ID for "global" chat
     private static final int HARD_CODED_CHAT_ID = 1;
+    private static final String HARD_CODED_CHAT_NAME = "User";
 
     private ChatRoomViewModel mChatRoomModel;
     private UserInfoViewModel mUserModel;
     private ChatSendViewModel mSendModel;
     private int mChatId;
+    private String mChatName;
 
     public ChatRoomFragment() {
         // Required empty public constructor
@@ -36,6 +41,7 @@ public class ChatRoomFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         mChatId = getArguments() != null ? getArguments().getInt("chatId") : HARD_CODED_CHAT_ID;
+        mChatName = getArguments() != null ? getArguments().getString("chatName") : HARD_CODED_CHAT_NAME;
 
         ViewModelProvider provider = new ViewModelProvider(requireActivity());
         mUserModel = provider.get(UserInfoViewModel.class);
@@ -56,6 +62,13 @@ public class ChatRoomFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         FragmentChatRoomBinding binding = FragmentChatRoomBinding.bind(getView());
+
+        binding.textChatroomUser.setText(mChatName);
+
+        binding.buttonAddChatroomMember.setOnClickListener(button ->
+        {
+            addUserToChat(binding.textChatroomAdd.getText().toString());
+        });
 
         binding.swipeContainer.setRefreshing(true);
 
@@ -85,6 +98,10 @@ public class ChatRoomFragment extends Fragment {
                 }
         );
 
+//        mChatRoomModel.addAddChatUserObserver(mChatId, getViewLifecycleOwner(), addedUser ->{
+//            mSendModel.sendMessage(mChatId, mUserModel.getJwt(), "Added " + addedUser + " to chat!");
+//        });
+
         //Send button was clicked. Send the message via the SendViewModel
         binding.buttonSend.setOnClickListener(button -> {
             mSendModel.sendMessage(mChatId,
@@ -95,5 +112,13 @@ public class ChatRoomFragment extends Fragment {
         mSendModel.addResponseObserver(getViewLifecycleOwner(), response ->
                 binding.editMessage.setText("")
         );
+    }
+
+    /**
+     * Adds a user to current chat by their email.
+     * @param email Indicates which user to add into chat, passed by text field
+     */
+    private void addUserToChat(final String email) {
+        mChatRoomModel.connectPutUserInChatByEmail(mChatId, email, mUserModel.getJwt());
     }
 }
