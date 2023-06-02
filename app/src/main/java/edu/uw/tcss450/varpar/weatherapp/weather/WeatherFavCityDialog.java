@@ -133,7 +133,7 @@ public class WeatherFavCityDialog extends DialogFragment {
         String URL = "https://theweatherapp.herokuapp.com/location/getall?user="
                     + mUserModel.getMemberID();
         String Jwt = mUserModel.getJwt();
-        getFavCities();
+        //getFavCities();
 
         Request request = new JsonObjectRequest(
                 Request.Method.GET,
@@ -168,14 +168,14 @@ public class WeatherFavCityDialog extends DialogFragment {
         //weatherRVModelArrayList
 
         try {
-            JSONArray locations = response.getJSONArray("rows");
-            String nickname = response.getString("nickname");
+            JSONArray locations = response.getJSONArray("locations");
+            //String nickname = response.getString("nickname");
             for (int i = 0; i < locations.length(); i++) {
-                JSONObject message = locations.getJSONObject(i);
-                if (!weatherRVModelArrayList.contains(message)) {
+                JSONObject nickname = locations.getJSONObject(i);
+                if (!weatherRVModelArrayList.contains(nickname)) {
                     // don't add a duplicate
-                    weatherRVModelArrayList.add(new WeatherRVModel(nickname));
-                    //weatherRVFav.notifyDataSetChanged();
+                    weatherRVModelArrayList.add(new WeatherRVModel(nickname.getString("nickname")));
+                    weatherRVFav.notifyDataSetChanged();
                     //getFavCities();
                 } else {
                     // this shouldn't happen but could with the async nature of the application
