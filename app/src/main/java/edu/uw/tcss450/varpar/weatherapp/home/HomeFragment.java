@@ -136,6 +136,17 @@ public class HomeFragment extends Fragment {
     private void handleResult(final JSONObject response) {
         Log.wtf("RESULT", response.toString());
         ArrayList<Contact> friendReqInfo = new ArrayList<>();
+
+        try {
+            if (response.has("message") && response.get("message").equals("no current requests")) {
+                friendReqRVAdapter = new FriendReqRVAdapter(getActivity(), this, friendReqInfo);
+                FriendReqRV.setAdapter(friendReqRVAdapter);
+                return;
+            }
+        } catch (JSONException e) {
+            Log.wtf("ERROR", "unknown error");
+        }
+
         try {
             JSONArray friendRequestsArray = response.getJSONArray("friendRequests");
 
@@ -159,10 +170,12 @@ public class HomeFragment extends Fragment {
 
     private void handleAcceptResult(final JSONObject response) {
         Toast.makeText(getActivity(), "Friend request accepted!", Toast.LENGTH_SHORT).show();
+        getFriendsRequests();
     }
 
     private void handleRemoveResult(final JSONObject response) {
         Toast.makeText(getActivity(), "Friend removed!", Toast.LENGTH_SHORT).show();
+        getFriendsRequests();
     }
 
     private void handleAcceptError(final VolleyError error) {
