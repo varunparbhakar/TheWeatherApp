@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import edu.uw.tcss450.varpar.weatherapp.R;
+import edu.uw.tcss450.varpar.weatherapp.home.FriendReqRVAdapter;
 import edu.uw.tcss450.varpar.weatherapp.io.RequestQueueSingleton;
 
 /**
@@ -151,6 +152,15 @@ public class ContactListViewModel extends AndroidViewModel {
      */
     private void handleSuccess(final JSONObject response) {
         List<Contact> list = new ArrayList<>();
+
+        try {
+            if (response.has("message") && response.get("message").equals("no current requests")) {
+                mContacts.setValue(list);
+                return;
+            }
+        } catch (JSONException e) {
+            Log.wtf("ERROR", "unknown error");
+        }
 
         try {
             JSONArray contacts = response.getJSONArray("rows");
