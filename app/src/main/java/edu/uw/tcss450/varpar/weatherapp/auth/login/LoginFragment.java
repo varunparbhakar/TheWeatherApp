@@ -169,10 +169,10 @@ public class LoginFragment extends Fragment {
 
     private void autoLogin() {
         //EASE OF LOGGIN IN
-//        mBinding.etEmail.setText("test1@test.com");
-//        mBinding.etPassword.setText("test12345");
-        mBinding.etEmail.setText("mom@gmail.com");
-        mBinding.etPassword.setText("Test123!");
+        mBinding.etEmail.setText("test1@test.com");
+        mBinding.etPassword.setText("test1First1666");
+//        mBinding.etEmail.setText("mom@gmail.com");
+//        mBinding.etPassword.setText("Test123!");
 //        attemptSignIn(mBinding.buttonLogin);
         //EASE OF LOGGING IN
     }
