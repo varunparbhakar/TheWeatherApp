@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import edu.uw.tcss450.varpar.weatherapp.R;
+import edu.uw.tcss450.varpar.weatherapp.home.FriendReqRVAdapter;
 import edu.uw.tcss450.varpar.weatherapp.io.RequestQueueSingleton;
 
 /**
@@ -153,6 +154,15 @@ public class ContactListViewModel extends AndroidViewModel {
         List<Contact> list = new ArrayList<>();
 
         try {
+            if (response.has("message") && response.get("message").equals("no current requests")) {
+                mContacts.setValue(list);
+                return;
+            }
+        } catch (JSONException e) {
+            Log.wtf("ERROR", "unknown error");
+        }
+
+        try {
             JSONArray contacts = response.getJSONArray("rows");
             for (int i = 0; i < contacts.length(); i++) {
                 JSONObject message = contacts.getJSONObject(i);
@@ -169,8 +179,8 @@ public class ContactListViewModel extends AndroidViewModel {
             //inform observers of the change (setValue)
             mContacts.setValue(list);
         } catch (JSONException e) {
-            Log.e("JSON PARSE ERROR", "Found in handle Success ContactListViewModel");
-            Log.e("JSON PARSE ERROR", "Error: " + e.getMessage());
+            Log.wtf("JSON PARSE ERROR", "Found in handle Success ContactListViewModel");
+            Log.wtf("JSON PARSE ERROR", "Error: " + e.getMessage());
         }
     }
 
@@ -180,10 +190,10 @@ public class ContactListViewModel extends AndroidViewModel {
      */
     private void handleError(final VolleyError error) {
         if (Objects.isNull(error.networkResponse)) {
-            Log.e("NETWORK ERROR", error.getMessage());
+            Log.wtf("NETWORK ERROR", error.getMessage());
         } else {
             String data = new String(error.networkResponse.data, Charset.defaultCharset());
-            Log.e("CLIENT ERROR",
+            Log.wtf("CLIENT ERROR",
                     error.networkResponse.statusCode + " " + data);
         }
     }
@@ -236,7 +246,7 @@ public class ContactListViewModel extends AndroidViewModel {
         try { //note what type of connection happened
             response.put("type", "post");
         } catch (JSONException e) {
-            Log.e("JSON Error", e.getMessage());
+            Log.wtf("JSON Error", e.getMessage());
         }
         mResponse.setValue(response);
     }
@@ -250,25 +260,25 @@ public class ContactListViewModel extends AndroidViewModel {
         try { //note what type of connection happened
             resp.put("type", "post");
         } catch (JSONException e) {
-            Log.e("JSON Error", e.getMessage());
+            Log.wtf("JSON Error", e.getMessage());
         }
 
         if (Objects.isNull(error.networkResponse)) { //server error?
-            Log.e("NETWORK ERROR", error.getMessage());
+            Log.wtf("NETWORK ERROR", error.getMessage());
             try {
                 resp.put("message", "Network Error");
             } catch (JSONException e) {
-                Log.e("JSON Error", e.getMessage());
+                Log.wtf("JSON Error", e.getMessage());
             }
         } else { //client error?
             String data = new String(error.networkResponse.data, Charset.defaultCharset());
-            Log.e("CLIENT ERROR",
+            Log.wtf("CLIENT ERROR",
                     error.networkResponse.statusCode + " " + data);
             try {
                 JSONObject dat = new JSONObject(new String(error.networkResponse.data, Charset.defaultCharset()));
                 resp.put("message", dat.getString("message"));
             } catch (JSONException e) {
-                Log.e("JSON Error", e.getMessage());
+                Log.wtf("JSON Error", e.getMessage());
             }
         }
 
@@ -325,7 +335,7 @@ public class ContactListViewModel extends AndroidViewModel {
             response.put("type", "delete");
             response.put("success", "true");
         } catch (JSONException e) {
-            Log.e("JSON Error", e.getMessage());
+            Log.wtf("JSON Error", e.getMessage());
         }
         mResponse.setValue(response);
     }
@@ -340,25 +350,25 @@ public class ContactListViewModel extends AndroidViewModel {
             resp.put("type", "delete");
             resp.put("success", "false");
         } catch (JSONException e) {
-            Log.e("JSON Error", e.getMessage());
+            Log.wtf("JSON Error", e.getMessage());
         }
 
         if (Objects.isNull(error.networkResponse)) { //server error?
-            Log.e("NETWORK ERROR", error.getMessage());
+            Log.wtf("NETWORK ERROR", error.getMessage());
             try {
                 resp.put("message", "Network Error");
             } catch (JSONException e) {
-                Log.e("JSON Error", e.getMessage());
+                Log.wtf("JSON Error", e.getMessage());
             }
         } else { //client error?
             String data = new String(error.networkResponse.data, Charset.defaultCharset());
-            Log.e("CLIENT ERROR",
+            Log.wtf("CLIENT ERROR",
                     error.networkResponse.statusCode + " " + data);
             try {
                 JSONObject dat = new JSONObject(new String(error.networkResponse.data, Charset.defaultCharset()));
                 resp.put("message", dat.getString("message"));
             } catch (JSONException e) {
-                Log.e("JSON Error", e.getMessage());
+                Log.wtf("JSON Error", e.getMessage());
             }
         }
 
@@ -415,7 +425,7 @@ public class ContactListViewModel extends AndroidViewModel {
             response.put("type", "chat");
             response.put("success", "true");
         } catch (JSONException e) {
-            Log.e("JSON Error", e.getMessage());
+            Log.wtf("JSON Error", e.getMessage());
         }
         mResponse.setValue(response);
     }
@@ -430,25 +440,25 @@ public class ContactListViewModel extends AndroidViewModel {
             resp.put("type", "chat");
             resp.put("success", "false");
         } catch (JSONException e) {
-            Log.e("JSON Error", e.getMessage());
+            Log.wtf("JSON Error", e.getMessage());
         }
 
         if (Objects.isNull(error.networkResponse)) { //server error?
-            Log.e("NETWORK ERROR", error.getMessage());
+            Log.wtf("NETWORK ERROR", error.getMessage());
             try {
                 resp.put("message", "Network Error");
             } catch (JSONException e) {
-                Log.e("JSON Error", e.getMessage());
+                Log.wtf("JSON Error", e.getMessage());
             }
         } else { //client error?
             String data = new String(error.networkResponse.data, Charset.defaultCharset());
-            Log.e("CLIENT ERROR",
+            Log.wtf("CLIENT ERROR",
                     error.networkResponse.statusCode + " " + data);
             try {
                 JSONObject dat = new JSONObject(new String(error.networkResponse.data, Charset.defaultCharset()));
                 resp.put("message", dat.getString("message"));
             } catch (JSONException e) {
-                Log.e("JSON Error", e.getMessage());
+                Log.wtf("JSON Error", e.getMessage());
             }
         }
 
