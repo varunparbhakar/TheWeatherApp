@@ -164,7 +164,7 @@ public class HomeFragment extends Fragment {
             friendReqRVAdapter.notifyDataSetChanged();
 
         } catch (JSONException e) {
-        throw new RuntimeException(e);
+        Log.wtf("ERROR", e.getMessage());
     }
     }
 
