@@ -1,6 +1,8 @@
 package edu.uw.tcss450.varpar.weatherapp.weather;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +29,7 @@ public class WeatherRVFav extends RecyclerView.Adapter<WeatherRVFav.ViewHolder>{
         this.weatherRVModelArrayList = weatherRVModelArrayList;
     }
 
+
     @NonNull
     @Override
     public WeatherRVFav.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -35,9 +38,33 @@ public class WeatherRVFav extends RecyclerView.Adapter<WeatherRVFav.ViewHolder>{
     }
 
     @Override
-    public void onBindViewHolder(@NonNull WeatherRVFav.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull WeatherRVFav.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         WeatherRVModel model = weatherRVModelArrayList.get(position);
         holder.favTV.setText(model.getCityName());
+        holder.favTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String city = holder.favTV.getText().toString();
+                //WeatherFragment wf = (WeatherFragment) getActivity().getSupportFragmentManager().findFragmentByTag("WeatherFragment");
+//                WeatherFragment wf = new WeatherFragment();
+//                wf.getWeatherInfo(city);
+                WeatherFragment.getInstance().getWeatherInfo(city);
+//                Bundle result = new Bundle(); //sending data to dialog
+//                result.putString("bundleKey", city);
+//                //getParentFragmentManager().setFragmentResult("requestKey", result);
+//
+//                WeatherFragment frag = new WeatherFragment();
+//                frag.setArguments(result);
+            }
+        });
+        holder.deleteIB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                weatherRVModelArrayList.remove(position);
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position, weatherRVModelArrayList.size());
+            }
+        });
     }
 
     @Override
@@ -48,9 +75,9 @@ public class WeatherRVFav extends RecyclerView.Adapter<WeatherRVFav.ViewHolder>{
 //        notifyDataSetChanged();
 //    }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView favTV;
-        private ImageButton deleteIB;
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        public TextView favTV;
+        public ImageButton deleteIB;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             favTV = itemView.findViewById(R.id.idTVFavCityName);
