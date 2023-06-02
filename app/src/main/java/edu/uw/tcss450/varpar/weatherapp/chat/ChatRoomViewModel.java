@@ -212,7 +212,7 @@ public class ChatRoomViewModel extends AndroidViewModel {
 
             }
             //inform observers of the change (setValue)
-            getOrCreateMapEntry(response.getInt("chatId")).setValue(list);
+            getOrCreateMapEntry(response.getInt("chatId")).postValue(list);
         }catch (JSONException e) {
             Log.e("JSON PARSE ERROR", "Found in handle Success ChatRoomViewModel");
             Log.e("JSON PARSE ERROR", "Error: " + e.getMessage());
