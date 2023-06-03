@@ -44,6 +44,7 @@ public class WeatherRVFav extends RecyclerView.Adapter<WeatherRVFav.ViewHolder>{
     private Context context;
     private ArrayList<WeatherRVModel> weatherRVModelArrayList;
     private WeatherFavCityDialog weatherFavCityDialog;
+    private WeatherFragment wf;
 
     public WeatherRVFav(Context context, ArrayList<WeatherRVModel> weatherRVModelArrayList) {
         this.context = context;
@@ -53,6 +54,11 @@ public class WeatherRVFav extends RecyclerView.Adapter<WeatherRVFav.ViewHolder>{
         this.context = context;
         this.weatherRVModelArrayList = weatherRVModelArrayList;
         this.weatherFavCityDialog = weatherFavCityDialog;
+    }
+    public WeatherRVFav(Context context, ArrayList<WeatherRVModel> weatherRVModelArrayList, WeatherFragment weatherFragment) {
+        this.context = context;
+        this.weatherRVModelArrayList = weatherRVModelArrayList;
+        this.wf = weatherFragment;
     }
 
     @NonNull
@@ -65,7 +71,6 @@ public class WeatherRVFav extends RecyclerView.Adapter<WeatherRVFav.ViewHolder>{
     @Override
     public void onBindViewHolder(@NonNull WeatherRVFav.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         //weatherFavCityDialog = new WeatherFavCityDialog();
-
         WeatherRVModel model = weatherRVModelArrayList.get(position);
         holder.favTV.setText(model.getCityName());
         holder.favTV.setOnClickListener(new View.OnClickListener() {
@@ -75,13 +80,16 @@ public class WeatherRVFav extends RecyclerView.Adapter<WeatherRVFav.ViewHolder>{
                 //WeatherFragment wf = (WeatherFragment) getActivity().getSupportFragmentManager().findFragmentByTag("WeatherFragment");
 //                WeatherFragment wf = new WeatherFragment();
 //                wf.getWeatherInfo(city);
-                WeatherFragment.getInstance().getWeatherInfo(city);
+                //WeatherFragment.getInstance().getWeatherInfo(city);
 //                Bundle result = new Bundle(); //sending data to dialog
 //                result.putString("bundleKey", city);
 //                //getParentFragmentManager().setFragmentResult("requestKey", result);
 //
 //                WeatherFragment frag = new WeatherFragment();
 //                frag.setArguments(result);
+                weatherFavCityDialog.helperMethod(city);
+
+                //weatherFavCityDialog.sendData(holder.favTV.getText().toString());
             }
         });
         holder.deleteIB.setOnClickListener(new View.OnClickListener() {

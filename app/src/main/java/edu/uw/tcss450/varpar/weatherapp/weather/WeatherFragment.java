@@ -100,6 +100,7 @@ public class WeatherFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        instance = this;
         getParentFragmentManager().setFragmentResultListener("requestKey", this, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
@@ -140,7 +141,7 @@ public class WeatherFragment extends Fragment {
         weatherRVHourlyAdapter = new WeatherRVHourly(getActivity(), weatherRVHourlyArrayList);
 
         weatherRVFavCityArrayList = new ArrayList<>();
-        weatherRVFavAdapter = new WeatherRVFav(getActivity(), weatherRVHourlyArrayList);
+        weatherRVFavAdapter = new WeatherRVFav(getActivity(), weatherRVHourlyArrayList,  this);
 
         weatherRV.setAdapter(weatherRVAdapter); //this is the RV for daily weather
         hourlyRV.setAdapter(weatherRVHourlyAdapter); //RV for hourly

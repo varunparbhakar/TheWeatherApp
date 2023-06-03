@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentResultListener;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
@@ -50,6 +51,7 @@ public class WeatherFavCityDialog extends DialogFragment {
     private ArrayList<WeatherRVModel> weatherRVModelArrayList;
     private RecyclerView favCityRV;
     public String favCityName;
+    public String savedData;
     private UserInfoViewModel mUserModel;
     private String mJwt;
     private DialogWeatherFavBinding mBinding;
@@ -98,7 +100,7 @@ public class WeatherFavCityDialog extends DialogFragment {
         getFavLocations();
         weatherRVFav.notifyDataSetChanged();
 
-        String city = favCityName; //sending data to weather frag
+        String city = savedData; //sending data to weather frag
         Bundle result = new Bundle();
         result.putString("bundleKey", city);
         getParentFragmentManager().setFragmentResult("requestKey", result);
@@ -287,8 +289,10 @@ public class WeatherFavCityDialog extends DialogFragment {
                 Log.wtf("JSON Error", e.getMessage());
             }
         }
+    }
 
-        //notify
-        //mResponse.setValue(resp);
+    public void helperMethod(String result) {
+        savedData = result;
+        WeatherFragment.getInstance().getWeatherInfo(result);
     }
 }
