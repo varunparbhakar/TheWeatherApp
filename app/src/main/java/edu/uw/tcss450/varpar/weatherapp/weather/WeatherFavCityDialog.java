@@ -51,6 +51,7 @@ public class WeatherFavCityDialog extends DialogFragment {
     private RecyclerView favCityRV;
     public String favCityName;
     private UserInfoViewModel mUserModel;
+    private String mJwt;
     private DialogWeatherFavBinding mBinding;
     private DialogRvWeatherBinding rvWeatherBinding;
 
@@ -78,8 +79,8 @@ public class WeatherFavCityDialog extends DialogFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         mUserModel = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
+        mJwt = mUserModel.getJwt();
         //WeatherRVFav.ViewHolder holder = new WeatherRVFav.ViewHolder(view);
         //favCityTV = holder.favTV;
         //holder.deleteIB = view.findViewById(R.id.idIBdelete);
@@ -87,7 +88,7 @@ public class WeatherFavCityDialog extends DialogFragment {
         favCityRV = getView().findViewById(R.id.idRVFavCities);
 
         weatherRVModelArrayList = new ArrayList<>();
-        weatherRVFav = new WeatherRVFav(getActivity(), weatherRVModelArrayList);
+        weatherRVFav = new WeatherRVFav(getActivity(), weatherRVModelArrayList, this);
         favCityRV.setAdapter(weatherRVFav);
 
         Bundle bundle = getArguments(); //getting data from weather frag
@@ -95,6 +96,7 @@ public class WeatherFavCityDialog extends DialogFragment {
 
         //getFavCities();
         getFavLocations();
+        weatherRVFav.notifyDataSetChanged();
 
         String city = favCityName; //sending data to weather frag
         Bundle result = new Bundle();
@@ -126,13 +128,13 @@ public class WeatherFavCityDialog extends DialogFragment {
         String city;
         //weatherRVModelArrayList.clear();
         city = favCityName;
-        weatherRVModelArrayList.add(new WeatherRVModel(city));
+        //weatherRVModelArrayList.add(new WeatherRVModel(city));
+        weatherRVModelArrayList.add(weatherRVModelArrayList.size(), new WeatherRVModel(city));
         weatherRVFav.notifyDataSetChanged();
     }
     public void getFavLocations() {
         String URL = "https://theweatherapp.herokuapp.com/location/getall?user="
                     + mUserModel.getMemberID();
-        String Jwt = mUserModel.getJwt();
         //getFavCities();
 
         Request request = new JsonObjectRequest(
@@ -146,7 +148,7 @@ public class WeatherFavCityDialog extends DialogFragment {
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
                 // add headers <key,value>
-                headers.put("Authorization", Jwt);
+                headers.put("Authorization", mJwt);
                 return headers;
             }
         };
@@ -170,14 +172,14 @@ public class WeatherFavCityDialog extends DialogFragment {
         try {
             JSONArray locations = response.getJSONArray("locations");
             //String nickname = response.getString("nickname");
-            for (int i = 0; i < locations.length(); i++) {
+            for (int i = 0; i <= locations.length(); i++) {
                 JSONObject nickname = locations.getJSONObject(i);
                 if (!weatherRVModelArrayList.contains(nickname)) {
                     // don't add a duplicate
                     weatherRVModelArrayList.add(new WeatherRVModel(nickname.getString("nickname")));
                     weatherRVFav.notifyDataSetChanged();
-                    //getFavCities();
                 } else {
+                    //weatherRVFav.notifyDataSetChanged();
                     // this shouldn't happen but could with the async nature of the application
                     Log.wtf("ERROR", "Contact already received: ");
                 }
@@ -203,5 +205,90 @@ public class WeatherFavCityDialog extends DialogFragment {
             Log.e("CLIENT ERROR",
                     error.networkResponse.statusCode + " " + data);
         }
+    }
+
+    public void deleteFavLocation(int position) {
+        String URL = "https://theweatherapp.herokuapp.com/location/removefavorite";
+        JSONObject body = new JSONObject();
+        try {
+            body.put("user", mUserModel.getMemberID());
+            body.put("nickname", weatherRVModelArrayList.get(position).getCityName());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Request request = new JsonObjectRequest(
+                Request.Method.POST,
+                URL,
+                body,
+                this::deleteHandleSuccess,
+                this::deleteHandleError) {
+
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                // add headers <key,value>
+                headers.put("Authorization", mJwt);
+                return headers;
+            }
+        };
+
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                10_000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        //Instantiate the RequestQueue and add the request to the queue
+        RequestQueueSingleton.getInstance(requireContext().getApplicationContext())
+                .addToRequestQueue(request);
+    }
+
+    /**
+     * Success handler for deleting contact.
+     * @param response server response.
+     */
+    private void deleteHandleSuccess(final JSONObject response) {
+        try { //note what type of connection happened
+            response.put("type", "delete");
+            response.put("success", "true");
+        } catch (JSONException e) {
+            Log.wtf("JSON Error", e.getMessage());
+        }
+        // mResponse.setValue(response);
+    }
+
+    /**
+     * Error handler for deleting contact.
+     * @param error server response.
+     */
+    private void deleteHandleError(final VolleyError error) {
+        JSONObject resp = new JSONObject();
+        try { //note what type of connection happened
+            resp.put("type", "delete");
+            resp.put("success", "false");
+        } catch (JSONException e) {
+            Log.wtf("JSON Error", e.getMessage());
+        }
+
+        if (Objects.isNull(error.networkResponse)) { //server error?
+            Log.wtf("NETWORK ERROR", error.getMessage());
+            try {
+                resp.put("message", "Network Error");
+            } catch (JSONException e) {
+                Log.wtf("JSON Error", e.getMessage());
+            }
+        } else { //client error?
+            String data = new String(error.networkResponse.data, Charset.defaultCharset());
+            Log.wtf("CLIENT ERROR",
+                    error.networkResponse.statusCode + " " + data);
+            try {
+                JSONObject dat = new JSONObject(new String(error.networkResponse.data, Charset.defaultCharset()));
+                resp.put("message", dat.getString("message"));
+            } catch (JSONException e) {
+                Log.wtf("JSON Error", e.getMessage());
+            }
+        }
+
+        //notify
+        //mResponse.setValue(resp);
     }
 }

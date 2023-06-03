@@ -185,9 +185,10 @@ public class WeatherFragment extends Fragment {
         starIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                addFavLocation();
                 String city = cityNameTV.getText().toString();
                 weatherRVFavCityArrayList.add(new WeatherRVModel(city));
-                addFavLocation();
+                weatherRVFavAdapter.notifyDataSetChanged();
                 //getFavLocations();
 
                 Bundle result = new Bundle(); //sending data to dialog
@@ -198,14 +199,8 @@ public class WeatherFragment extends Fragment {
                 dialog.setArguments(result);
                 dialog.show(getChildFragmentManager(), "Favorite Cities");
 
-                if (city.isEmpty()) {
-                    Toast.makeText(getActivity(), "AYOOO BRO TYPE SOMETHING FIRST GAWD", Toast.LENGTH_SHORT).show();
-                } else {
-                    //wfcd.favCityTV.setText(city);
-                }
             }
         });
-        //getWeatherInfo("98375");
     }
 
     private Location getLastKnownLocation() {
@@ -391,9 +386,6 @@ public class WeatherFragment extends Fragment {
         try {
             body.put("user", mUserModel.getMemberID());
             body.put("nickname", cityNameTV.getText().toString());
-            body.put("lat", "42");
-            body.put("long", "122");
-            body.put("zip", "98378");
         } catch (JSONException e) {
             e.printStackTrace();
         }
