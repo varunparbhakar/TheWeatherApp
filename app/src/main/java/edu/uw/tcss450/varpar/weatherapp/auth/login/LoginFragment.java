@@ -158,11 +158,13 @@ public class LoginFragment extends Fragment {
                 //this error cannot be fixed by the user changing credentials...
                 mBinding.etEmail.setError(
                         "Error Authenticating on Push Token. Please contact support");
-            } else {
+            } else if(response.has("success")){
                 Log.i("Pushy Observer", response.toString());
                 navigateToSuccess(
-                        response.toString()
+                        mUserViewModel.getJsonString()
                 );
+            }else {
+                Log.e("ERROR", "observePushyPutResponse: Pushy returned an unexpected response");
             }
         }
     }
@@ -265,8 +267,9 @@ public class LoginFragment extends Fragment {
                     if(String.valueOf(response.getString("message")).equals("A password recovery email has been sent")){
                         Log.i("Login", "User forgot their password");
                     } else if ((response.getString("message")).equals("Authentication successful!")) {
-                            mUserViewModel = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
+                        Log.i("Login", "Auth was successfull");
                         try {
+                            mUserViewModel = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
                             mUserViewModel.setJSON(response);
                             sendPushyToken();
                         } catch (Exception e) {
@@ -283,6 +286,7 @@ public class LoginFragment extends Fragment {
             }else {
                 //Taking the user's json and passing to the other activity
                 Log.i("Login", "Logging in from the response observer");
+                Log.i("Login", "This is whats being sent to navigate to success " + response.toString());
                 navigateToSuccess(response.toString());
 
             }
@@ -292,6 +296,8 @@ public class LoginFragment extends Fragment {
 
     }
     private void navigateToSuccess(final String json) {
+        Log.i("NavigateToSuccess","Is the remember me switch turned on? " + mBinding.switchSignin.isChecked());
+        Log.i("NavigateToSuccess","This is getting stored on local device" + json);
         if (mBinding.switchSignin.isChecked()) {
             Log.i("Remember me Switch", "Switch is on");
             SharedPreferences prefs =
@@ -301,7 +307,7 @@ public class LoginFragment extends Fragment {
             //Store the credentials in SharedPrefs
             prefs.edit().putString(getString(R.string.keys_prefs_jwt), json).apply();
         }
-        Navigation.findNavController(getView()).navigate(LoginFragmentDirections.actionLoginFragmentToMainActivity2(mUserViewModel.getJsonString()));
+        Navigation.findNavController(getView()).navigate(LoginFragmentDirections.actionLoginFragmentToMainActivity2(json));
 
         //Remove THIS activity from the Task list. Pops off the backstack
         getActivity().finish();
