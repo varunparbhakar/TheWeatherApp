@@ -8,22 +8,49 @@ import androidx.annotation.NonNull;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.uw.tcss450.varpar.weatherapp.R;
+import edu.uw.tcss450.varpar.weatherapp.contact.Contact;
 import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentChatListCardBinding;
 
 public class ChatListRecyclerViewAdapter extends RecyclerView.Adapter<ChatListRecyclerViewAdapter.ChatListViewHolder> {
 
-    //Store all of the blogs to present
+    /** Store all of the Chats to present. */
     private final List<ChatListRoom> mChatListItems;
+
+    /** Store copy all of the Chats to present for safe search. */
+    private List<ChatListRoom> mChatListItemsCopy;
 
     /** Host fragment to bounce view actions to. */
     private final ChatListFragment mFragment;
 
     public ChatListRecyclerViewAdapter(List<ChatListRoom> items, ChatListFragment frag) {
         this.mChatListItems = items;
+        this.mChatListItemsCopy = new ArrayList<>();
+        this.mChatListItemsCopy.addAll(items);
         this.mFragment = frag;
+    }
+
+    /**
+     * Filter list contents during live search.
+     * Refresh to full list once search is empty.
+     * @param text current search text.
+     */
+    public void filter(String text) {
+        mChatListItems.clear();
+        if(text.isEmpty()){
+            mChatListItems.addAll(mChatListItemsCopy);
+        } else{
+            text = text.toLowerCase();
+            for(ChatListRoom item: mChatListItemsCopy){
+                if(item.getName().toLowerCase().contains(text)){
+                    mChatListItems.add(item);
+                }
+            }
+        }
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -73,7 +100,6 @@ public class ChatListRecyclerViewAdapter extends RecyclerView.Adapter<ChatListRe
             mChat = chatListItem;
 
             binding.textChatUser.setText(chatListItem.getName());
-            binding.textChatMessage.setText(R.string.chat_card_text);
             binding.layoutInner.setOnClickListener(
                 card -> {
                     Navigation.findNavController(mView).navigate(

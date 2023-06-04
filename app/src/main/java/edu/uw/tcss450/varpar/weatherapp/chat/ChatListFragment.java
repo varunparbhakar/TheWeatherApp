@@ -7,6 +7,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,9 +22,7 @@ import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentChatListBinding;
 import edu.uw.tcss450.varpar.weatherapp.model.UserInfoViewModel;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link ChatListFragment} factory method to
- * create an instance of this fragment.
+ *
  */
 public class ChatListFragment extends Fragment {
 
@@ -78,6 +78,24 @@ public class ChatListFragment extends Fragment {
         mBinding.buttonAddChat.setOnClickListener(
             button -> addChatWithName(mBinding.textChatSearch.getText().toString())
         );
+
+        //Live search functionality
+        mBinding.textChatSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                //Unused
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                //Unused
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                myChatListAdapter.filter(s.toString());
+            }
+        });
     }
 
     /**
@@ -148,8 +166,10 @@ public class ChatListFragment extends Fragment {
      * @param jsonObject adjusted server response
      */
     private void addChatResponse(final JSONObject jsonObject) {
-        String resp = getStringFromJson("message", jsonObject);
-        createAlertDialogue(resp);
+//        String resp = getStringFromJson("message", jsonObject);
+//        createAlertDialogue(resp);
+        mBinding.textChatSearch.setText("");
+        mChatListModel.connectGetChatIds(mUserModel.getMemberID(), mUserModel.getJwt());
     }
 
     /**

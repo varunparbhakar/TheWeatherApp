@@ -43,26 +43,11 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:textStyle="bold"
                 app:autoSizeTextType="uniform"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/layout_innerinner"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/chat_user"
                 app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/text_chat_message"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginStart="16dp"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:text="@string/chat_card_text"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:visibility="visible"
-                app:autoSizeTextType="uniform"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/layout_innerinner"
-                app:layout_constraintStart_toEndOf="@+id/chat_user"
-                app:layout_constraintTop_toBottomOf="@+id/text_chat_user" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ImageButton
