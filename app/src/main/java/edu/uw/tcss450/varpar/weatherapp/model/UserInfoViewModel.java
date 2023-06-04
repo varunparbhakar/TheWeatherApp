@@ -136,7 +136,7 @@ public class UserInfoViewModel extends AndroidViewModel {
     }
 
     /**
-     * Attempt change of user password.
+     * Server connection to attempt change of user password.
      * @param oldPassword old password, to verify user.
      * @param newPassword new password to set.
      */

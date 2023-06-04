@@ -25,24 +25,42 @@ import java.util.Objects;
 import edu.uw.tcss450.varpar.weatherapp.R;
 import edu.uw.tcss450.varpar.weatherapp.io.RequestQueueSingleton;
 
+/**
+ * View model for sending chats to server.
+ */
 public class ChatSendViewModel extends AndroidViewModel {
 
+    /** Observation object for server response. */
     private final MutableLiveData<JSONObject> mResponse;
 
+    /**
+     * Constructor sets observation object as new object.
+     * @param application context.
+     */
     public ChatSendViewModel(@NonNull Application application) {
         super(application);
         mResponse = new MutableLiveData<>();
         mResponse.setValue(new JSONObject());
     }
 
+    /**
+     * Add observer to network responses.
+     * @param owner Lifecycle parent.
+     * @param observer ChatSendViewModel.class
+     */
     public void addResponseObserver(@NonNull LifecycleOwner owner,
                                     @NonNull Observer<? super JSONObject> observer) {
         mResponse.observe(owner, observer);
     }
 
+    /**
+     * Server connection to send chat message.
+     * @param chatId chat message belongs to.
+     * @param jwt jwt of user.
+     * @param message message to send.
+     */
     public void sendMessage(final int chatId, final String jwt, final String message) {
-        String url = getApplication().getResources().getString(R.string.url) +
-                "messages";
+        String url = getApplication().getResources().getString(R.string.url) + "messages";
 
         JSONObject body = new JSONObject();
         try {
@@ -77,16 +95,17 @@ public class ChatSendViewModel extends AndroidViewModel {
                 .addToRequestQueue(request);
     }
 
+    /**
+     * Handle error received from sending chat message.
+     * @param error error received.
+     */
     private void handleError(final VolleyError error) {
         if (Objects.isNull(error.networkResponse)) {
             Log.e("NETWORK ERROR", error.getMessage());
-        }
-        else {
+        } else {
             String data = new String(error.networkResponse.data, Charset.defaultCharset());
             Log.e("CLIENT ERROR",
-                    error.networkResponse.statusCode +
-                            " " +
-                            data);
+                    error.networkResponse.statusCode + " " + data);
         }
     }
 }

@@ -25,27 +25,28 @@ public class ChatRoomFragment extends Fragment {
     /** Stores id for chat 1. */
     private static final int HARD_CODED_CHAT_ID = 1;
 
-    /** Stores name "User" for default Chat Room name */
+    /** Stores name "User" for default Chat Room name. */
     private static final String HARD_CODED_CHAT_NAME = "User";
 
-    /** View Model for ChatRoomFragment */
+    /** View Model for ChatRoomFragment. */
     private ChatRoomViewModel mChatRoomModel;
 
-    /** View Model for UserInfo, used across many fragments */
+    /** View Model for UserInfo, used across many fragments. */
     private UserInfoViewModel mUserModel;
 
-    /** View Model for Sending Messages to chat */
+    /** View Model for Sending Messages to chat. */
     private ChatSendViewModel mSendModel;
 
-    /** Binding for this fragment */
+    /** Binding for this fragment. */
     private FragmentChatRoomBinding mBinding;
 
-    /** Used to tell different chats apart and request info from endpoints */
+    /** Used to tell different chats apart and request info from endpoints. */
     private int mChatId;
 
-    /** Used to create a display name for chat */
+    /** Used to create a display name for chat. */
     private String mChatName;
 
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -75,9 +76,7 @@ public class ChatRoomFragment extends Fragment {
         mBinding.textChatroomUser.setText(mChatName);
 
         mBinding.buttonAddChatroomMember.setOnClickListener(button ->
-        {
-            addUserToChat(mBinding.textChatroomAdd.getText().toString());
-        });
+                addUserToChat(mBinding.textChatroomAdd.getText().toString()));
 
         mBinding.swipeContainer.setRefreshing(true);
 
@@ -170,25 +169,20 @@ public class ChatRoomFragment extends Fragment {
     private void observeResponse(final JSONObject jsonObject) {
         if (jsonObject.has("type")) {
             String type = getStringFromJson("type", jsonObject);
-            switch (type) {
-                case "getUsers": {
-                    Log.wtf("ChatRoomResponse", jsonObject.toString());
-                    try {
-                        mBinding.textChatroomUser.setText(
+            if ("getUsers".equals(type)) {
+                Log.wtf("ChatRoomResponse", jsonObject.toString());
+                try {
+                    mBinding.textChatroomUser.setText(
                             getJsonArrayFromJson("email", jsonObject).join(", ")
-                        );
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
-                    }
-                    break;
+                    );
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
                 }
-                default :
-                    break;
             }
         }
     }
 
-    /** Only here cause it has to be */
+    /** Only here cause it has to be. */
     public ChatRoomFragment() {
         // Required empty public constructor
     }

@@ -28,6 +28,9 @@ import java.util.Objects;
 import edu.uw.tcss450.varpar.weatherapp.R;
 import edu.uw.tcss450.varpar.weatherapp.io.RequestQueueSingleton;
 
+/**
+ * View model for chat room data.
+ */
 public class ChatRoomViewModel extends AndroidViewModel {
 
     /**
@@ -43,6 +46,10 @@ public class ChatRoomViewModel extends AndroidViewModel {
     /** Network responses, for observer. */
     private MutableLiveData<JSONObject> mResponse;
 
+    /**
+     * Constructor for chat rooms.
+     * @param application context.
+     */
     public ChatRoomViewModel(@NonNull Application application) {
         super(application);
         mMessages = new HashMap<>();
@@ -71,6 +78,11 @@ public class ChatRoomViewModel extends AndroidViewModel {
         mResponse.observe(owner, observer);
     }
 
+    /**
+     * Get chat messages from specified chatroom.
+     * @param chatId chatroom to get messages from.
+     * @return list of messages.
+     */
     public List<ChatRoomMessage> getMessageListByChatId(final int chatId) {
         return getOrCreateMapEntry(chatId).getValue();
     }
@@ -78,8 +90,8 @@ public class ChatRoomViewModel extends AndroidViewModel {
     /**
      * When a chat message is received externally to this ViewModel, add it
      * with this method.
-     * @param chatId
-     * @param message
+     * @param chatId chat to add message to.
+     * @param message message to add.
      */
     public void addMessage(final int chatId, final ChatRoomMessage message) {
         List<ChatRoomMessage> list = getMessageListByChatId(chatId);
@@ -87,8 +99,13 @@ public class ChatRoomViewModel extends AndroidViewModel {
         getOrCreateMapEntry(chatId).setValue(list);
     }
 
+    /**
+     * Inserts value into chat if not already present.
+     * @param chatId id to add to.
+     * @return observation object of chatrooms.
+     */
     private MutableLiveData<List<ChatRoomMessage>> getOrCreateMapEntry(final int chatId) {
-        if(!mMessages.containsKey(chatId)) {
+        if (!mMessages.containsKey(chatId)) {
             mMessages.put(chatId, new MutableLiveData<>(new ArrayList<>()));
         }
         return mMessages.get(chatId);
@@ -98,10 +115,8 @@ public class ChatRoomViewModel extends AndroidViewModel {
      * Makes a request to the web service to get the first batch of messages for a given Chat Room.
      * Parses the response and adds the ChatRoomRecyclerItem object to the List associated with the
      * ChatRoom. Informs observers of the update.
-     *
      * Subsequent requests to the web service for a given chat room should be made from
      * getNextMessages()
-     *
      * @param chatId the chatroom id to request messages of
      * @param jwt the users signed JWT
      */
@@ -145,9 +160,7 @@ public class ChatRoomViewModel extends AndroidViewModel {
      * messageId to the web service.
      * Parses the response and adds the ChatRoomRecyclerItem object to the List associated with the
      * ChatRoom. Informs observers of the update.
-     *
      * Subsequent calls to this method receive earlier and earlier messages.
-     *
      * @param chatId the chatroom id to request messages of
      * @param jwt the users signed JWT
      */
@@ -165,7 +178,7 @@ public class ChatRoomViewModel extends AndroidViewModel {
             null, //no body for this get request
             this::handleSuccessForGetFirstOrNextMessages,
             this::handleErrorForGetFirstOrNextMessages
-        ){
+        ) {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
@@ -191,6 +204,10 @@ public class ChatRoomViewModel extends AndroidViewModel {
         //code here will run
     }
 
+    /**
+     * Handle server response for successful message retrieval.
+     * @param response server response.
+     */
     private void handleSuccessForGetFirstOrNextMessages(final JSONObject response) {
         List<ChatRoomMessage> list;
         if (!response.has("chatId")) {
@@ -199,7 +216,7 @@ public class ChatRoomViewModel extends AndroidViewModel {
         try {
             list = getMessageListByChatId(response.getInt("chatId"));
             JSONArray messages = response.getJSONArray("rows");
-            for(int i = 0; i < messages.length(); i++) {
+            for (int i = 0; i < messages.length(); i++) {
                 JSONObject message = messages.getJSONObject(i);
                 ChatRoomMessage cMessage = new ChatRoomMessage(
                         message.getInt("messageid"),
@@ -219,22 +236,23 @@ public class ChatRoomViewModel extends AndroidViewModel {
             }
             //inform observers of the change (setValue)
             getOrCreateMapEntry(response.getInt("chatId")).postValue(list);
-        }catch (JSONException e) {
+        } catch (JSONException e) {
             Log.e("JSON PARSE ERROR", "Found in handle Success ChatRoomViewModel");
             Log.e("JSON PARSE ERROR", "Error: " + e.getMessage());
         }
     }
 
+    /**
+     * Handle error for attempt of getting messages from chatroom.
+     * @param error volley or server error.
+     */
     private void handleErrorForGetFirstOrNextMessages(final VolleyError error) {
         if (Objects.isNull(error.networkResponse)) {
             Log.e("NETWORK ERROR", error.getMessage());
-        }
-        else {
+        } else {
             String data = new String(error.networkResponse.data, Charset.defaultCharset());
             Log.e("CLIENT ERROR",
-                    error.networkResponse.statusCode +
-                            " " +
-                            data);
+                    error.networkResponse.statusCode + " " + data);
         }
     }
 
@@ -244,9 +262,7 @@ public class ChatRoomViewModel extends AndroidViewModel {
      */
     public void connectGetUsersByChatId(final int chatId, final String jwt) {
         String url =
-                getApplication().getResources().getString(R.string.url)
-                        + "chats/"
-                        + chatId;
+                getApplication().getResources().getString(R.string.url) + "chats/" + chatId;
 
         Request<JSONObject> request = new JsonObjectRequest(
                 Request.Method.GET,
@@ -254,7 +270,7 @@ public class ChatRoomViewModel extends AndroidViewModel {
                 null,
                 this::handleSuccessForGetUsersByChatId,
                 this::handleErrorForGetUsersByChatId
-        ){
+        ) {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
@@ -338,7 +354,7 @@ public class ChatRoomViewModel extends AndroidViewModel {
                 null,
                 this::handleSuccessForPutUserInChatByEmail,
                 this::handleErrorForPutUserInChatByEmail
-        ){
+        ) {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
