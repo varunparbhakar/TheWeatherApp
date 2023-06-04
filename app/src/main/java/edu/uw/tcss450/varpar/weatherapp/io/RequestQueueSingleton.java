@@ -1,4 +1,5 @@
 package edu.uw.tcss450.varpar.weatherapp.io;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 
@@ -37,9 +38,9 @@ public class RequestQueueSingleton {
                 });
     }
 
-    public static synchronized RequestQueueSingleton getInstance(Context context) {
+    public static synchronized RequestQueueSingleton getInstance(Context cont) {
         if (instance == null) {
-            instance = new RequestQueueSingleton(context);
+            instance = new RequestQueueSingleton(cont);
         }
         return instance;
     }

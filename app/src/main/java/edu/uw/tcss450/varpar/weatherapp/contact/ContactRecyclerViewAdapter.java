@@ -28,7 +28,7 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
     /** Host fragment to bounce view actions to. */
     private final ContactListFragment mFragment;
 
-    public ContactRecyclerViewAdapter(List<Contact> items, ContactListFragment frag) {
+    public ContactRecyclerViewAdapter(final List<Contact> items, final ContactListFragment frag) {
         this.mContacts = items;
         this.mContactsCopy = new ArrayList<>();
         this.mContactsCopy.addAll(items);
@@ -42,12 +42,12 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
      */
     public void filter(String text) {
         mContacts.clear();
-        if(text.isEmpty()){
+        if (text.isEmpty()) {
             mContacts.addAll(mContactsCopy);
-        } else{
+        } else {
             text = text.toLowerCase();
-            for(Contact item: mContactsCopy){
-                if(item.getUsername().toLowerCase().contains(text)){
+            for (Contact item: mContactsCopy) {
+                if (item.getUsername().toLowerCase().contains(text)) {
                     mContacts.add(item);
                 }
             }
@@ -78,13 +78,19 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
      * of rows in the Contact Recycler View.
      */
     public class ContactViewHolder extends RecyclerView.ViewHolder {
-        public final View mView;
-        public FragmentContactCardBinding binding;
+
+        /** Binding of views in holder. */
+        private final FragmentContactCardBinding binding;
+
+        /** Contact contained in holder. */
         private Contact mContact;
 
+        /**
+         * Default constructor, binds to view.
+         * @param view view to bind with holder.
+         */
         public ContactViewHolder(View view) {
             super(view);
-            mView = view;
             binding = FragmentContactCardBinding.bind(view);
         }
 
@@ -104,6 +110,10 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
             mFragment.addContactChat(mContact.getMemberID());
         }
 
+        /**
+         * Sets functionality for buttons on each card, and name on card to match contact.
+         * @param contact contact to utilize with method functions.
+         */
         void setContact(final Contact contact) {
             mContact = contact;
             binding.textContactUser.setText(contact.getUsername());

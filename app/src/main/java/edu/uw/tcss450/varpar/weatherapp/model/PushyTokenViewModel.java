@@ -27,11 +27,21 @@ import edu.uw.tcss450.varpar.weatherapp.R;
 import edu.uw.tcss450.varpar.weatherapp.io.RequestQueueSingleton;
 import me.pushy.sdk.Pushy;
 
-public class PushyTokenViewModel extends AndroidViewModel{
+/**
+ * View model for pushy token.
+ */
+public class PushyTokenViewModel extends AndroidViewModel {
 
+    /** Observation object of token with pushy. */
     private final MutableLiveData<String> mPushyToken;
+
+    /** Observation object of server response. */
     private final MutableLiveData<JSONObject> mResponse;
 
+    /**
+     * Default constructor.
+     * @param application context.
+     */
     public PushyTokenViewModel(@NonNull Application application) {
         super(application);
         mPushyToken = new MutableLiveData<>();
@@ -50,11 +60,19 @@ public class PushyTokenViewModel extends AndroidViewModel{
         mPushyToken.observe(owner, observer);
     }
 
+    /**
+     * Add observer to network responses.
+     * @param owner Lifecycle parent.
+     * @param observer PushyTokenViewModel.class
+     */
     public void addResponseObserver(@NonNull LifecycleOwner owner,
                                     @NonNull Observer<? super JSONObject> observer) {
         mResponse.observe(owner, observer);
     }
 
+    /**
+     * Retrieve token for pushy.
+     */
     public void retrieveToken() {
         if (!Pushy.isRegistered(getApplication().getApplicationContext())) {
 
@@ -79,8 +97,7 @@ public class PushyTokenViewModel extends AndroidViewModel{
             try {
                 // Assign a unique token to this device
                 deviceToken = Pushy.register(getApplication().getApplicationContext());
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 // Return exc to onPostExecute
                 return e.getMessage();
             }
@@ -101,7 +118,7 @@ public class PushyTokenViewModel extends AndroidViewModel{
 
     /**
      * Send this Pushy device token to the web service.
-     * @param jwt
+     * @param jwt jwt to link.
      * @throws IllegalStateException when this method is called before the token is retrieve
      */
     public void sendTokenToWebservice(final String jwt) {
@@ -110,8 +127,7 @@ public class PushyTokenViewModel extends AndroidViewModel{
             throw new IllegalStateException("No pushy token. Do NOT call until token is retrieved");
         }
 
-        String url = getApplication().getResources().getString(R.string.base_url) +
-                "auth";
+        String url = getApplication().getResources().getString(R.string.base_url) + "auth";
 
         JSONObject body = new JSONObject();
         try {
@@ -147,31 +163,35 @@ public class PushyTokenViewModel extends AndroidViewModel{
                 .addToRequestQueue(request);
     }
 
+    /**
+     * Handle error from handshaking with pushy.
+     * @param error error.
+     */
     private void handleError(final VolleyError error) {
         if (Objects.isNull(error.networkResponse)) {
             try {
-                mResponse.setValue(new JSONObject("{" +
-                        "error:\"" + error.getMessage() +
-                        "\"}"));
+                mResponse.setValue(new JSONObject("{" + "error:\"" + error.getMessage() + "\"}"));
             } catch (JSONException e) {
                 Log.e("JSON PARSE", "JSON Parse Error in handleError");
             }
-        }
-        else {
+        } else {
             String data = new String(error.networkResponse.data, Charset.defaultCharset());
             try {
-                mResponse.setValue(new JSONObject("{" +
-                        "code:" + error.networkResponse.statusCode +
-                        ", data:" + data +
-                        "}"));
+                mResponse.setValue(new JSONObject("{" + "code:"
+                        + error.networkResponse.statusCode
+                        + ", data:" + data + "}"));
             } catch (JSONException e) {
                 Log.e("JSON PARSE", "JSON Parse Error in handleError");
             }
         }
     }
+
+    /**
+     * Remove token from webservice.
+     * @param jwt jwt to remove.
+     */
     public void deleteTokenFromWebservice(final String jwt) {
-        String url = getApplication().getResources().getString(R.string.base_url) +
-                "auth";
+        String url = getApplication().getResources().getString(R.string.base_url) + "auth";
         Request request = new JsonObjectRequest(
                 Request.Method.DELETE,
                 url,
@@ -181,7 +201,6 @@ public class PushyTokenViewModel extends AndroidViewModel{
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-// add headers <key,value>
                 headers.put("Authorization", jwt);
                 return headers;
             }
@@ -190,7 +209,7 @@ public class PushyTokenViewModel extends AndroidViewModel{
                 10_000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-//Instantiate the RequestQueue and add the request to the queue
+        //Instantiate the RequestQueue and add the request to the queue
         RequestQueueSingleton.getInstance(getApplication().getApplicationContext())
                 .addToRequestQueue(request);
     }

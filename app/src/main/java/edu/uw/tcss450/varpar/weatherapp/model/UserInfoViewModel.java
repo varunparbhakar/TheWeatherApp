@@ -141,7 +141,7 @@ public class UserInfoViewModel extends AndroidViewModel {
      * @param newPassword new password to set.
      */
     public void connectValidatePassword(final String oldPassword, final String newPassword) {
-        String url = getApplication().getResources().getString(R.string.url)+"password/changepass";
+        String url = getApplication().getResources().getString(R.string.url) + "password/changepass";
 
         JSONObject body = new JSONObject();
         try {
@@ -224,7 +224,9 @@ public class UserInfoViewModel extends AndroidViewModel {
      * Get User's JWT.
      * @return JWT as string
      */
-    public String getJwt(){return mJwt;}
+    public String getJwt() {
+        return mJwt;
+    }
 
     /**
      * Get user's Member ID.

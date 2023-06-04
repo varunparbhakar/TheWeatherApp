@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import edu.uw.tcss450.varpar.weatherapp.R;
-import edu.uw.tcss450.varpar.weatherapp.home.FriendReqRVAdapter;
 import edu.uw.tcss450.varpar.weatherapp.io.RequestQueueSingleton;
 
 /**

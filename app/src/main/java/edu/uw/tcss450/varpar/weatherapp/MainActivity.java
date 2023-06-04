@@ -17,7 +17,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
 
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -25,7 +24,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import edu.uw.tcss450.varpar.weatherapp.auth.login.LoginFragmentDirections;
 import edu.uw.tcss450.varpar.weatherapp.chat.ChatRoomMessage;
 import edu.uw.tcss450.varpar.weatherapp.chat.ChatRoomViewModel;
 import edu.uw.tcss450.varpar.weatherapp.databinding.ActivityMainBinding;
@@ -43,17 +41,20 @@ public class MainActivity extends AppCompatActivity {
     /** Config for bottom navigation.  */
     private AppBarConfiguration mAppBarConfiguration;
 
+    /** Binding for views in fragment. */
     private ActivityMainBinding binding;
 
+    /** Pushy receiver. */
     private MainPushMessageReceiver mPushMessageReceiver;
 
+    /** Count of new messages. */
     private NewMessageCountViewModel mNewMessageModel;
 
     /**
      * Creates activity and performs setup of bottom navigation.
      * @param savedInstanceState If the activity is being re-initialized after
-     *     previously being shut down then this Bundle contains the data it most
-     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     * previously being shut down then this Bundle contains the data it most
+     * recently supplied.
      */
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -107,14 +108,6 @@ public class MainActivity extends AppCompatActivity {
                 badge.setVisible(false);
             }
         });
-
-        // This is the code for the add chat button
-        // TODO: add chat button to chat fragment functionality
-//        Button addChatButton = findViewById(R.id.);
-//        addChatButton.setOnClickListener(button -> {
-//            Navigation.findNavController(this, R.id.nav_host_fragment).navigate(
-//                    MainActivityDirections.actionNavigationChatToAddChatFragment());
-//        });
     }
 
     @Override
@@ -130,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
-        if (mPushMessageReceiver != null){
+        if (mPushMessageReceiver != null) {
             unregisterReceiver(mPushMessageReceiver);
         }
     }
@@ -168,7 +161,6 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         if (item.getItemId() == R.id.action_sign_out) {
             signOut();
-//            return true;
         }
         return NavigationUI.onNavDestinationSelected(item, navController)
                 || super.onOptionsItemSelected(item);
@@ -184,10 +176,10 @@ public class MainActivity extends AppCompatActivity {
                         getString(R.string.keys_shared_prefs),
                         Context.MODE_PRIVATE);
         prefs.edit().remove(getString(R.string.keys_prefs_jwt)).apply();
-//        End the app completely
+
         PushyTokenViewModel model = new ViewModelProvider(this)
                 .get(PushyTokenViewModel.class);
-//when we hear back from the web service quit
+        //when we hear back from the web service quit
         model.addResponseObserver(this, result -> finishAndRemoveTask());
         model.deleteTokenFromWebservice(
                 new ViewModelProvider(this)
@@ -197,13 +189,13 @@ public class MainActivity extends AppCompatActivity {
         getViewModelStore().clear();
 
         finishAndRemoveTask();
-        Intent i = new Intent(getApplicationContext(),AuthActivity.class);
+        Intent i = new Intent(getApplicationContext(), AuthActivity.class);
         startActivity(i);
         setContentView(R.layout.activity_auth);
     }
 
     /**
-     * A BroadcastReceiver that listens for messages sent from PushReceiver
+     * A BroadcastReceiver that listens for messages sent from PushReceiver.
      */
     private class MainPushMessageReceiver extends BroadcastReceiver {
 
