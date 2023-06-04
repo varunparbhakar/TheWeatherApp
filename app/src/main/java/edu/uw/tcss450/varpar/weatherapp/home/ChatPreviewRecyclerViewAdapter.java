@@ -12,20 +12,38 @@ import java.util.List;
 import edu.uw.tcss450.varpar.weatherapp.R;
 import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentChatPreviewBinding;
 
+/**
+ * {@link RecyclerView.Adapter} that can display a {@link ChatPreview} and makes a call to the
+ * specified {@link ChatPreview}.
+ * This Adapter is meant to be used with a {@link RecyclerView}.
+ *
+ * @author Jashanpreet Jandu
+ * @version 1.0
+ * @since 2023-06-03
+ */
 public class ChatPreviewRecyclerViewAdapter extends RecyclerView.Adapter<ChatPreviewRecyclerViewAdapter.ChatPreviewViewHolder> {
 
-    //Store all of the blogs to present
+    /**
+     * A list containing all ChatPreviews to present.
+     */
     private final List<ChatPreview> mChatPreviews;
 
-//    //Store the expanded state for each List item, true -> expanded, false -> not
-//    private final Map<Contact, Boolean> mExpandedFlags;
-
+    /**
+     * Constructs a new ChatPreviewRecyclerViewAdapter.
+     *
+     * @param items a List of ChatPreview objects to display.
+     */
     public ChatPreviewRecyclerViewAdapter(List<ChatPreview> items) {
         this.mChatPreviews = items;
-//        mExpandedFlags = mContacts.stream()
-//                .collect(Collectors.toMap(Function.identity(), blog -> false));
     }
 
+    /**
+     * Invoked when a new ViewHolder gets created.
+     *
+     * @param parent the ViewGroup that the new View will be added to after it is bound to an adapter position.
+     * @param viewType the view type of the new View.
+     * @return a new ViewHolder that holds a View of the given view type.
+     */
     @NonNull
     @Override
     public ChatPreviewViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -34,78 +52,69 @@ public class ChatPreviewRecyclerViewAdapter extends RecyclerView.Adapter<ChatPre
                 .inflate(R.layout.fragment_contact_card, parent, false));
     }
 
+    /**
+     * Invoked by RecyclerView to display the data at the specified position.
+     *
+     * @param holder the ViewHolder to be updated to represent the contents of the item at the given position in the data set.
+     * @param position the position of the item within the adapter's data set.
+     */
     @Override
     public void onBindViewHolder(@NonNull ChatPreviewViewHolder holder, int position) {
         holder.setChatPreviews(mChatPreviews.get(position));
     }
 
+    /**
+     * Returns the total number of items in the data set held by the adapter.
+     *
+     * @return the total number of items in this adapter.
+     */
     @Override
     public int getItemCount() {
         return mChatPreviews.size();
     }
 
     /**
-     * Objects from this class represent an Individual row View from the List
-     * of rows in the Contact Recycler View.
+     * A ViewHolder describes an item view and metadata about its place within the RecyclerView.
+     * It allows to present an individual row View from the List of rows in the Contact Recycler View.
+     *
+     * @author Jashanpreet Jandu
+     * @version 1.0
+     * @since 2023-06-03
      */
     public class ChatPreviewViewHolder extends RecyclerView.ViewHolder {
+        /**
+         * The main view for this ViewHolder
+         */
         public final View mView;
+
+        /**
+         * The binding for this view holder
+         */
         public FragmentChatPreviewBinding binding;
+
+        /**
+         * The ChatPreview for this view holder
+         */
         private ChatPreview mChatPreview;
 
+        /**
+         * Constructs a new ChatPreviewViewHolder.
+         *
+         * @param view the View that you inflated in {@link #onCreateViewHolder(ViewGroup, int)}
+         */
         public ChatPreviewViewHolder(View view) {
             super(view);
             mView = view;
             binding = FragmentChatPreviewBinding.bind(view);
-//            binding.buittonMore.setOnClickListener(this::handleMoreOrLess);
         }
 
-//        /**
-//         * When the button is clicked in the more state, expand the card to display
-//         * the blog preview and switch the icon to the less state.  When the button
-//         * is clicked in the less state, shrink the card and switch the icon to the
-//         * more state.
-//         * @param button the button that was clicked
-//         */
-//        private void handleMoreOrLess(final View button) {
-//            mExpandedFlags.put(mContact, !mExpandedFlags.get(mContact));
-//        }
-
-//        /**
-//         * Helper used to determine if the preview should be displayed or not.
-//         */
-//        private void displayPreview() {
-//            if (mExpandedFlags.get(mContact)) {
-//                binding.textPreview.setVisibility(View.VISIBLE);
-//                binding.buittonMore.setImageIcon(
-//                        Icon.createWithResource(
-//                                mView.getContext(),
-//                                R.drawable.ic_less_grey_24dp));
-//            } else {
-//                binding.textPreview.setVisibility(View.GONE);
-//                binding.buittonMore.setImageIcon(
-//                        Icon.createWithResource(
-//                                mView.getContext(),
-//                                R.drawable.ic_more_grey_24dp));
-//            }
-//        }
-
+        /**
+         * Updates the view holder to hold the provided {@link ChatPreview}.
+         *
+         * @param ChatPreview the chat preview to be displayed by this view holder.
+         */
         void setChatPreviews(final ChatPreview ChatPreview) {
             mChatPreview = ChatPreview;
-//            binding.buttonFullPost.setOnClickListener(view -> {
-//                Navigation.findNavController(mView).navigate(
-//                        ContactListFragmentDirections
-//                                .ContactFragment(blog));
-//            });
-//            binding.textUser.setText(ChatPreview.getUser());
-            //Use methods in the HTML class to format the HTML found in the text
-//            final String preview =  Html.fromHtml(
-//                            contact.getTeaser(),
-//                            Html.FROM_HTML_MODE_COMPACT)
-//                    .toString().substring(0,100) //just a preview of the teaser
-//                    + "...";
-//            binding.textPreview.setText(preview);
-//            displayPreview();
         }
     }
 }
