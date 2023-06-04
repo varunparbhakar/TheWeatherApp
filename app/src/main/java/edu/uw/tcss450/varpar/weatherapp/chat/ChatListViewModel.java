@@ -30,17 +30,27 @@ import edu.uw.tcss450.varpar.weatherapp.io.RequestQueueSingleton;
 
 public class ChatListViewModel extends AndroidViewModel {
 
+    /** List of chats that gets observed */
     private MutableLiveData<List<ChatListRoom>> mChatList;
 
     /** Network responses, for observer. */
     private MutableLiveData<JSONObject> mResponse;
 
+    /**
+     * Maintains a mutable list of chats.
+     * @param application
+     */
     public ChatListViewModel(@NonNull Application application) {
         super(application);
         mChatList = new MutableLiveData<>();
         mChatList.setValue(new ArrayList<>());
     }
 
+    /**
+     * Allows behavior to be triggered when chat list changes.
+     * @param owner Lifecycle parent
+     * @param observer method to trigger
+     */
     public void addChatListObserver(
             @NonNull LifecycleOwner owner,
             @NonNull Observer<? super List<ChatListRoom>> observer
@@ -51,7 +61,7 @@ public class ChatListViewModel extends AndroidViewModel {
     /**
      * Add observer to network responses.
      * @param owner Lifecycle parent.
-     * @param observer UserInfoViewModel.class
+     * @param observer method to trigger
      */
     public void addResponseObserver(final @NonNull LifecycleOwner owner,
                                     final @NonNull Observer<? super JSONObject> observer) {
@@ -67,14 +77,19 @@ public class ChatListViewModel extends AndroidViewModel {
         mResponse.removeObserver(observer);
     }
 
-    public List<ChatListRoom> getChatList(){
+    /**
+     * Getter.
+     * @return Chat List
+     */
+    public List<ChatListRoom> getChatList() {
         return mChatList.getValue();
     }
 
-    public boolean isEmpty(){
-        return mChatList.getValue().isEmpty();
-    }
-
+    /**
+     * Dial out to endpoint and return a list of ids member belongs to.
+     * @param memberId
+     * @param jwt
+     */
     public void connectGetChatIds(final String memberId, final String jwt) {
         String url =
                 getApplication()
@@ -88,7 +103,7 @@ public class ChatListViewModel extends AndroidViewModel {
             null,
             this::handleSuccessForGetChatIds,
             this::handleErrorForGetChatIds
-        ){
+        ) {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
@@ -114,12 +129,17 @@ public class ChatListViewModel extends AndroidViewModel {
         //code here will run
     }
 
+    /**
+     * When a successful response comes out of the queue apply data from
+     * response to mutable chat id list.
+     * @param response
+     */
     private void handleSuccessForGetChatIds(final JSONObject response) {
         List<ChatListRoom> list = new ArrayList<>();
 
         try {
             JSONArray rooms = response.getJSONArray("rows");
-            for(int i = 0; i < rooms.length(); i++) {
+            for (int i = 0; i < rooms.length(); i++) {
                 JSONObject room = rooms.getJSONObject(i);
                 ChatListRoom cRoom = new ChatListRoom(
                     room.getString("chatid"),
@@ -146,21 +166,22 @@ public class ChatListViewModel extends AndroidViewModel {
     private void handleErrorForGetChatIds(final VolleyError error) {
         if (Objects.isNull(error.networkResponse)) {
             Log.e("NETWORK ERROR", error.getMessage());
-        }
-        else {
+        } else {
             String data = new String(error.networkResponse.data, Charset.defaultCharset());
             Log.e("CLIENT ERROR",
-                    error.networkResponse.statusCode +
-                            " " +
-                            data);
+                    error.networkResponse.statusCode
+                        + " "
+                        + data
+            );
         }
     }
 
     /**
      * Connect to server to add new chat.
      * @param chatName Name of chat to add.
+     * @param jwt expected from UserInfoViewModel
      */
-    public void connectAddChatWithName(final String chatName, final String jwt) {
+    public void connectPutChatWithName(final String chatName, final String jwt) {
         String url = getApplication().getResources().getString(R.string.url) + "chats/";
 
         JSONObject body = new JSONObject();
@@ -176,7 +197,7 @@ public class ChatListViewModel extends AndroidViewModel {
             body,
             this::handleSuccessForPost,
             this::handleErrorForPost
-        ){
+        ) {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
@@ -251,13 +272,13 @@ public class ChatListViewModel extends AndroidViewModel {
     /**
      * Connect to server to add new chat.
      * @param chatId Name of chat to add.
+     * @param jwt Expected from UserInfoViewModel
      */
     public void connectPutMeInChat(final String chatId, final String jwt) {
         String url =
             getApplication().getResources().getString(R.string.url)
             + "chats/"
-            + chatId
-        ;
+            + chatId;
 
         Request<JSONObject> request = new JsonObjectRequest(
                 Request.Method.PUT,
@@ -265,7 +286,7 @@ public class ChatListViewModel extends AndroidViewModel {
                 null,
                 this::handleSuccessForPut,
                 this::handleErrorForPut
-        ){
+        ) {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
@@ -340,14 +361,14 @@ public class ChatListViewModel extends AndroidViewModel {
      * Connect to server to delete contact.
      * @param chatId identifies chat to remove user from
      * @param email identifies the user to delete from chat
+     * @param jwt Expected from UserInfoViewModel
      */
     public void connectDeleteUserFromChat(final String chatId, final String email, final String jwt) {
         String url =
             getApplication().getResources().getString(R.string.url)
             + "chats/delete/"
             + chatId + "/"
-            + email
-        ;
+            + email;
 
         Request<JSONObject> request = new JsonObjectRequest(
             Request.Method.DELETE,
@@ -355,7 +376,7 @@ public class ChatListViewModel extends AndroidViewModel {
             null,
             this::handleSuccessForDelete,
             this::handleErrorForDelete
-        ){
+        ) {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();

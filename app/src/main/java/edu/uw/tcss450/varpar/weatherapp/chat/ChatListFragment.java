@@ -26,12 +26,16 @@ import edu.uw.tcss450.varpar.weatherapp.model.UserInfoViewModel;
  */
 public class ChatListFragment extends Fragment {
 
+    /** View Model for ChatListFragment. **/
     private ChatListViewModel mChatListModel;
 
+    /** Binding for this fragment. **/
     private FragmentChatListBinding mBinding;
 
+    /** Recycler View for Chat Cards. **/
     private ChatListRecyclerViewAdapter myChatListAdapter;
 
+    /** View Model for UserInfo, used across many fragments.. **/
     private UserInfoViewModel mUserModel;
 
     @Override
@@ -54,16 +58,16 @@ public class ChatListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Attach binding to access components
-        mBinding = FragmentChatListBinding.bind(getView());
+        // Binding is first assigned
+        mBinding = FragmentChatListBinding.bind(requireView());
 
-        // Initialize View Adapter and set to intended component
+        // Initialize  and bind recyclerview
         myChatListAdapter = new ChatListRecyclerViewAdapter(
                 mChatListModel.getChatList(), this
         );
         mBinding.recyclerChatMessages.setAdapter(myChatListAdapter);
 
-        // Re-rendering the views when getting data from server
+        // Observer for ChatList Mutable Live Data
         mChatListModel.addChatListObserver(getViewLifecycleOwner(), chatList -> {
             myChatListAdapter = new ChatListRecyclerViewAdapter(
                     mChatListModel.getChatList(), this
@@ -72,9 +76,10 @@ public class ChatListFragment extends Fragment {
             mBinding.layoutWait.setVisibility(View.GONE);
         });
 
+        // Parses different kinds of responses
         mChatListModel.addResponseObserver(getViewLifecycleOwner(), this::observeResponse);
 
-        // Set button behavior to Add Chat
+        // Click on Add Button and call addChatWithName to then connect to the endpoint
         mBinding.buttonAddChat.setOnClickListener(
             button -> addChatWithName(mBinding.textChatSearch.getText().toString())
         );
@@ -119,9 +124,13 @@ public class ChatListFragment extends Fragment {
      * @param chatName name of chat
      */
     private void addChatWithName(final String chatName) {
-        mChatListModel.connectAddChatWithName(chatName, mUserModel.getJwt());
+        mChatListModel.connectPutChatWithName(chatName, mUserModel.getJwt());
     }
 
+    /**
+     * Passes intention to put own user id into chat the user just created from View to Model.
+     * @param chatId
+     */
     private void putMeInChat(final String chatId) {
         mChatListModel.connectPutMeInChat(chatId, mUserModel.getJwt());
     }
@@ -146,7 +155,7 @@ public class ChatListFragment extends Fragment {
                     addChatResponse(jsonObject);
                     try {
                         putMeInChat(jsonObject.getString("chatID"));
-                    } catch (JSONException e){
+                    } catch (JSONException e) {
                         Log.e("JSON Error", e.getMessage());
                     }
                     mChatListModel.connectGetChatIds(mUserModel.getMemberID(), mUserModel.getJwt());
@@ -209,6 +218,7 @@ public class ChatListFragment extends Fragment {
         mBinding = null;
     }
 
+    /** They made me do it. */
     public ChatListFragment() {
         // Required empty public constructor
     }
