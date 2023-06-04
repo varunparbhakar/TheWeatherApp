@@ -58,6 +58,9 @@ public class HomeFragment extends Fragment {
     /** Permission code for location. */
     private static final int PERMISSION_CODE = 1;
 
+    /** Request code for location. */
+    private static final int REQUEST_CODE = 100;
+
     /** Binding of view elements. */
     private FragmentHomeBinding mBinding;
 
@@ -82,17 +85,16 @@ public class HomeFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        if (ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_CODE);
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            askPermission();
         }
+
         locationManager = (LocationManager) getContext().getSystemService(LOCATION_SERVICE);
         Location location = getLastKnownLocation();
-        if (location == null) {
-            requestLocationUpdates();
+        if (location != null) {
+            currentCity = getCityName(location.getLongitude(), location.getLatitude());
+            getWeatherInfo();
         }
-        currentCity = getCityName(location.getLongitude(), location.getLatitude());
-
-        getWeatherInfo();
 
         super.onViewCreated(view, savedInstanceState);
         mUserModel = new ViewModelProvider(requireActivity()).get(UserInfoViewModel.class);
@@ -101,6 +103,14 @@ public class HomeFragment extends Fragment {
 
         // Get the friend requests and display them
         getFriendsRequests();
+    }
+
+    /**
+     * Helper method to abstract away the awful syntax of calling out for permissions.
+     */
+    private void askPermission() {
+        requestPermissions(new String[]{
+                Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_CODE);
     }
 
     /**
@@ -131,7 +141,7 @@ public class HomeFragment extends Fragment {
     }
 
     /**
-     * Shakes awake current location
+     * Shakes awake current location.
      */
     private void requestLocationUpdates() {
         LocationRequest mLocationRequest = LocationRequest.create();
@@ -140,7 +150,7 @@ public class HomeFragment extends Fragment {
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         LocationCallback mLocationCallback = new LocationCallback() {
             @Override
-            public void onLocationResult(LocationResult locationResult) {
+            public void onLocationResult(final LocationResult locationResult) {
 
             }
         };
@@ -154,17 +164,21 @@ public class HomeFragment extends Fragment {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            locationManager = (LocationManager) getContext().getSystemService(LOCATION_SERVICE);
-            Location location = getLastKnownLocation();
-            if (location == null) {
-                requestLocationUpdates();
+        Log.wtf("uwu", "got here");
+
+        if (requestCode == REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.wtf("uwu", "got here2");
+                locationManager = (LocationManager) getContext().getSystemService(LOCATION_SERVICE);
+                Location location = getLastKnownLocation();
+                if (location == null) {
+                    requestLocationUpdates();
+                }
+                currentCity = getCityName(location.getLongitude(), location.getLatitude());
+                getWeatherInfo();
+            } else {
+                Log.wtf("uwu", "permission request failed");
             }
-            currentCity = getCityName(location.getLongitude(), location.getLatitude());
-            getWeatherInfo(); //this is all to get current location so the app displays it when opned
-            //getLastKnownLocation();
-        } else {
-            Log.wtf("uwu", "permission request failed");
         }
     }
 
