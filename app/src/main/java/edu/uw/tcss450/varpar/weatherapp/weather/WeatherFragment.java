@@ -91,6 +91,7 @@ public class WeatherFragment extends Fragment {
     private UserInfoViewModel mUserModel;
     public String zipCode;
     private static WeatherFragment instance;
+    private WeatherFavCityDialog dialog = new WeatherFavCityDialog();
 
     public static WeatherFragment getInstance() {
         return instance;
@@ -195,11 +196,8 @@ public class WeatherFragment extends Fragment {
                 Bundle result = new Bundle(); //sending data to dialog
                 result.putString("bundleKey", city);
                 getParentFragmentManager().setFragmentResult("requestKey", result);
-
-                WeatherFavCityDialog dialog = new WeatherFavCityDialog();
                 dialog.setArguments(result);
                 dialog.show(getChildFragmentManager(), "Favorite Cities");
-
             }
         });
     }
@@ -420,6 +418,7 @@ public class WeatherFragment extends Fragment {
         } catch (JSONException e) {
             Log.e("JSON Error", e.getMessage());
         }
+        showDialog();
         //mResponse.setValue(response);
     }
     private void postHandleError(final VolleyError error) {
@@ -448,5 +447,17 @@ public class WeatherFragment extends Fragment {
                 Log.e("JSON Error", e.getMessage());
             }
         }
+    }
+
+    public void showDialog() {
+        dialog.dismiss();
+        String city = cityNameTV.getText().toString();
+        Bundle result = new Bundle(); //sending data to dialog
+        result.putString("bundleKey", city);
+        getParentFragmentManager().setFragmentResult("requestKey", result);
+
+        WeatherFavCityDialog d = new WeatherFavCityDialog();
+        d.setArguments(result);
+        d.show(getChildFragmentManager(), "Favorite Cities");
     }
 }
