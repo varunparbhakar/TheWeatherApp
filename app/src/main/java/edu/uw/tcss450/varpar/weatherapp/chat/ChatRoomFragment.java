@@ -75,8 +75,12 @@ public class ChatRoomFragment extends Fragment {
 
         mBinding.textChatroomUser.setText(mChatName);
 
-        mBinding.buttonAddChatroomMember.setOnClickListener(button ->
-                addUserToChat(mBinding.textChatroomAdd.getText().toString()));
+        mBinding.buttonAddChatroomMember.setOnClickListener(button -> {
+                addUserToChat(mBinding.textChatroomAdd.getText().toString());
+                mBinding.textChatroomAdd.setText("");
+                ;
+            }
+        );
 
         mBinding.swipeContainer.setRefreshing(true);
 
@@ -170,10 +174,11 @@ public class ChatRoomFragment extends Fragment {
         if (jsonObject.has("type")) {
             String type = getStringFromJson("type", jsonObject);
             if ("getUsers".equals(type)) {
-                Log.wtf("ChatRoomResponse", jsonObject.toString());
                 try {
                     mBinding.textChatroomUser.setText(
-                            getJsonArrayFromJson("email", jsonObject).join(", ")
+                        getJsonArrayFromJson("email", jsonObject)
+                                .join(", ")
+                                .replaceAll("\"", "")
                     );
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
