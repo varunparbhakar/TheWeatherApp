@@ -40,6 +40,9 @@ public class ChatRoomViewModel extends AndroidViewModel {
     /** Network responses, for observer. */
     private MutableLiveData<String> mAddedUser;
 
+    /** Network responses, for observer. */
+    private MutableLiveData<JSONObject> mResponse;
+
     public ChatRoomViewModel(@NonNull Application application) {
         super(application);
         mMessages = new HashMap<>();
@@ -57,30 +60,31 @@ public class ChatRoomViewModel extends AndroidViewModel {
         getOrCreateMapEntry(chatId).observe(owner, observer);
     }
 
-//    /**
-//     * Add observer to network responses.
-//     * @param owner Lifecycle parent.
-//     * @param observer the observer
-//     */
-//    public void addAddChatUserObserver(final @NonNull LifecycleOwner owner,
-//                                    final @NonNull Observer<? super JSONObject> observer) {
-//        mAddedUser = new MutableLiveData<>();
-//        mAddedUser.observe(owner, observer);
-//    }
-
     /**
-     * Return a reference to the List<> associated with the chat room. If the View Model does
-     * not have a mapping for this chatID, it will be created.
-     *
-     * WARNING: While this method returns a reference to a mutable list, it should not be
-     * mutated externally in client code. Use public methods available in this class as
-     * needed.
-     *
-     * @param chatId the id of the chat room List to retrieve
-     * @return a reference to the list of messages
+     * Add observer to network responses.
+     * @param owner Lifecycle parent.
+     * @param observer UserInfoViewModel.class
      */
+    public void addResponseObserver(final @NonNull LifecycleOwner owner,
+                                    final @NonNull Observer<? super JSONObject> observer) {
+        mResponse = new MutableLiveData<>();
+        mResponse.observe(owner, observer);
+    }
+
     public List<ChatRoomMessage> getMessageListByChatId(final int chatId) {
         return getOrCreateMapEntry(chatId).getValue();
+    }
+
+    /**
+     * When a chat message is received externally to this ViewModel, add it
+     * with this method.
+     * @param chatId
+     * @param message
+     */
+    public void addMessage(final int chatId, final ChatRoomMessage message) {
+        List<ChatRoomMessage> list = getMessageListByChatId(chatId);
+        list.add(message);
+        getOrCreateMapEntry(chatId).setValue(list);
     }
 
     private MutableLiveData<List<ChatRoomMessage>> getOrCreateMapEntry(final int chatId) {
@@ -101,7 +105,7 @@ public class ChatRoomViewModel extends AndroidViewModel {
      * @param chatId the chatroom id to request messages of
      * @param jwt the users signed JWT
      */
-    public void getFirstMessages(final int chatId, final String jwt) {
+    public void connectGetFirstMessages(final int chatId, final String jwt) {
         String url =
                 getApplication()
                     .getResources()
@@ -147,7 +151,7 @@ public class ChatRoomViewModel extends AndroidViewModel {
      * @param chatId the chatroom id to request messages of
      * @param jwt the users signed JWT
      */
-    public void getNextMessages(final int chatId, final String jwt) {
+    public void connectGetNextMessages(final int chatId, final String jwt) {
         String url =
                 getApplication()
                     .getResources()
@@ -185,18 +189,6 @@ public class ChatRoomViewModel extends AndroidViewModel {
         ).addToRequestQueue(request);
 
         //code here will run
-    }
-
-    /**
-     * When a chat message is received externally to this ViewModel, add it
-     * with this method.
-     * @param chatId
-     * @param message
-     */
-    public void addMessage(final int chatId, final ChatRoomMessage message) {
-        List<ChatRoomMessage> list = getMessageListByChatId(chatId);
-        list.add(message);
-        getOrCreateMapEntry(chatId).setValue(list);
     }
 
     private void handleSuccessForGetFirstOrNextMessages(final JSONObject response) {
@@ -247,21 +239,21 @@ public class ChatRoomViewModel extends AndroidViewModel {
     }
 
     /**
-     * Connect to server to add new chat.
-     * @param chatId Name of chat to add.
+     * Connect to server to retrieve usernames.
+     * @param chatId Id of chat to request.
      */
-    public void connectPutUserInChatByEmail(final int chatId, final String email, final String jwt) {
+    public void connectGetUsersByChatId(final int chatId, final String jwt) {
         String url =
                 getApplication().getResources().getString(R.string.url)
                         + "chats/"
                         + chatId;
 
         Request<JSONObject> request = new JsonObjectRequest(
-                Request.Method.PUT,
+                Request.Method.GET,
                 url,
                 null,
-                this::handleSuccessForPut,
-                this::handleErrorForPut
+                this::handleSuccessForGetUsersByChatId,
+                this::handleErrorForGetUsersByChatId
         ){
             @Override
             public Map<String, String> getHeaders() {
@@ -288,7 +280,91 @@ public class ChatRoomViewModel extends AndroidViewModel {
      * Success handler for adding contact.
      * @param response server response.
      */
-    private void handleSuccessForPut(final JSONObject response) {
+    private void handleSuccessForGetUsersByChatId(final JSONObject response) {
+        try { //note what type of connection happened
+            response.put("type", "getUsers");
+            mResponse.setValue(response);
+        } catch (JSONException e) {
+            Log.e("JSON Error", e.getMessage());
+        }
+    }
+
+    /**
+     * Error handler for adding contact.
+     * @param error server response.
+     */
+    private void handleErrorForGetUsersByChatId(final VolleyError error) {
+        JSONObject resp = new JSONObject();
+        try { //note what type of connection happened
+            resp.put("type", "put");
+        } catch (JSONException e) {
+            Log.e("JSON Error", e.getMessage());
+        }
+
+        if (Objects.isNull(error.networkResponse)) { //server error?
+            Log.e("NETWORK ERROR", error.getMessage());
+            try {
+                resp.put("message", "Network Error");
+            } catch (JSONException e) {
+                Log.e("JSON Error", e.getMessage());
+            }
+        } else { //client error?
+            String data = new String(error.networkResponse.data, Charset.defaultCharset());
+            Log.e("CLIENT ERROR",
+                    error.networkResponse.statusCode + " " + data);
+            try {
+                JSONObject dat = new JSONObject(new String(error.networkResponse.data, Charset.defaultCharset()));
+                resp.put("message", dat.getString("message"));
+            } catch (JSONException e) {
+                Log.e("JSON Error", e.getMessage());
+            }
+        }
+    }
+
+    /**
+     * Connect to server to add new chat.
+     * @param chatId Name of chat to add.
+     */
+    public void connectPutUserInChatByEmail(final int chatId, final String email, final String jwt) {
+        String url =
+                getApplication().getResources().getString(R.string.url)
+                        + "chats/"
+                        + chatId + "/"
+                        + email;
+
+        Request<JSONObject> request = new JsonObjectRequest(
+                Request.Method.PUT,
+                url,
+                null,
+                this::handleSuccessForPutUserInChatByEmail,
+                this::handleErrorForPutUserInChatByEmail
+        ){
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                // add headers <key,value>
+                headers.put("Authorization", jwt);
+                return headers;
+            }
+        };
+
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                10_000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        ));
+
+        //Instantiate the RequestQueue and add the request to the queue
+        RequestQueueSingleton.getInstance(
+                getApplication().getApplicationContext()
+        ).addToRequestQueue(request);
+    }
+
+    /**
+     * Success handler for adding contact.
+     * @param response server response.
+     */
+    private void handleSuccessForPutUserInChatByEmail(final JSONObject response) {
         try { //note what type of connection happened
             response.put("type", "put");
             mAddedUser.setValue(response.getString("email"));
@@ -301,7 +377,7 @@ public class ChatRoomViewModel extends AndroidViewModel {
      * Error handler for adding contact.
      * @param error server response.
      */
-    private void handleErrorForPut(final VolleyError error) {
+    private void handleErrorForPutUserInChatByEmail(final VolleyError error) {
         JSONObject resp = new JSONObject();
         try { //note what type of connection happened
             resp.put("type", "put");

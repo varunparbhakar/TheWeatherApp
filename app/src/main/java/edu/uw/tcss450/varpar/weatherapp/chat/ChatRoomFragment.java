@@ -12,10 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.jetbrains.annotations.Nullable;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.Objects;
 
 import edu.uw.tcss450.varpar.weatherapp.R;
 import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentChatRoomBinding;
@@ -23,19 +22,29 @@ import edu.uw.tcss450.varpar.weatherapp.model.UserInfoViewModel;
 
 public class ChatRoomFragment extends Fragment {
 
-    //The chat ID for "global" chat
+    /** Stores id for chat 1. */
     private static final int HARD_CODED_CHAT_ID = 1;
+
+    /** Stores name "User" for default Chat Room name */
     private static final String HARD_CODED_CHAT_NAME = "User";
 
+    /** View Model for ChatRoomFragment */
     private ChatRoomViewModel mChatRoomModel;
-    private UserInfoViewModel mUserModel;
-    private ChatSendViewModel mSendModel;
-    private int mChatId;
-    private String mChatName;
 
-    public ChatRoomFragment() {
-        // Required empty public constructor
-    }
+    /** View Model for UserInfo, used across many fragments */
+    private UserInfoViewModel mUserModel;
+
+    /** View Model for Sending Messages to chat */
+    private ChatSendViewModel mSendModel;
+
+    /** Binding for this fragment */
+    private FragmentChatRoomBinding mBinding;
+
+    /** Used to tell different chats apart and request info from endpoints */
+    private int mChatId;
+
+    /** Used to create a display name for chat */
+    private String mChatName;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +55,7 @@ public class ChatRoomFragment extends Fragment {
         ViewModelProvider provider = new ViewModelProvider(requireActivity());
         mUserModel = provider.get(UserInfoViewModel.class);
         mChatRoomModel = provider.get(ChatRoomViewModel.class);
-        mChatRoomModel.getFirstMessages(mChatId, mUserModel.getJwt());
+        mChatRoomModel.connectGetFirstMessages(mChatId, mUserModel.getJwt());
         mSendModel = provider.get(ChatSendViewModel.class);
     }
 
@@ -61,26 +70,28 @@ public class ChatRoomFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        FragmentChatRoomBinding binding = FragmentChatRoomBinding.bind(getView());
+        mBinding = FragmentChatRoomBinding.bind(getView());
 
-        binding.textChatroomUser.setText(mChatName);
+        mBinding.textChatroomUser.setText(mChatName);
 
-        binding.buttonAddChatroomMember.setOnClickListener(button ->
+        mBinding.buttonAddChatroomMember.setOnClickListener(button ->
         {
-            addUserToChat(binding.textChatroomAdd.getText().toString());
+            addUserToChat(mBinding.textChatroomAdd.getText().toString());
         });
 
-        binding.swipeContainer.setRefreshing(true);
+        mBinding.swipeContainer.setRefreshing(true);
 
-        binding.recyclerChatMessages.setAdapter(
+        mBinding.recyclerChatMessages.setAdapter(
             new ChatRoomRecyclerViewAdapter(
                 mChatRoomModel.getMessageListByChatId(mChatId),
                 mUserModel.getEmail()
             )
         );
 
-        binding.swipeContainer.setOnRefreshListener(() -> {
-            mChatRoomModel.getNextMessages(mChatId, mUserModel.getJwt());
+        mChatRoomModel.connectGetUsersByChatId(mChatId, mUserModel.getJwt());
+
+        mBinding.swipeContainer.setOnRefreshListener(() -> {
+            mChatRoomModel.connectGetNextMessages(mChatId, mUserModel.getJwt());
         });
 
         mChatRoomModel.addMessageObserver(mChatId, getViewLifecycleOwner(),
@@ -92,26 +103,56 @@ public class ChatRoomFragment extends Fragment {
                      * solution for when the keyboard is on the screen.
                      */
                     //inform the RV that the underlying list has (possibly) changed
-                    binding.recyclerChatMessages.getAdapter().notifyDataSetChanged();
-                    binding.recyclerChatMessages.scrollToPosition(binding.recyclerChatMessages.getAdapter().getItemCount() - 1);
-                    binding.swipeContainer.setRefreshing(false);
+                    mBinding.recyclerChatMessages.getAdapter().notifyDataSetChanged();
+                    mBinding.recyclerChatMessages.scrollToPosition(mBinding.recyclerChatMessages.getAdapter().getItemCount() - 1);
+                    mBinding.swipeContainer.setRefreshing(false);
                 }
         );
 
-//        mChatRoomModel.addAddChatUserObserver(mChatId, getViewLifecycleOwner(), addedUser ->{
-//            mSendModel.sendMessage(mChatId, mUserModel.getJwt(), "Added " + addedUser + " to chat!");
-//        });
+        mChatRoomModel.addResponseObserver(getViewLifecycleOwner(), this::observeResponse);
 
         //Send button was clicked. Send the message via the SendViewModel
-        binding.buttonSend.setOnClickListener(button -> {
+        mBinding.buttonSend.setOnClickListener(button -> {
             mSendModel.sendMessage(mChatId,
-                    mUserModel.getJwt(),
-                    binding.editMessage.getText().toString());
+                mUserModel.getJwt(),
+                mBinding.editMessage.getText().toString());
         });
         //when we get the response back from the server, clear the edittext
         mSendModel.addResponseObserver(getViewLifecycleOwner(), response ->
-                binding.editMessage.setText("")
+                mBinding.editMessage.setText("")
         );
+    }
+
+    /**
+     * Peel data from a JSON without making other methods complicated.
+     * @param key key of item to retrieve.
+     * @param jsonObject object to use.
+     * @return value from key.
+     */
+    private String getStringFromJson(final String key, final JSONObject jsonObject) {
+        String info = "";
+        try {
+            info = jsonObject.getString(key);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return info;
+    }
+
+    /**
+     * Peel data from a JSON without making other methods complicated.
+     * @param key key of item to retrieve.
+     * @param jsonObject object to use.
+     * @return value from key.
+     */
+    private JSONArray getJsonArrayFromJson(final String key, final JSONObject jsonObject) {
+        JSONArray info = new JSONArray();
+        try {
+            info = jsonObject.getJSONArray(key);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return info;
     }
 
     /**
@@ -120,5 +161,35 @@ public class ChatRoomFragment extends Fragment {
      */
     private void addUserToChat(final String email) {
         mChatRoomModel.connectPutUserInChatByEmail(mChatId, email, mUserModel.getJwt());
+    }
+
+    /**
+     * Observe response from Contact model server connection.
+     * @param jsonObject adjusted server response.
+     */
+    private void observeResponse(final JSONObject jsonObject) {
+        if (jsonObject.has("type")) {
+            String type = getStringFromJson("type", jsonObject);
+            switch (type) {
+                case "getUsers": {
+                    Log.wtf("ChatRoomResponse", jsonObject.toString());
+                    try {
+                        mBinding.textChatroomUser.setText(
+                            getJsonArrayFromJson("email", jsonObject).join(", ")
+                        );
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                    break;
+                }
+                default :
+                    break;
+            }
+        }
+    }
+
+    /** Only here cause it has to be */
+    public ChatRoomFragment() {
+        // Required empty public constructor
     }
 }

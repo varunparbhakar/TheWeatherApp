@@ -81,6 +81,22 @@ public class ChatListFragment extends Fragment {
     }
 
     /**
+     * Peel data from a JSON without making other methods complicated.
+     * @param key key of item to retrieve.
+     * @param jsonObject object to use.
+     * @return value from key.
+     */
+    private String getStringFromJson(final String key, final JSONObject jsonObject) {
+        String info = "";
+        try {
+            info = jsonObject.getString(key);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return info;
+    }
+
+    /**
      * Passes intention of adding chat with given name from View to Model.
      * @param chatName name of chat
      */
@@ -106,19 +122,20 @@ public class ChatListFragment extends Fragment {
      */
     private void observeResponse(final JSONObject jsonObject) {
         if (jsonObject.has("type")) {
-            String type = getFromJson("type", jsonObject);
+            String type = getStringFromJson("type", jsonObject);
             switch (type) {
                 case "post":
                     addChatResponse(jsonObject);
                     try {
                         putMeInChat(jsonObject.getString("chatID"));
-                        Log.wtf("OOOYEEEAH", "called putMeInChat");
                     } catch (JSONException e){
                         Log.e("JSON Error", e.getMessage());
                     }
+                    mChatListModel.connectGetChatIds(mUserModel.getMemberID(), mUserModel.getJwt());
                     break;
                 case "delete":
                     deleteChatResponse(jsonObject);
+                    mChatListModel.connectGetChatIds(mUserModel.getMemberID(), mUserModel.getJwt());
                     break;
                 default :
                     break;
@@ -131,7 +148,7 @@ public class ChatListFragment extends Fragment {
      * @param jsonObject adjusted server response
      */
     private void addChatResponse(final JSONObject jsonObject) {
-        String resp = getFromJson("message", jsonObject);
+        String resp = getStringFromJson("message", jsonObject);
         createAlertDialogue(resp);
     }
 
@@ -141,27 +158,12 @@ public class ChatListFragment extends Fragment {
      */
     private void deleteChatResponse(final JSONObject jsonObject) {
         String resp;
-        if (getFromJson("success", jsonObject).equals("true")) {
+        if (getStringFromJson("success", jsonObject).equals("true")) {
             mChatListModel.getChatList();
+            mBinding.textChatSearch.setText("");
         }
-        resp = getFromJson("message", jsonObject);
+        resp = getStringFromJson("message", jsonObject);
         createAlertDialogue(resp);
-    }
-
-    /**
-     * Peel data from a JSON without making other methods complicated.
-     * @param key key of item to retrieve.
-     * @param jsonObject object to use.
-     * @return value from key.
-     */
-    private String getFromJson(final String key, final JSONObject jsonObject) {
-        String info = "";
-        try {
-            info = jsonObject.getString(key);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return info;
     }
 
     /**
