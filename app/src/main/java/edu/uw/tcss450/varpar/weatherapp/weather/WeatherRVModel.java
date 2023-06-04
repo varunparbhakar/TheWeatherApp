@@ -1,68 +1,96 @@
 package edu.uw.tcss450.varpar.weatherapp.weather;
 
+/**
+ * Recycler view model for weather.
+ */
 public class WeatherRVModel {
 
+    /** Time at location. */
     private String time;
+
+    /** Temperature at location. */
     private String temp;
+
+    /** Icon for weather conditions. */
     private String icon;
+
+    /** Windspeed at location. */
     private String windSpeed;
+
+    /** Weather conditions. */
     private String condition;
+
+    /** Name of city. */
     private String cityName;
 
-    public WeatherRVModel(String time, String temp, String icon) {
-        this.time = time;
-        this.temp = temp;
-        this.icon = icon;
-    }
-    public WeatherRVModel(String time, String temp, String icon, String condition) {
-        this.time = time;
-        this.temp = temp;
-        this.icon = icon;
-        this.condition = condition;
-    }
-    public WeatherRVModel(String cityName) {
-        this.cityName = cityName;
+    /**
+     * Constructor with full perms.
+     * @param tim time at loc
+     * @param tem temp at loc
+     * @param ico icon of weather conditions
+     * @param con weather conditions
+     */
+    public WeatherRVModel(final String tim, final String tem,
+                          final String ico, final String con) {
+        this.time = tim;
+        this.temp = tem;
+        this.icon = ico;
+        this.condition = con;
     }
 
+    /**
+     * Constructor with only city name.
+     * @param cit name of city
+     */
+    public WeatherRVModel(final String cit) {
+        this.cityName = cit;
+    }
+
+    /**
+     * Get time.
+     * @return String time.
+     */
     public String getTime() {
         return time;
     }
 
+    /**
+     * Get temp.
+     * @return String temp.
+     */
     public String getTemp() {
         return temp;
     }
 
+    /**
+     * Get icon.
+     * @return String icon.
+     */
     public String getIcon() {
         return icon;
     }
 
+    /**
+     * Get Windspeed.
+     * @return String windspeed.
+     */
     public String getWindSpeed() {
         return windSpeed;
     }
+
+    /**
+     * Get weather conditions.
+     * @return String weather conditions.
+     */
     public String getCondition() {
         return condition;
     }
-    public String getCityName() {return cityName; }
 
-    public void setTime(String time) {
-        this.time = time;
-    }
-
-    public void setTemp(String temp) {
-        this.temp = temp;
-    }
-
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
-
-    public void setWindSpeed(String windSpeed) {
-        this.windSpeed = windSpeed;
-    }
-    public void setCondition(String condition) {
-        this.condition = condition;
-    }
-    public void setCityName(String cityName) {
-        this.cityName = cityName;
+    /**
+     * Get City name.
+     * @return String city name.
+     */
+    public String getCityName() {
+        return cityName;
     }
 }
