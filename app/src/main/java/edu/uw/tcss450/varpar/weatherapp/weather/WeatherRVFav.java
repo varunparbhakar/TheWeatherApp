@@ -41,20 +41,36 @@ import edu.uw.tcss450.varpar.weatherapp.model.UserInfoViewModel;
 
 public class WeatherRVFav extends RecyclerView.Adapter<WeatherRVFav.ViewHolder>{
 
+    /** . */
     private Context context;
+
+    /** . */
     private ArrayList<WeatherRVModel> weatherRVModelArrayList;
+
+    /** . */
     private WeatherFavCityDialog weatherFavCityDialog;
+
+    /** . */
     private WeatherFragment wf;
 
-    public WeatherRVFav(Context context, ArrayList<WeatherRVModel> weatherRVModelArrayList) {
-        this.context = context;
-        this.weatherRVModelArrayList = weatherRVModelArrayList;
-    }
+    /**
+     * constructor method for Dialog Frag class.
+     * @param context
+     * @param weatherRVModelArrayList
+     * @param weatherFavCityDialog
+     */
     public WeatherRVFav(Context context, ArrayList<WeatherRVModel> weatherRVModelArrayList, WeatherFavCityDialog weatherFavCityDialog) {
         this.context = context;
         this.weatherRVModelArrayList = weatherRVModelArrayList;
         this.weatherFavCityDialog = weatherFavCityDialog;
     }
+
+    /**
+     * constructor for WeatherFragment class.
+     * @param context
+     * @param weatherRVModelArrayList
+     * @param weatherFragment
+     */
     public WeatherRVFav(Context context, ArrayList<WeatherRVModel> weatherRVModelArrayList, WeatherFragment weatherFragment) {
         this.context = context;
         this.weatherRVModelArrayList = weatherRVModelArrayList;
@@ -70,26 +86,13 @@ public class WeatherRVFav extends RecyclerView.Adapter<WeatherRVFav.ViewHolder>{
 
     @Override
     public void onBindViewHolder(@NonNull WeatherRVFav.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        //weatherFavCityDialog = new WeatherFavCityDialog();
         WeatherRVModel model = weatherRVModelArrayList.get(position);
         holder.favTV.setText(model.getCityName());
         holder.favTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String city = holder.favTV.getText().toString();
-                //WeatherFragment wf = (WeatherFragment) getActivity().getSupportFragmentManager().findFragmentByTag("WeatherFragment");
-//                WeatherFragment wf = new WeatherFragment();
-//                wf.getWeatherInfo(city);
-                //WeatherFragment.getInstance().getWeatherInfo(city);
-//                Bundle result = new Bundle(); //sending data to dialog
-//                result.putString("bundleKey", city);
-//                //getParentFragmentManager().setFragmentResult("requestKey", result);
-//
-//                WeatherFragment frag = new WeatherFragment();
-//                frag.setArguments(result);
                 weatherFavCityDialog.helperMethod(city);
-
-                //weatherFavCityDialog.sendData(holder.favTV.getText().toString());
             }
         });
         holder.deleteIB.setOnClickListener(new View.OnClickListener() {
@@ -99,7 +102,6 @@ public class WeatherRVFav extends RecyclerView.Adapter<WeatherRVFav.ViewHolder>{
                 weatherRVModelArrayList.remove(position);
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, weatherRVModelArrayList.size());
-                //deleteFavLocation(holder.favTV.getText().toString());
             }
         });
     }
@@ -108,13 +110,22 @@ public class WeatherRVFav extends RecyclerView.Adapter<WeatherRVFav.ViewHolder>{
     public int getItemCount() {
         return weatherRVModelArrayList.size();
     }
-//    public static void updateAdapter() {
-//        notifyDataSetChanged();
-//    }
 
+    /**
+     * ViewHolder inner class
+     */
     public static class ViewHolder extends RecyclerView.ViewHolder {
+
+        /** fav city text view. */
         public TextView favTV;
+
+        /** button for delete. */
         public ImageButton deleteIB;
+
+        /**
+         * ViewHolder constructor
+         * @param itemView
+         */
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             favTV = itemView.findViewById(R.id.idTVFavCityName);

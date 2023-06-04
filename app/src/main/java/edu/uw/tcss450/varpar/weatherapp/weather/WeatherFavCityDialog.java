@@ -42,19 +42,28 @@ import edu.uw.tcss450.varpar.weatherapp.databinding.DialogWeatherFavBinding;
 import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentHomeBinding;
 import edu.uw.tcss450.varpar.weatherapp.io.RequestQueueSingleton;
 import edu.uw.tcss450.varpar.weatherapp.model.UserInfoViewModel;
-
+/** Dialog class extends DialogFragment used to display fav locations. */
 public class WeatherFavCityDialog extends DialogFragment {
 
-    public TextView favCityTV;
-    private ImageButton deleteIB;
+    /** WeatherRVFav class to get data. */
     private WeatherRVFav weatherRVFav;
+
+    /** Arraylist to store RV. */
     private ArrayList<WeatherRVModel> weatherRVModelArrayList;
+
+    /** Recycler view for cities. */
     private RecyclerView favCityRV;
+
+    /** global name of current fav city. */
     public String favCityName;
-    public String savedData;
+
+    /** UserInfoViewModel to get user info. */
     private UserInfoViewModel mUserModel;
+
+    /** mJwt for database stuff. */
     private String mJwt;
-    private DialogWeatherFavBinding mBinding;
+
+    /** binding stuff for dialog RV. */
     private DialogRvWeatherBinding rvWeatherBinding;
 
     @Override
@@ -83,9 +92,6 @@ public class WeatherFavCityDialog extends DialogFragment {
         super.onViewCreated(view, savedInstanceState);
         mUserModel = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
         mJwt = mUserModel.getJwt();
-        //WeatherRVFav.ViewHolder holder = new WeatherRVFav.ViewHolder(view);
-        //favCityTV = holder.favTV;
-        //holder.deleteIB = view.findViewById(R.id.idIBdelete);
 
         favCityRV = getView().findViewById(R.id.idRVFavCities);
 
@@ -95,50 +101,16 @@ public class WeatherFavCityDialog extends DialogFragment {
 
         Bundle bundle = getArguments(); //getting data from weather frag
         favCityName = bundle.getString("bundleKey");
-
-        //getFavCities();
         getFavLocations();
         weatherRVFav.notifyDataSetChanged();
-
-        String city = savedData; //sending data to weather frag
-        Bundle result = new Bundle();
-        result.putString("bundleKey", city);
-        getParentFragmentManager().setFragmentResult("requestKey", result);
-
-        WeatherFragment fragment = new WeatherFragment();
-        fragment.setArguments(result);
-
-//        favCityTV.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                String city = favCityTV.getText().toString();
-////                WeatherFragment wf = (WeatherFragment) getActivity().getSupportFragmentManager().findFragmentByTag("WeatherFragment");
-////                wf.zipCode = city;
-//                Bundle result = new Bundle();
-//                result.putString("bundleKey", city);
-//                getParentFragmentManager().setFragmentResult("requestKey", result);
-
-//        Bundle bundle = getArguments(); //getting data from dialog
-//        zipCode = bundle.getString("bundleKey");
-//        getFavCityInfo(zipCode);
-//            }
-//        });
-
     }
 
-    public void getFavCities() {
-        String city;
-        //weatherRVModelArrayList.clear();
-        city = favCityName;
-        //weatherRVModelArrayList.add(new WeatherRVModel(city));
-        weatherRVModelArrayList.add(weatherRVModelArrayList.size(), new WeatherRVModel(city));
-        weatherRVFav.notifyDataSetChanged();
-    }
+    /**
+     * retrieves users fav locations from database.
+     */
     public void getFavLocations() {
         String URL = "https://theweatherapp.herokuapp.com/location/getall?user="
                     + mUserModel.getMemberID();
-        //getFavCities();
-
         Request request = new JsonObjectRequest(
                 Request.Method.GET,
                 URL,
@@ -169,11 +141,9 @@ public class WeatherFavCityDialog extends DialogFragment {
      * @param response JSONObject of contacts.
      */
     private void handleSuccess(final JSONObject response) {
-        //weatherRVModelArrayList
 
         try {
             JSONArray locations = response.getJSONArray("locations");
-            //String nickname = response.getString("nickname");
             for (int i = 0; i <= locations.length(); i++) {
                 JSONObject nickname = locations.getJSONObject(i);
                 if (!weatherRVModelArrayList.contains(nickname)) {
@@ -181,14 +151,11 @@ public class WeatherFavCityDialog extends DialogFragment {
                     weatherRVModelArrayList.add(new WeatherRVModel(nickname.getString("nickname")));
                     weatherRVFav.notifyDataSetChanged();
                 } else {
-                    //weatherRVFav.notifyDataSetChanged();
                     // this shouldn't happen but could with the async nature of the application
                     Log.wtf("ERROR", "Contact already received: ");
                 }
 
             }
-            //inform observers of the change (setValue)
-           // mContacts.setValue(list);
         } catch (JSONException e) {
             Log.e("JSON PARSE ERROR", "Found in handle Success ContactListViewModel");
             Log.e("JSON PARSE ERROR", "Error: " + e.getMessage());
@@ -209,6 +176,10 @@ public class WeatherFavCityDialog extends DialogFragment {
         }
     }
 
+    /**
+     * deletes the deleted fav location from the database.
+     * @param position
+     */
     public void deleteFavLocation(int position) {
         String URL = "https://theweatherapp.herokuapp.com/location/removefavorite";
         JSONObject body = new JSONObject();
@@ -255,7 +226,6 @@ public class WeatherFavCityDialog extends DialogFragment {
         } catch (JSONException e) {
             Log.wtf("JSON Error", e.getMessage());
         }
-        // mResponse.setValue(response);
     }
 
     /**
@@ -291,8 +261,12 @@ public class WeatherFavCityDialog extends DialogFragment {
         }
     }
 
+    /**
+     * helper method called in WeatherRVFav when clicking on.
+     * fav location it changes the weather info to city clicked.
+     * @param result
+     */
     public void helperMethod(String result) {
-        savedData = result;
         WeatherFragment.getInstance().getWeatherInfo(result);
     }
 }
