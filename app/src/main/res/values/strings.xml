@@ -58,5 +58,6 @@
     <string name="weather_today_s_weather_forecast">Today\'s Weather Forecast</string>
     <string name="weather_valid_city_error">Please enter valid city name…</string>
     <string name="weather_fav_city">Fav city</string>
+    <string name="search_for_city">Search for City</string>
 
 </resources>
