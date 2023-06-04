@@ -18,15 +18,25 @@ import java.util.Date;
  */
 public class ChatRoomMessage implements Serializable {
 
+    /** ID of message. */
     private final int mMessageId;
 
+    /** Body of message. */
     private final String mMessageBody;
 
+    /** Message sender. */
     private final String mSender;
 
+    /** Timestamp of when message was sent. */
     private final String mTimestamp;
 
-    public ChatRoomMessage(int messageId, String messageBody, String user) {
+    /**
+     * Constructor for each message.
+     * @param messageId id of message.
+     * @param messageBody body of message.
+     * @param user user that sent message.
+     */
+    public ChatRoomMessage(final int messageId, final String messageBody, final String user) {
         this.mMessageId = messageId;
         this.mMessageBody = messageBody;
         this.mSender = user;
@@ -49,18 +59,34 @@ public class ChatRoomMessage implements Serializable {
         );
     }
 
+    /**
+     * Get ID of message.
+     * @return ID as int.
+     */
     public int getMessageId() {
         return mMessageId;
     }
 
+    /**
+     * Get message body.
+     * @return String of body.
+     */
     public String getMessage() {
         return mMessageBody;
     }
 
+    /**
+     * Get message sender.
+     * @return String name of sender.
+     */
     public String getSender() {
         return mSender;
     }
 
+    /**
+     * Get timestamp of message.
+     * @return String of date.
+     */
     public String getTimestamp() {
         return mTimestamp;
     }
@@ -71,13 +97,11 @@ public class ChatRoomMessage implements Serializable {
      * @return true if other message ID matches this message ID, false otherwise
      */
     @Override
-    public boolean equals(@Nullable Object other) {
+    public boolean equals(final @Nullable Object other) {
         boolean result = false;
         if (other instanceof ChatRoomMessage) {
             result = mMessageId == ((ChatRoomMessage) other).mMessageId;
         }
         return result;
     }
-
-
 }

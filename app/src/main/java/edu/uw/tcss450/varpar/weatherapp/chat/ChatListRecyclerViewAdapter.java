@@ -12,9 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.uw.tcss450.varpar.weatherapp.R;
-import edu.uw.tcss450.varpar.weatherapp.contact.Contact;
 import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentChatListCardBinding;
 
+/**
+ * Recycler view adapter for chat list.
+ */
 public class ChatListRecyclerViewAdapter extends RecyclerView.Adapter<ChatListRecyclerViewAdapter.ChatListViewHolder> {
 
     /** Store all of the Chats to present. */
@@ -26,7 +28,12 @@ public class ChatListRecyclerViewAdapter extends RecyclerView.Adapter<ChatListRe
     /** Host fragment to bounce view actions to. */
     private final ChatListFragment mFragment;
 
-    public ChatListRecyclerViewAdapter(List<ChatListRoom> items, ChatListFragment frag) {
+    /**
+     * Constructor that takes list of chatrooms and reference to host fragment.
+     * @param items chatrooms to list.
+     * @param frag calling fragment.
+     */
+    public ChatListRecyclerViewAdapter(final List<ChatListRoom> items, final ChatListFragment frag) {
         this.mChatListItems = items;
         this.mChatListItemsCopy = new ArrayList<>();
         this.mChatListItemsCopy.addAll(items);
@@ -40,12 +47,12 @@ public class ChatListRecyclerViewAdapter extends RecyclerView.Adapter<ChatListRe
      */
     public void filter(String text) {
         mChatListItems.clear();
-        if(text.isEmpty()){
+        if (text.isEmpty()) {
             mChatListItems.addAll(mChatListItemsCopy);
-        } else{
+        } else {
             text = text.toLowerCase();
-            for(ChatListRoom item: mChatListItemsCopy){
-                if(item.getName().toLowerCase().contains(text)){
+            for (ChatListRoom item: mChatListItemsCopy) {
+                if (item.getName().toLowerCase().contains(text)) {
                     mChatListItems.add(item);
                 }
             }
@@ -78,10 +85,20 @@ public class ChatListRecyclerViewAdapter extends RecyclerView.Adapter<ChatListRe
      * of rows in the Chat Recycler View.
      */
     public class ChatListViewHolder extends RecyclerView.ViewHolder {
-        public final View mView;
-        public FragmentChatListCardBinding binding;
+
+        /** View of chat item. */
+        private final View mView;
+
+        /** Binding for contained views. */
+        private final FragmentChatListCardBinding binding;
+
+        /** Chatroom to display. */
         private ChatListRoom mChat;
 
+        /**
+         * Constructor to bind view.
+         * @param view view of chatroom object.
+         */
         public ChatListViewHolder(View view) {
             super(view);
             mView = view;
@@ -96,6 +113,10 @@ public class ChatListRecyclerViewAdapter extends RecyclerView.Adapter<ChatListRe
             mFragment.deleteUserFromChat(mChat.getChatId());
         }
 
+        /**
+         * Logic for bindings of each chat in list.
+         * @param chatListItem this chat item.
+         */
         void setChat(final ChatListRoom chatListItem) {
             mChat = chatListItem;
 
@@ -112,5 +133,4 @@ public class ChatListRecyclerViewAdapter extends RecyclerView.Adapter<ChatListRe
             binding.deleteChat.setOnClickListener(this::deleteUser);
         }
     }
-
 }
