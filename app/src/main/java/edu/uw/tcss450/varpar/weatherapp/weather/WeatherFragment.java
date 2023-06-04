@@ -73,51 +73,85 @@ import edu.uw.tcss450.varpar.weatherapp.io.RequestQueueSingleton;
 import edu.uw.tcss450.varpar.weatherapp.model.UserInfoViewModel;
 
 public class WeatherFragment extends Fragment {
-
+    /** Relative layout for fragment. */
     private RelativeLayout homeRL;
+    /** When loading data. */
     private ProgressBar loadingPB;
+    /** Text views for city name, temp, condition and todays weather. */
     private TextView cityNameTV, tempTV, conditionTV, todayWeatherTV;
+    /** Recycler views for hourly weather and 5 day forecast. */
     private RecyclerView weatherRV, hourlyRV;
+    /** Text box to search for city. */
     private TextInputEditText cityEDT;
+    /** Image views for back, weather icon, search and fav location. */
     private ImageView backIV, iconIV, searchIV, starIV;
+    /** Arraylist for WeatherRVModel used for forecast. */
     private ArrayList<WeatherRVModel> weatherRVModelArrayList;
+    /** WeatherRVAdapter class for forecaset day RV. */
     private WeatherRVAdapter weatherRVAdapter;
+    /** Arraylist for WeatherRVModel used for hourly RV. */
     private ArrayList<WeatherRVModel> weatherRVHourlyArrayList;
+    /** WeatherRVHourly for hourly RV. */
     private WeatherRVHourly weatherRVHourlyAdapter;
+    /** Arraylist for WeatherRVModel used for storing fav cities. */
     public ArrayList<WeatherRVModel> weatherRVFavCityArrayList;
+    /** WeatherRVFav for fav city RV. */
     public WeatherRVFav weatherRVFavAdapter;
+    /** LocationManager for getting current location. */
     private LocationManager locationManager;
-    private int PERMISSION_CODE = 1;
+    /** pulls user data from UserInfoViewModel. */
     private UserInfoViewModel mUserModel;
+    /** used to pass user input into weather API. */
     public String zipCode;
+    /** WeatherFragment instance. */
     private static WeatherFragment instance;
+    /** global variable to use throughout code. */
     private WeatherFavCityDialog dialog = new WeatherFavCityDialog();
-
+    /**
+     * gets the instance of WeatherFragment.
+     * @return instance
+     */
     public static WeatherFragment getInstance() {
         return instance;
     }
 
-
+    /**
+     * onCreate method.
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         instance = this;
         getParentFragmentManager().setFragmentResultListener("requestKey", this, new FragmentResultListener() {
+            /**
+             * to get bundle result.
+             * @param bundle
+             * @param requestKey
+             */
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
-                // We use a String here, but any type that can be put in a Bundle is supported.
                 zipCode = bundle.getString("bundleKey");
-                // Do something with the result.
             }
         });
     }
-
+    /**
+     * onCreateView method.
+     * @param savedInstanceState
+     * @param container
+     * @param inflater
+     * @return View
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_weather, container, false);
     }
-
+    /**
+     * onViewCreated method.
+     * @param savedInstanceState
+     * @param view
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -148,9 +182,6 @@ public class WeatherFragment extends Fragment {
         hourlyRV.setAdapter(weatherRVHourlyAdapter); //RV for hourly
 
         requestLocationUpdates();
-//        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_CODE);
-//        }
 
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             locationManager = (LocationManager) getContext().getSystemService(LOCATION_SERVICE);
@@ -171,8 +202,10 @@ public class WeatherFragment extends Fragment {
             todayWeatherTV.setVisibility(View.GONE);
         }
 
-
         searchIV.setOnClickListener(new View.OnClickListener() {
+            /** onClick when searching for city.
+             * @param view
+             */
             @Override
             public void onClick(View view) {
                 String city = cityEDT.getText().toString();
@@ -185,13 +218,15 @@ public class WeatherFragment extends Fragment {
             }
         });
         starIV.setOnClickListener(new View.OnClickListener() {
+            /** onClick when searching for city.
+             * @param view
+             */
             @Override
             public void onClick(View view) {
                 addFavLocation();
                 String city = cityNameTV.getText().toString();
                 weatherRVFavCityArrayList.add(new WeatherRVModel(city));
                 weatherRVFavAdapter.notifyDataSetChanged();
-                //getFavLocations();
 
                 Bundle result = new Bundle(); //sending data to dialog
                 result.putString("bundleKey", city);
@@ -201,7 +236,9 @@ public class WeatherFragment extends Fragment {
             }
         });
     }
-
+    /** pings location manager to get current loaction.
+     * @return Location
+     */
     private Location getLastKnownLocation() {
         requestLocationUpdates();
         LocationManager mLocationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
@@ -214,24 +251,16 @@ public class WeatherFragment extends Fragment {
             }
             Location l = mLocationManager.getLastKnownLocation(provider);
             Log.d("l", "l is " + l);
-            Geocoder geo = new Geocoder(getActivity(), Locale.getDefault());
-//            try {
-//                List<Address> addresses = geo.getFromLocation(l.getLatitude(), l.getLongitude(), 1);
-//                Log.d("address", "address is " + addresses);
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
             if (l == null) {
                 continue;
             }
             if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
-                // Found best last known location: %s", l);
                 bestLocation = l;
             }
         }
         return bestLocation;
     }
-
+    /** shakes awake current location. */
     private void requestLocationUpdates() {
         LocationRequest mLocationRequest = LocationRequest.create();
         mLocationRequest.setInterval(60000);
@@ -255,6 +284,7 @@ public class WeatherFragment extends Fragment {
         }
         LocationServices.getFusedLocationProviderClient(getActivity()).requestLocationUpdates(mLocationRequest, mLocationCallback, null);
     }
+    /** depricated onRequestPermissionsResult method. */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -266,12 +296,15 @@ public class WeatherFragment extends Fragment {
             }
             zipCode = getCityName(location.getLongitude(), location.getLatitude());
             getWeatherInfo(zipCode); //this is all to get current location so the app displays it when opned
-            //getLastKnownLocation();
         } else {
             Log.wtf("uwu", "permission request failed");
         }
     }
-
+    /** returns the name of city of users current location.
+     * @param latitide
+     * @param longitude
+     * @return String name of city
+     */
     private String getCityName(double longitude, double latitide) {
         String cityName = "Not Found";
         Geocoder gcd = new Geocoder(getActivity().getBaseContext(), Locale.getDefault());
@@ -284,7 +317,6 @@ public class WeatherFragment extends Fragment {
                         cityName = city;
                     } else {
                         Log.d("Tag", "City not found");
-                        //Toast.makeText(getActivity(),"User city not found...", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -293,13 +325,15 @@ public class WeatherFragment extends Fragment {
         }
         return cityName;
     }
-
+    /** pings weather API to get weather info.
+     * @param zipCode
+     */
     public void getWeatherInfo(String zipCode) {
         String URL = getText(R.string.url) + "weather?zipcode=" + zipCode;
-        //cityNameTV.setText(zipCode);
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, URL, null, new Response.Listener<JSONObject>() {
+            /** onResponse method. */
             @Override
             public void onResponse(JSONObject response) {
                 loadingPB.setVisibility(View.GONE);
@@ -317,16 +351,10 @@ public class WeatherFragment extends Fragment {
                     cityNameTV.setText(cityName);
                     String temp = response.getJSONObject("current").getString("temp_f");
                     tempTV.setText(temp+"°F");
-                    int isDay = response.getJSONObject("current").getInt("is_day");
                     String condition = response.getJSONObject("current").getJSONObject("condition").getString("text");
                     String conditionIcon = response.getJSONObject("current").getJSONObject("condition").getString("icon");
                     Picasso.get().load("http:".concat(conditionIcon)).into(iconIV);
                     conditionTV.setText(condition);
-                    if(isDay==1){
-                        //Picasso.get().load();
-                    } else {
-                        //Picasso.get().load();
-                    }
 
                     JSONObject forecastObj = response.getJSONObject("forecast");
                     JSONObject forecast0 = forecastObj.getJSONArray("forecastday").getJSONObject(0);
@@ -342,9 +370,7 @@ public class WeatherFragment extends Fragment {
                     }
                     weatherRVHourlyAdapter.notifyDataSetChanged();
 
-                    int day = 1;
                     JSONArray forecastArray = forecastObj.getJSONArray("forecastday");
-
                     for(int i = 0;i < 5; i++) {
                         JSONObject forecastDayObj = forecastArray.getJSONObject(i);
                         JSONObject dayObj = forecastDayObj.getJSONObject("day");
@@ -353,7 +379,6 @@ public class WeatherFragment extends Fragment {
                         String img = dayObj.getJSONObject("condition").getString("icon");
                         String cond = dayObj.getJSONObject("condition").getString("text");
                         weatherRVModelArrayList.add(new WeatherRVModel(date, temper, img, cond));
-                        //day++;
                     }
                     weatherRVAdapter.notifyDataSetChanged();
 
@@ -362,6 +387,7 @@ public class WeatherFragment extends Fragment {
                 }
             }
         }, new Response.ErrorListener() {
+            /** catch error. */
             @Override
             public void onErrorResponse(VolleyError error) {
                 weatherErrorToast();
@@ -376,9 +402,9 @@ public class WeatherFragment extends Fragment {
     private void weatherErrorToast() {
         Toast.makeText(getActivity(), getText(R.string.weather_valid_city_error), Toast.LENGTH_SHORT).show();
     }
+    /** adds location to users favs in database. */
     public void addFavLocation() {
         String URL = "https://theweatherapp.herokuapp.com/location/addfavorite";
-        //RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
         JSONObject body = new JSONObject();
         String Jwt = mUserModel.getJwt();
 
@@ -394,7 +420,9 @@ public class WeatherFragment extends Fragment {
                 body,
                 this::postHandleSuccess,
                 this::postHandleError) {
-
+            /** magic method for auth.
+             * @return Map
+             */
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
@@ -412,6 +440,9 @@ public class WeatherFragment extends Fragment {
         RequestQueueSingleton.getInstance(requireContext().getApplicationContext())
                 .addToRequestQueue(request);
     }
+    /** handle success when location added.
+     * @param response
+     */
     private void postHandleSuccess(final JSONObject response) {
         try { //note what type of connection happened
             response.put("type", "post");
@@ -419,8 +450,10 @@ public class WeatherFragment extends Fragment {
             Log.e("JSON Error", e.getMessage());
         }
         showDialog();
-        //mResponse.setValue(response);
     }
+    /** handle error for adding location.
+     * @param error
+     */
     private void postHandleError(final VolleyError error) {
         JSONObject resp = new JSONObject();
         try { //note what type of connection happened
@@ -448,7 +481,7 @@ public class WeatherFragment extends Fragment {
             }
         }
     }
-
+    /** helper method to display dialog. */
     public void showDialog() {
         dialog.dismiss();
         String city = cityNameTV.getText().toString();
