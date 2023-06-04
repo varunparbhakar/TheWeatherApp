@@ -21,10 +21,22 @@ import edu.uw.tcss450.varpar.weatherapp.databinding.FragmentHomeFrCardBinding;
  * @author Jashanpreet Jandu & Deep Singh
  */
 public class FriendReqRVAdapter extends RecyclerView.Adapter<FriendReqRVAdapter.ViewHolder> {
+
+    /** Context. */
     private Context context;
+
+    /** Contact request list. */
     private ArrayList<Contact> mContacts;
+
+    /** Reference to calling fragment. */
     private HomeFragment mFragment;
 
+    /**
+     * Constructor that takes list of contact requests.
+     * @param cont context.
+     * @param frag calling fragment.
+     * @param contacts list of contacts.
+     */
     public FriendReqRVAdapter(final Context cont, final HomeFragment frag, final ArrayList<Contact> contacts) {
         this.mContacts = contacts;
         this.context = cont;
@@ -49,17 +61,24 @@ public class FriendReqRVAdapter extends RecyclerView.Adapter<FriendReqRVAdapter.
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private FragmentHomeFrCardBinding binding;
+
+        /** Binding for view elements. */
+        private final FragmentHomeFrCardBinding binding;
+
+        /** Contact card for request. */
         private Contact mContact;
 
+        /**
+         * Constructor that takes item to bind view.
+         * @param itemView view to bind.
+         */
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             binding = FragmentHomeFrCardBinding.bind(itemView);
         }
 
         /**
-         * Dials out to fragment for friend deletion.
-         *
+         * Dials out to fragment for request deletion.
          * @param button button that houses functionality.
          */
         private void deleteFR(final View button) {
@@ -68,13 +87,16 @@ public class FriendReqRVAdapter extends RecyclerView.Adapter<FriendReqRVAdapter.
 
         /**
          * Dials out to fragment for adding a chat with chosen friend.
-         *
          * @param button button that houses functionality.
          */
         private void acceptFR(final View button) {
             mFragment.getAcceptFriendRequests(mContact.getMemberID());
         }
 
+        /**
+         * Logic for buttons on card and name to display.
+         * @param contact request to bind.
+         */
         void setContact(final Contact contact) {
             mContact = contact;
             binding.idTVUser.setText(contact.getUsername());

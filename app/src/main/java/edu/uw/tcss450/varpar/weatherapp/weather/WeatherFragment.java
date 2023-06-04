@@ -201,7 +201,9 @@ public class WeatherFragment extends Fragment {
         return bestLocation;
     }
 
-    /** shakes awake current location. */
+    /**
+     * Shakes awake current location
+     */
     private void requestLocationUpdates() {
         LocationRequest mLocationRequest = LocationRequest.create();
         mLocationRequest.setInterval(60000);
@@ -235,7 +237,8 @@ public class WeatherFragment extends Fragment {
         }
     }
 
-    /** returns the name of city of users current location.
+    /**
+     * Returns the name of city of users current location.
      * @param latitide lat of location
      * @param longitude long of location
      * @return String name of city
