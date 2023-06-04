@@ -37,15 +37,21 @@ public class ProfileFragment extends Fragment {
 
     /** Binding for layout views. */
     private FragmentProfileBinding mBinding;
+
+    /** User info view model. */
     private UserInfoViewModel mModel;
 
+    /** Ensures password length, character set, and complexity. */
     private final PasswordValidator mPasswordValidator =
             checkClientPredicate(pwd -> pwd.equals(mBinding.newPassword2.getText().toString()))
-                    .and(checkPwdLength(7))
+                    .and(checkPwdLength(MIN_PASSWORD_LENGTH))
                     .and(checkPwdSpecialChar())
                     .and(checkExcludeWhiteSpace())
                     .and(checkPwdDigit())
                     .and(checkPwdLowerCase().or(checkPwdUpperCase()));
+
+    /** Minimum length for passwords. */
+    private static final int MIN_PASSWORD_LENGTH = 6;
 
     /**
      * Required empty public constructor.

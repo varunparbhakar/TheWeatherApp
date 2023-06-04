@@ -26,23 +26,42 @@ import java.util.Objects;
 import edu.uw.tcss450.varpar.weatherapp.R;
 import edu.uw.tcss450.varpar.weatherapp.io.RequestQueueSingleton;
 
+/**
+ * View model for login functionality.
+ */
 public class LoginViewModel extends AndroidViewModel {
-    private MutableLiveData<Boolean> mValidLogin;
-    private MutableLiveData<JSONObject> mResponse;
+
+    /** Observation object for server response. */
+    private final MutableLiveData<JSONObject> mResponse;
+
+    /**
+     * Constructor, sets observation values to default.
+     * @param application app using View Model.
+     */
     public LoginViewModel(@NonNull Application application) {
         super(application);
-        mValidLogin = new MutableLiveData<>();
-        mValidLogin.setValue(false);
         mResponse = new MutableLiveData<>();
 
     }
+
+    /**
+     * Add observer to server response.
+     * @param owner owner.
+     * @param observer observer.
+     */
     public void addResponseObserver(@NonNull LifecycleOwner owner,
                                     @NonNull Observer<? super JSONObject> observer) {
         mResponse.observe(owner, observer);
     }
+
+    /**
+     * Server connection for sign-in.
+     * @param email email of user.
+     * @param password password of user.
+     */
     public void connect(final String email, final String password) {
         Log.d("Connect", "Connect is being called");
-        String url = getApplication().getResources().getString(R.string.url)+"auth";
+        String url = getApplication().getResources().getString(R.string.url) + "auth";
         Request request = new JsonObjectRequest(
                 Request.Method.GET,
                 url,
@@ -70,17 +89,19 @@ public class LoginViewModel extends AndroidViewModel {
         RequestQueueSingleton.getInstance(getApplication().getApplicationContext())
                 .addToRequestQueue(request);
     }
+
+    /**
+     * Error handling for sign-in.
+     * @param error error received.
+     */
     private void handleError(final VolleyError error) {
         if (Objects.isNull(error.networkResponse)) {
             try {
-                mResponse.setValue(new JSONObject("{" +
-                        "error:\"" + error.getMessage() +
-                        "\"}"));
+                mResponse.setValue(new JSONObject("{" + "error:\"" + error.getMessage() + "\"}"));
             } catch (JSONException e) {
                 Log.e("JSON PARSE", "JSON Parse Error in handleError");
             }
-        }
-        else {
+        } else {
             String data = new String(error.networkResponse.data, Charset.defaultCharset())
                     .replace('\"', '\'');
             try {
@@ -93,18 +114,21 @@ public class LoginViewModel extends AndroidViewModel {
             }
         }
     }
+
+    /**
+     * Notifies observers of successful login.
+     * @param result response from server.
+     */
     private void handleResult(final JSONObject result) {
         mResponse.setValue(result);
     }
-    public boolean getmValidLogin() {
-        return mValidLogin.getValue();
-    }
 
-    public void setmValidLogin(boolean value) {
-        mValidLogin.setValue(value);
-    }
+    /**
+     * Server connection for forgot password.
+     * @param email email of user that forgot password.
+     */
     public void forgetpasswordconnect(final String email) {
-        String url = getApplication().getResources().getString(R.string.url)+"password/recovery/" + email;
+        String url = getApplication().getResources().getString(R.string.url) + "password/recovery/" + email;
         Request request = new JsonObjectRequest(
                 Request.Method.GET,
                 url,
@@ -122,20 +146,26 @@ public class LoginViewModel extends AndroidViewModel {
                 .addToRequestQueue(request);
     }
 
+    /**
+     * Notifies observers of successful server call to forgot password.
+     * @param result server response.
+     */
     private void handleForgetPasswordResult(final JSONObject result) {
         mResponse.setValue(result);
     }
+
+    /**
+     * Error handling for forgot password connection.
+     * @param error error.
+     */
     private void handleForgotPasswordError(final VolleyError error) {
         if (Objects.isNull(error.networkResponse)) {
             try {
-                mResponse.setValue(new JSONObject("{" +
-                        "error:\"" + error.getMessage() +
-                        "\"}"));
+                mResponse.setValue(new JSONObject("{" + "error:\"" + error.getMessage() + "\"}"));
             } catch (JSONException e) {
                 Log.e("JSON PARSE", "JSON Parse Error in handleError");
             }
-        }
-        else {
+        } else {
             String data = new String(error.networkResponse.data, Charset.defaultCharset())
                     .replace('\"', '\'');
             try {
@@ -148,7 +178,4 @@ public class LoginViewModel extends AndroidViewModel {
             }
         }
     }
-
-
-
 }

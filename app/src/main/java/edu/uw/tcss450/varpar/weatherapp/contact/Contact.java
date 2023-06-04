@@ -25,7 +25,7 @@ public class Contact implements Serializable, Comparable<Contact> {
      * @return Normal alphabetic order.
      */
     @Override
-    public int compareTo(Contact o) {
+    public int compareTo(final Contact o) {
         return mUsername.compareTo(o.mUsername);
     }
 
@@ -48,13 +48,18 @@ public class Contact implements Serializable, Comparable<Contact> {
 
         /**
          * Constructs a new Builder.
-         * @param user the sender of the ChatMessage
+         * @param user the username.
+         * @param id the memberID.
          */
-        public Builder(String user, String id) {
+        public Builder(final String user, final String id) {
             this.mUser = user;
             this.mMemberID = id;
         }
 
+        /**
+         * Build contact object.
+         * @return contact object.
+         */
         public Contact build() {
             return new Contact(this);
         }
