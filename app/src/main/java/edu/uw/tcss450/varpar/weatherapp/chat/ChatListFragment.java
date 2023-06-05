@@ -186,30 +186,10 @@ public class ChatListFragment extends Fragment {
      * @param jsonObject adjusted server response
      */
     private void deleteChatResponse(final JSONObject jsonObject) {
-        String resp;
         if (getStringFromJson("success", jsonObject).equals("true")) {
             mChatListModel.getChatList();
             mBinding.textChatSearch.setText("");
         }
-        resp = getStringFromJson("message", jsonObject);
-        createAlertDialogue(resp);
-    }
-
-    /**
-     * Dialogs that are used to notify user of events.
-     * @param message message to display to user.
-     */
-    private void createAlertDialogue(final String message) {
-        AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
-        builder1.setMessage(message);
-        builder1.setCancelable(true);
-
-        builder1.setPositiveButton(
-                "Ok",
-                (dialog, id) -> dialog.cancel());
-
-        AlertDialog alert11 = builder1.create();
-        alert11.show();
     }
 
     @Override

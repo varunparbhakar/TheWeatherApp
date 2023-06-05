@@ -48,7 +48,7 @@ public class LoginFragment extends Fragment {
     private PushyTokenViewModel mPushyTokenViewModel;
 
     /** Minimum password length. */
-    private static final int PASSWORD_MIN_LENGTH = 6;
+    private static final int PASSWORD_MIN_LENGTH = 7;
 
     /** Ensures email length, no whitespace, and has at-sign char. */
     private final PasswordValidator mEmailValidator = checkPwdLength(2)
@@ -71,7 +71,6 @@ public class LoginFragment extends Fragment {
                 .get(PushyTokenViewModel.class);
         mLoginVModel = new ViewModelProvider(getActivity())
                 .get(LoginViewModel.class);
-
     }
 
     @Override
@@ -88,7 +87,6 @@ public class LoginFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         mBinding.buttonRegister.setOnClickListener(button -> {
             Navigation.findNavController(getView()).navigate(edu.uw.tcss450.varpar.weatherapp.auth.login.LoginFragmentDirections.actionLoginFragmentToRegisterFragment());
-
         });
 
         mLoginVModel.addResponseObserver(
@@ -104,7 +102,7 @@ public class LoginFragment extends Fragment {
 
             // Create an EditText view to accept email input
             final EditText emailEditText = new EditText(requireContext());
-            emailEditText.setHint(getResources().getString(R.string.profile_fragment_username));
+            emailEditText.setHint(getResources().getString(R.string.hint_activity_auth_login_email));
             builder.setView(emailEditText);
 
             // Set up the Submit button
@@ -132,7 +130,15 @@ public class LoginFragment extends Fragment {
                 getViewLifecycleOwner(),
                 this::observePushyPutResponse);
 
-        autoLogin(); //REMOVE WHEN DONE
+//        autoLogin(); //REMOVE WHEN DONE
+    }
+
+    /**
+     * Autofill for login field.
+     */
+    private void autoLogin() {
+        mBinding.etEmail.setText("test1@test.com");
+        mBinding.etPassword.setText("test1First1666");
     }
 
     /**
@@ -163,13 +169,6 @@ public class LoginFragment extends Fragment {
                 Log.e("ERROR", "observePushyPutResponse: Pushy returned an unexpected response");
             }
         }
-    }
-
-    private void autoLogin() {
-        //EASE OF LOGGIN IN
-        mBinding.etEmail.setText("test1@test.com");
-        mBinding.etPassword.setText("test1First1666");
-        //EASE OF LOGGING IN
     }
 
     @Override

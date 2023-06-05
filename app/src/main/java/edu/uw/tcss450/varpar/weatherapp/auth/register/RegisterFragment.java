@@ -60,7 +60,7 @@ public class RegisterFragment extends Fragment {
                     .and(checkPwdLowerCase().or(checkPwdUpperCase()));
 
     /** Minimum length for passwords. */
-    private static final int PASSWORD_MIN_LENGTH = 6;
+    private static final int PASSWORD_MIN_LENGTH = 7;
 
     /** Required empty public constructor. */
     public RegisterFragment() {

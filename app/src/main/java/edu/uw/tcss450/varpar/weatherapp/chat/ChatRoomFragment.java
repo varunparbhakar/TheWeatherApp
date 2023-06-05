@@ -84,14 +84,14 @@ public class ChatRoomFragment extends Fragment {
 
         mBinding.swipeContainer.setRefreshing(true);
 
+        mChatRoomModel.connectGetUsersByChatId(mChatId, mUserModel.getJwt());
+
         mBinding.recyclerChatMessages.setAdapter(
             new ChatRoomRecyclerViewAdapter(
                 mChatRoomModel.getMessageListByChatId(mChatId),
                 mUserModel.getEmail()
             )
         );
-
-        mChatRoomModel.connectGetUsersByChatId(mChatId, mUserModel.getJwt());
 
         mBinding.swipeContainer.setOnRefreshListener(() -> {
             mChatRoomModel.connectGetNextMessages(mChatId, mUserModel.getJwt());
@@ -173,16 +173,23 @@ public class ChatRoomFragment extends Fragment {
     private void observeResponse(final JSONObject jsonObject) {
         if (jsonObject.has("type")) {
             String type = getStringFromJson("type", jsonObject);
-            if ("getUsers".equals(type)) {
-                try {
-                    mBinding.textChatroomUser.setText(
-                        getJsonArrayFromJson("email", jsonObject)
-                                .join(", ")
-                                .replaceAll("\"", "")
-                    );
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
-                }
+            switch (type) {
+                case "getUsers":
+                    try {
+                        mBinding.textChatroomUser.setText(
+                                getJsonArrayFromJson("email", jsonObject)
+                                        .join(", ")
+                                        .replaceAll("\"", "")
+                        );
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                    break;
+                case "put":
+                    mChatRoomModel.connectGetUsersByChatId(mChatId, mUserModel.getJwt());
+                    break;
+                default :
+                    break;
             }
         }
     }
