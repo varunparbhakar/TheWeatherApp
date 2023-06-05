@@ -41,9 +41,6 @@ public class ChatRoomViewModel extends AndroidViewModel {
     private Map<Integer, MutableLiveData<List<ChatRoomMessage>>> mMessages;
 
     /** Network responses, for observer. */
-    private MutableLiveData<String> mAddedUser;
-
-    /** Network responses, for observer. */
     private MutableLiveData<JSONObject> mResponse;
 
     /**
@@ -312,7 +309,8 @@ public class ChatRoomViewModel extends AndroidViewModel {
     private void handleErrorForGetUsersByChatId(final VolleyError error) {
         JSONObject resp = new JSONObject();
         try { //note what type of connection happened
-            resp.put("type", "put");
+            resp.put("type", "getUsers");
+            mResponse.setValue(resp);
         } catch (JSONException e) {
             Log.e("JSON Error", e.getMessage());
         }
@@ -383,7 +381,7 @@ public class ChatRoomViewModel extends AndroidViewModel {
     private void handleSuccessForPutUserInChatByEmail(final JSONObject response) {
         try { //note what type of connection happened
             response.put("type", "put");
-            mAddedUser.setValue(response.getString("email"));
+            mResponse.setValue(response);
         } catch (JSONException e) {
             Log.e("JSON Error", e.getMessage());
         }
@@ -397,6 +395,7 @@ public class ChatRoomViewModel extends AndroidViewModel {
         JSONObject resp = new JSONObject();
         try { //note what type of connection happened
             resp.put("type", "put");
+            mResponse.setValue(resp);
         } catch (JSONException e) {
             Log.e("JSON Error", e.getMessage());
         }
