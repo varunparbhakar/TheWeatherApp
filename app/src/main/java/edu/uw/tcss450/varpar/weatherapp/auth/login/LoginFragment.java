@@ -130,7 +130,7 @@ public class LoginFragment extends Fragment {
                 getViewLifecycleOwner(),
                 this::observePushyPutResponse);
 
-        autoLogin(); //REMOVE WHEN DONE
+//        autoLogin(); //REMOVE WHEN DONE
     }
 
     /**
