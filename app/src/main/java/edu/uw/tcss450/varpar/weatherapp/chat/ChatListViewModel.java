@@ -132,10 +132,19 @@ public class ChatListViewModel extends AndroidViewModel {
     /**
      * When a successful response comes out of the queue apply data from
      * response to mutable chat id list.
-     * @param response
+     * @param response server response.
      */
     private void handleSuccessForGetChatIds(final JSONObject response) {
         List<ChatListRoom> list = new ArrayList<>();
+
+        try {
+            if (response.has("message") && response.get("message").equals("no chat found")) {
+                mChatList.setValue(list);
+                return;
+            }
+        } catch (JSONException e) {
+            Log.wtf("ERROR", "unknown error");
+        }
 
         try {
             JSONArray rooms = response.getJSONArray("rows");

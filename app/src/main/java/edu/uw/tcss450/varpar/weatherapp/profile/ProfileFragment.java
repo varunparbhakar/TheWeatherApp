@@ -51,7 +51,7 @@ public class ProfileFragment extends Fragment {
                     .and(checkPwdLowerCase().or(checkPwdUpperCase()));
 
     /** Minimum length for passwords. */
-    private static final int MIN_PASSWORD_LENGTH = 6;
+    private static final int MIN_PASSWORD_LENGTH = 7;
 
     /**
      * Required empty public constructor.
