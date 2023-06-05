@@ -206,7 +206,7 @@ public class WeatherFragment extends Fragment {
      */
     private void requestLocationUpdates() {
         LocationRequest mLocationRequest = LocationRequest.create();
-        mLocationRequest.setInterval(60000);
+        mLocationRequest.setInterval(10000);
         mLocationRequest.setFastestInterval(5000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         LocationCallback mLocationCallback = new LocationCallback() {

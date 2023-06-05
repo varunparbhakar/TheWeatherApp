@@ -87,13 +87,8 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             askPermission();
-        }
-
-        locationManager = (LocationManager) getContext().getSystemService(LOCATION_SERVICE);
-        Location location = getLastKnownLocation();
-        if (location != null) {
-            currentCity = getCityName(location.getLongitude(), location.getLatitude());
-            getWeatherInfo();
+        } else {
+            startLocation();
         }
 
         super.onViewCreated(view, savedInstanceState);
@@ -101,7 +96,6 @@ public class HomeFragment extends Fragment {
         String welcomeText = getText(R.string.home_fragment_welcome) + " " + mUserModel.getFirstName();
         mBinding.textGreeting.setText(welcomeText);
 
-        // Get the friend requests and display them
         getFriendsRequests();
     }
 
@@ -114,30 +108,11 @@ public class HomeFragment extends Fragment {
     }
 
     /**
-     * Pings location manager to get current location.
-     * @return Location
+     * Start process of retrieving device location.
      */
-    private Location getLastKnownLocation() {
+    private void startLocation() {
+        locationManager = (LocationManager) getContext().getSystemService(LOCATION_SERVICE);
         requestLocationUpdates();
-        LocationManager mLocationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
-        List<String> providers = mLocationManager.getProviders(true);
-        Location bestLocation = null;
-        for (String provider : providers) {
-            requestLocationUpdates();
-            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_CODE);
-            }
-            Location l = mLocationManager.getLastKnownLocation(provider);
-            Log.d("l", "l is " + l);
-            if (l == null) {
-                continue;
-            }
-            if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
-                // Found best last known location: %s", l);
-                bestLocation = l;
-            }
-        }
-        return bestLocation;
     }
 
     /**
@@ -145,37 +120,55 @@ public class HomeFragment extends Fragment {
      */
     private void requestLocationUpdates() {
         LocationRequest mLocationRequest = LocationRequest.create();
-        mLocationRequest.setInterval(60000);
+        mLocationRequest.setInterval(10_000);
         mLocationRequest.setFastestInterval(5000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         LocationCallback mLocationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(final LocationResult locationResult) {
-
+                Location location = getLastKnownLocation();
+                if (location != null) {
+                    currentCity = getCityName(location.getLongitude(), location.getLatitude());
+                    getWeatherInfo();
+                }
             }
         };
         if (ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_CODE);
+            askPermission();
         }
         LocationServices.getFusedLocationProviderClient(requireActivity()).requestLocationUpdates(mLocationRequest, mLocationCallback, null);
+    }
+
+    /**
+     * Pings location manager to get current location.
+     * @return Location
+     */
+    private Location getLastKnownLocation() {
+//        requestLocationUpdates();
+        LocationManager mLocationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
+        List<String> providers = mLocationManager.getProviders(true);
+        Location bestLocation = null;
+        for (String provider : providers) {
+//            requestLocationUpdates();
+            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                askPermission();
+            }
+            Location l = mLocationManager.getLastKnownLocation(provider);
+            Log.d("l", "l is " + l);
+            if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
+                bestLocation = l;
+            }
+        }
+        return bestLocation;
     }
 
     /** Depreciated onRequestPermissionsResult method. */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        Log.wtf("uwu", "got here");
-
         if (requestCode == REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.wtf("uwu", "got here2");
-                locationManager = (LocationManager) getContext().getSystemService(LOCATION_SERVICE);
-                Location location = getLastKnownLocation();
-                if (location == null) {
-                    requestLocationUpdates();
-                }
-                currentCity = getCityName(location.getLongitude(), location.getLatitude());
-                getWeatherInfo();
+                startLocation();
             } else {
                 Log.wtf("uwu", "permission request failed");
             }
@@ -200,7 +193,6 @@ public class HomeFragment extends Fragment {
                         cityName = city;
                     } else {
                         Log.d("Tag", "City not found");
-                        //Toast.makeText(getActivity(),"User city not found...", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -224,15 +216,17 @@ public class HomeFragment extends Fragment {
                         mBinding.locationText.setText(cityName);
                         String temp = response.getJSONObject("current").getString("temp_f");
                         mBinding.temperatureText.setText(temp);
+                        mBinding.temperatureUnitText.setVisibility(View.VISIBLE);
                         String condition = response.getJSONObject("current").getJSONObject("condition").getString("text");
                         String conditionIcon = response.getJSONObject("current").getJSONObject("condition").getString("icon");
                         Picasso.get().load("http:".concat(conditionIcon)).into(mBinding.forecastImage);
+                        mBinding.forecastImage.setVisibility(View.VISIBLE);
                         mBinding.tempForecast.setText(condition);
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
                 },
-                error -> Toast.makeText(getActivity(), "Please enter valid city name...", Toast.LENGTH_SHORT).show());
+                error -> Log.wtf("weather", error.getMessage()));
         requestQueue.add(jsonObjectRequest);
     }
 
